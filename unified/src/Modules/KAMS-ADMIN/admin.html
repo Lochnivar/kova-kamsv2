@@ -1,0 +1,37 @@
+<html>
+
+<head>
+    <script type='text/javascript' src="jquery.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            bindButtons();
+
+        }).ajaxComplete(function (event, xhr, settings) {
+
+            bindButtons();
+
+        });
+
+        $(document).on({
+            ajaxStart: function () {
+
+                $("body").addClass("loading");
+            },
+            ajaxStop: function () {
+                $("body").removeClass("loading");
+            }
+        });
+
+
+    </script>
+
+
+</head>
+
+<body>
+    <div id = "pword"></div>
+</body>
+
+</html>

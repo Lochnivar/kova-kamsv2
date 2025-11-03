@@ -1,0 +1,94 @@
+<?php
+
+namespace Kova\Unified\Modules\Serial\Workers;
+
+use Kova\Unified\Modules\Common\Database;
+use Kova\Unified\Modules\Common\Common;
+
+class Dataworker
+{
+    /**
+     * The purpose of this file is to fetch the data needed to fuel the charts,
+     * graphs, and gauges on the front page.
+     */
+
+    public $configs;
+    public $cargo;
+    public $dbConn;
+    public $mod = "serial";
+
+    public function __construct($configs)
+    {
+        $this->configs = $configs;
+        $this->dbConn = new Database("kams");
+    }
+
+
+    public function getSerialAvgs()
+    {
+
+        date_default_timezone_set('America/New_York');
+
+        $common = new Common($this->configs);
+
+
+        $ifacesRaw = $common->getIfaces($this->mod);
+
+
+        if (is_array($ifacesRaw)) {
+            $ifaces = $ifacesRaw;
+        } else {
+            $ifaces = explode("~", $ifacesRaw);
+        }
+
+        $serialArray = [];
+
+        foreach ($ifaces as $k => $v) {
+            $serialArray[$k]['hour'] = $this->getSerialData($k, "-1 hour");
+            $serialArray[$k]['thirty'] = $this->getSerialData($k, "-30 minutes");
+            $serialArray[$k]['ten'] = $this->getSerialData($k, "-10 minutes");
+            $serialArray[$k]['lastTime'] = $this->getLastPacketStamp($k);
+            }
+
+
+        return $serialArray;
+    }
+
+    public function getSerialData($iface, $timeVal){
+
+         $sql = "SELECT * FROM serial_settings where ifaceid = ?";
+
+        $results = $this->dbConn->dbQuery($sql, $iface);
+
+        $alarmID = $results[0]['alarmID'];
+
+        $oneHourAgo = strtotime($timeVal);
+
+        $sql = "SELECT count(epoch) AS num, avg(size) AS avgPackets FROM serial_data WHERE iface = ? AND epoch > ?";
+
+        $results = $this->dbConn->dbQuery($sql, $iface, $oneHourAgo);
+
+        $avg = $results[0]['avgPackets'];
+        $count = $results[0]['num'];
+
+        return $avg;
+
+    }
+
+
+    public function getLastPacketStamp($iface)
+    {
+        $sql = "select MAX(epoch) from serial_data WHERE iface = '" . $iface . "' AND size > 0";
+        $result = $this->dbConn->dbQuery($sql);
+
+        $lasttime = $result[0];
+
+        unset($dbConn);
+
+        $dt = new \DateTime();
+        $dt->setTimeStamp($lasttime[0]);
+
+
+        return $dt->format("Y-m-d H:i:s");
+    }
+}

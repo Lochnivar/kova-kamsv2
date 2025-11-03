@@ -1,0 +1,18 @@
+{
+    "kams": {
+        "database": {
+            "host": "localhost",
+            "username": "kams",
+            "password": "kams7906",
+            "db": "KAMS"
+        }
+    },
+    "Network_Mon": {
+        "database": {
+            "host": "localhost",
+            "username": "webpage",
+            "password": "K0v@W3b",
+            "db": "Network_Mon"
+        }
+    }
+}

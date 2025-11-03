@@ -1,0 +1,128 @@
+﻿Name,OID,Description
+audiolog,.1.3.6.1.4.1.5166.1,
+audiologReg,.1.3.6.1.4.1.5166.1.1,
+audiologModules,.1.3.6.1.4.1.5166.1.1.1,
+audiologGlobalRegModule,.1.3.6.1.4.1.5166.1.1.1.1,
+audiologMibModule,.1.3.6.1.4.1.5166.1.1.1.2,
+audiologRegProducts,.1.3.6.1.4.1.5166.1.1.2,
+audiologAlmasterReg,.1.3.6.1.4.1.5166.1.1.2.1,Audiolog ALMaster Module
+audiologArchiverReg,.1.3.6.1.4.1.5166.1.1.2.2,Audiolog Call Archiver Module
+audiologRecorderReg,.1.3.6.1.4.1.5166.1.1.2.3,Audiolog Call Recorder Module
+audiologCallManagerReg,.1.3.6.1.4.1.5166.1.1.2.4,Audiolog Call Manager Module
+audiologGeneric,.1.3.6.1.4.1.5166.1.2,
+audiologProducts,.1.3.6.1.4.1.5166.1.3,
+audiologServer,.1.3.6.1.4.1.5166.1.3.1,
+audiologConformance,.1.3.6.1.4.1.5166.1.3.1.1,
+audiologConfGroups,.1.3.6.1.4.1.5166.1.3.1.1.1,
+alObjectGroup,.1.3.6.1.4.1.5166.1.3.1.1.1.1,AudioLog objects
+alNotificationGroup,.1.3.6.1.4.1.5166.1.3.1.1.1.2,The events for Audiolog
+audiologConfCompliances,.1.3.6.1.4.1.5166.1.3.1.1.2,
+alBasicComplV1,.1.3.6.1.4.1.5166.1.3.1.1.2.1,The basic implementation requirements for Audiolog MIB
+audiologObjects,.1.3.6.1.4.1.5166.1.3.1.2,
+alGenericErrorObject,.1.3.6.1.4.1.5166.1.3.1.2.19,
+alGenericErrorName,.1.3.6.1.4.1.5166.1.3.1.2.19.1,Used ONLY in an alGenericError
+alGenericErrorType,.1.3.6.1.4.1.5166.1.3.1.2.19.2,Used ONLY in an alGenericError
+alGenericErrorStatus,.1.3.6.1.4.1.5166.1.3.1.2.19.3,Used ONLY in an alGenericError
+alGenericErrorMsg,.1.3.6.1.4.1.5166.1.3.1.2.19.4,Used in a NOTIFICATION-TYPE as the TRAP description
+alLogViewObject,.1.3.6.1.4.1.5166.1.3.1.2.20,
+alLogViewName,.1.3.6.1.4.1.5166.1.3.1.2.20.1,Used ONLY in an alWindowEventLogs
+alLogViewEventLevel,.1.3.6.1.4.1.5166.1.3.1.2.20.2,Used ONLY in an alWindowEventLogs
+alMajorVersion,.1.3.6.1.4.1.5166.1.3.1.2.1,The major release number of the Audiolog System.
+alMinorVersion,.1.3.6.1.4.1.5166.1.3.1.2.2,The minor release number of the Audiolog System.
+alOperState,.1.3.6.1.4.1.5166.1.3.1.2.3,"The current status of Audiolog. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alRecorder,.1.3.6.1.4.1.5166.1.3.1.2.4,"The current status of the Audiolog Recorder. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alManager,.1.3.6.1.4.1.5166.1.3.1.2.5,"The current status of the Audiolog Manager. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alAlarmSrv,.1.3.6.1.4.1.5166.1.3.1.2.6,"The current status of the Audiolog Alarm Server. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alArchiver,.1.3.6.1.4.1.5166.1.3.1.2.7,"The current status of the Audiolog Call Archiver. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alCTILink,.1.3.6.1.4.1.5166.1.3.1.2.8,"The current status of the Audiolog CTI Link. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alPSTNSrv,.1.3.6.1.4.1.5166.1.3.1.2.9,"The current status of the Audiolog PSTN Server. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alIRIS,.1.3.6.1.4.1.5166.1.3.1.2.10,"The current status of the Audiolog IRIS Engine. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alSOCKETSrv,.1.3.6.1.4.1.5166.1.3.1.2.11,"The current status of the Audiolog Socket Server. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alChannelTable,.1.3.6.1.4.1.5166.1.3.1.2.12,The Recording Channels Table
+alChannelEntry,.1.3.6.1.4.1.5166.1.3.1.2.12.1,A row in the Channel Table
+alChannelIndex,.1.3.6.1.4.1.5166.1.3.1.2.12.1.1,The channel number
+alChannelStatus,.1.3.6.1.4.1.5166.1.3.1.2.12.1.2,The channel status
+alHeartbeat,.1.3.6.1.4.1.5166.1.3.1.2.13,Number of heartbeats received
+alRefreshStatus,.1.3.6.1.4.1.5166.1.3.1.2.14,Current Refresh Status for Audiolog AMCServer finish(0) pending(1)
+alGetAceStatus,.1.3.6.1.4.1.5166.1.3.1.2.15,Used to Retrieve a specific AceLite structure(s)
+alGetAceProperty,.1.3.6.1.4.1.5166.1.3.1.2.16,Used to request a collection of ACE properties
+alMediaTable,.1.3.6.1.4.1.5166.1.3.1.2.17,Table of media loaded into Audiolog Server
+alMediaEntry,.1.3.6.1.4.1.5166.1.3.1.2.17.1,A row in the media table
+alMediaIndex,.1.3.6.1.4.1.5166.1.3.1.2.17.1.1,Media table index number
+alMediaType,.1.3.6.1.4.1.5166.1.3.1.2.17.1.2,Type of media in the drive
+alMediaStatus,.1.3.6.1.4.1.5166.1.3.1.2.17.1.3,Status of media in the drive
+alMediaVolume,.1.3.6.1.4.1.5166.1.3.1.2.17.1.4,Volume name of media in the drive
+alMediaUsedSpace,.1.3.6.1.4.1.5166.1.3.1.2.17.1.5,Percentage of space used on the archive media
+alDiskUsedSpace,.1.3.6.1.4.1.5166.1.3.1.2.18,Percentage of used hard drive space on the recording drive
+alMaster,.1.3.6.1.4.1.5166.1.3.1.2.22,"The current status of the Audiolog. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alSrv,.1.3.6.1.4.1.5166.1.3.1.2.23,"The current status of the Audiolog Screen Recording. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+alLicense,.1.3.6.1.4.1.5166.1.3.1.2.24,"The current status of the Audiolog Licenses. ok(0) No Errors warning(1) Warning error(2) Error notconnected(3) Could not connect, status unknown"
+audiologEvents,.1.3.6.1.4.1.5166.1.3.1.3,
+audiologEventsV2,.1.3.6.1.4.1.5166.1.3.1.3.0,
+audiologManagerEvents,.1.3.6.1.4.1.5166.1.3.1.3.0.0,
+alDiskIsFull,.1.3.6.1.4.1.5166.1.3.1.3.0.0.0,The recording hard disk threshhold has been exceeded.
+alDiskAlmostFull,.1.3.6.1.4.1.5166.1.3.1.3.0.0.1,The recording hard disk is nearing capacity.
+alNoSQLServerLicense,.1.3.6.1.4.1.5166.1.3.1.3.0.0.2,No license for Microsoft SQL Server was found.
+alHKFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.0.3,House Keeping has Failed.
+alDongleFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.0.4,Warning!Security block not found.
+alEncryptionStatus,.1.3.6.1.4.1.5166.1.3.1.3.0.0.5,Warning!Unable to connect to AKMS web server.
+alVAMStatus,.1.3.6.1.4.1.5166.1.3.1.3.0.0.6,VAM Critical Error.
+alTeleco32Status,.1.3.6.1.4.1.5166.1.3.1.3.0.0.7,No Audio on this recorded channels.
+alSQLConnectionFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.0.8,SQL Connection Failed in Call Manager.
+alMgrCallsDeleted,.1.3.6.1.4.1.5166.1.3.1.3.0.0.9,SQL Connection Failed in Call Manager.
+alNonuploadedFileDeleted,.1.3.6.1.4.1.5166.1.3.1.3.0.0.10,Deleted non-uploaded file.
+alNonarchivedFileDeleted,.1.3.6.1.4.1.5166.1.3.1.3.0.0.11,Deleted non-archived file.
+audiologRecorderEvents,.1.3.6.1.4.1.5166.1.3.1.3.0.1,
+alNoRecorderControlDB,.1.3.6.1.4.1.5166.1.3.1.3.0.1.0,No Recorder.mdb file found on the server.
+alNoChannels,.1.3.6.1.4.1.5166.1.3.1.3.0.1.1,No recording channels were detected.
+alSomethingElseWrong,.1.3.6.1.4.1.5166.1.3.1.3.0.1.2,Something else is wrong.  This error not currently used.
+alNoLicenseBlock,.1.3.6.1.4.1.5166.1.3.1.3.0.1.3,Unable to communicate with the Audiolog license dongle.
+alRecordAreaMissing,.1.3.6.1.4.1.5166.1.3.1.3.0.1.4,No Prelog area in which to store recorded calls.
+alChannelNotRecording,.1.3.6.1.4.1.5166.1.3.1.3.0.1.5,The Error Message string value specifies the channel that is not recording.
+alRecCallsDeleted,.1.3.6.1.4.1.5166.1.3.1.3.0.1.6,The Error Message string value specifies the channel that is not recording.
+alRecPacketsDropped,.1.3.6.1.4.1.5166.1.3.1.3.0.1.7,Packets were dropped for a call.
+alRecNoPacketsOneSide,.1.3.6.1.4.1.5166.1.3.1.3.0.1.8,Packets were dropped for a call.
+audiologArchiverEvents,.1.3.6.1.4.1.5166.1.3.1.3.0.2,
+alTapeIsFull,.1.3.6.1.4.1.5166.1.3.1.3.0.2.0,Media in Archive Drive is full Change the media.
+alTapeAlmostFull,.1.3.6.1.4.1.5166.1.3.1.3.0.2.1,Media in Archive Drive is almost full.
+alOneTapeFull,.1.3.6.1.4.1.5166.1.3.1.3.0.2.2,Media in Day Drive is full. Change the media.
+alDaydriveAlmostFull,.1.3.6.1.4.1.5166.1.3.1.3.0.2.1,Media in Day Drive is almost full.
+alTapeIOError,.1.3.6.1.4.1.5166.1.3.1.3.0.2.3,Archiving drive is experiencing input/output errors.
+audiologCTILinkEvents,.1.3.6.1.4.1.5166.1.3.1.3.0.3,
+alCTILinkFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.3.0,"Audiolog has lost communication with the CTI server. If recording is controlled by CTI, calls are not being recorded."
+alCTILinkCommunicationWithALSrvFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.3.1,CTILink communication with ALSrv is failed.
+alCTILinkFailedToSendDatatoMSMQ,.1.3.6.1.4.1.5166.1.3.1.3.0.3.2,CTILink failed to queue message in SMDR message queue.
+alCTILinkSMDRFailedToQueueItem,.1.3.6.1.4.1.5166.1.3.1.3.0.3.3,SMDR service failed to add item to queue.
+alCTILinkDeviceInactivity,.1.3.6.1.4.1.5166.1.3.1.3.0.3.4,CTILink device inactivity detected.
+audiologProcessStatus,.1.3.6.1.4.1.5166.1.3.1.3.0.5,
+alAudiologNotRunning,.1.3.6.1.4.1.5166.1.3.1.3.0.5.0,Audiolog Server is down.
+alRecorderNotRunning,.1.3.6.1.4.1.5166.1.3.1.3.0.5.1,Recorder module is not running. Contact Center calls are not being recorded.
+alManagerNotRunning,.1.3.6.1.4.1.5166.1.3.1.3.0.5.2,Manager module is not running. Recordings are not being added to the catalog database and are not available for playback.
+alAlarmSrvNotRunning,.1.3.6.1.4.1.5166.1.3.1.3.0.5.3,Alarm Server module is not running.
+alArchiverNotRunning,.1.3.6.1.4.1.5166.1.3.1.3.0.5.4,Archiver module is not running. Contact Center recordings are not being copied to archive media.
+alCTILinkNotRunning,.1.3.6.1.4.1.5166.1.3.1.3.0.5.5,"CTILink module is not running. If recording is controlled by CTI, Contact Center calls are not being recorded."
+alPSTNSrvNotRunning,.1.3.6.1.4.1.5166.1.3.1.3.0.5.6,PSTN Server module is not running. This is an optional module which permits playback from a telephone.
+alIRISNotRunning,.1.3.6.1.4.1.5166.1.3.1.3.0.5.7,IRIS Engine module is not running. Recording may be interrupted.
+alSOCKETSrvNotRunning,.1.3.6.1.4.1.5166.1.3.1.3.0.5.8,Socket Server module is not running.
+alUpdRateBelowRecRate,.1.3.6.1.4.1.5166.1.3.1.3.0.5.9,Uploading rate is below recording rate. This indicates a problem uploading calls from an Audiolog recorder to an external network storage device.
+alCmprsRateBelowRecRate,.1.3.6.1.4.1.5166.1.3.1.3.0.5.10,Compression rate is below recording rate. This indicates a problem with Audiolog Compression Server.
+alCmprsFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.5.11,Compression server failed to compress a call. This indicates a problem with Audiolog Compression Server.
+alGenericError,.1.3.6.1.4.1.5166.1.3.1.3.0.4,A generic error event for errors without their own NOTIFICATION-TYPE.
+alWindowEventLogs,.1.3.6.1.4.1.5166.1.3.1.3.0.6,View the respective Event log on the Audiolog recorder to determine the nature of the notification.
+alALMasterEvents,.1.3.6.1.4.1.5166.1.3.1.3.0.7,ALMaster Events.
+alALMasterSMDelFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.7.0,Space Manager Deletion Failed.
+alALMasterHKDbConnFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.7.1,ALMaster spacemanager could not establish a connection to the database
+alALMasterHKDiskFull,.1.3.6.1.4.1.5166.1.3.1.3.0.7.2,ALMaster Housekeeping No disk free space available to run housekeeping
+alALMasterHKDelFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.7.3,ALMaster HouseKeeping failed to delete calls.
+alALMasterHKConnFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.7.4,ALMaster HouseKeeping failed to get exclusive connection to Catalog database.
+alALMasterHKFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.7.5,ALMaster HouseKeeping failed to complete.
+alALMasterMUploadFailed,.1.3.6.1.4.1.5166.1.3.1.3.0.7.6,MUpload Uploader failed to upload calls.
+audiologALSRVEvents,.1.3.6.1.4.1.5166.1.3.1.3.0.8,ALSrv Events.
+alScreenRecordingFailEvents,.1.3.6.1.4.1.5166.1.3.1.3.0.8.0,Screen Recording connection failed with Client is failed.
+alSRVVSRxCommunicationFailedEvents,.1.3.6.1.4.1.5166.1.3.1.3.0.8.1,Screen Recording communication with VSRX component is failed.
+audiologLicenseEvents,.1.3.6.1.4.1.5166.1.3.1.3.0.9,ALLicenseManger Events.
+alLicenseInValidEvent,.1.3.6.1.4.1.5166.1.3.1.3.0.9.1,Audiolog license expired or doesn't exist.
+alHeartbeatChange,.1.3.6.1.4.1.5166.1.3.1.3.0.11,Change in audioLogHeartbeat.  Used only by AMC client
+alRefreshStatusChange,.1.3.6.1.4.1.5166.1.3.1.3.0.12,Change in audioLogRefreshStatus  Used only by AMC client
+alGetAceStatusChange,.1.3.6.1.4.1.5166.1.3.1.3.0.13,Response to a audioLogGetAce  Used only by AMC client
+alGetAcePropertyChange,.1.3.6.1.4.1.5166.1.3.1.3.0.14,Response to an audioLogGetAceProperty  Used only by AMC client

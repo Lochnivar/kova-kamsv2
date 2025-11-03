@@ -1,0 +1,55 @@
+-- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: asterisk-status
+-- ------------------------------------------------------
+-- Server version	5.1.73
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `extensions`
+--
+
+DROP TABLE IF EXISTS `extensions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `extensions` (
+  `extension` varchar(5) NOT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  `DivTitle` varchar(50) DEFAULT NULL,
+  `realname` varchar(50) DEFAULT NULL,
+  `inCall` tinyint(4) NOT NULL DEFAULT '0',
+  `hidden` varchar(5) DEFAULT NULL,
+  PRIMARY KEY (`extension`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `extensions`
+--
+
+LOCK TABLES `extensions` WRITE;
+/*!40000 ALTER TABLE `extensions` DISABLE KEYS */;
+INSERT INTO `extensions` VALUES ('Name/','Status','0',NULL,0,NULL),('10072','OK','TRAILERS','Male Officer 2',0,NULL),('10120','OK','0','Strobe',0,NULL),('10121','OK','0',NULL,0,NULL),('10132','OK','0',NULL,0,NULL),('10162','OK','0',NULL,0,NULL),('10200','OK','0',NULL,0,NULL),('10201','UNKNOWN','0',NULL,0,NULL),('10202','UNKNOWN','0',NULL,0,NULL),('10203','OK','0',NULL,0,NULL),('10204','OK','0',NULL,0,NULL),('10205','OK','0',NULL,0,NULL),('10206','OK','0',NULL,0,NULL),('10207','OK','0',NULL,0,NULL),('10208','OK','0',NULL,0,NULL),('10209','OK','0',NULL,0,NULL),('10210','OK','0',NULL,0,NULL),('10215','OK','AARF','Horn Bay 12',0,NULL),('10216','OK','AARF','Horn Far Wall',0,NULL),('10217','OK','AARF','Horn Bay 12 Front',0,NULL),('10218','OK','AARF','Horn Door 9',0,NULL),('10219','OK','AARF','Horn Door 6',0,NULL),('10220','OK','AARF','Horn Above 1117',0,NULL),('10221','OK','AARF','Horn Above 1116',0,NULL),('10222','OK','AARF','Horn Bay 10',0,NULL),('10223','OK','AARF','Horn Bay 8',0,NULL),('10224','OK','AARF','Horn Bay 6',0,NULL),('10225','OK','AARF','Horn Bay 4',0,NULL),('11200','OK','0',NULL,0,NULL),('12160','OK','0',NULL,0,NULL),('13200','OK','0',NULL,0,NULL),('14200','OK','0',NULL,0,NULL),('15200','UNREACHABLE','0',NULL,0,NULL),('16200','OK','0',NULL,0,NULL),('17200','OK','0',NULL,0,NULL),('18200','OK','0',NULL,0,NULL),('19200','OK','0',NULL,0,NULL),('20200','UNKNOWN','0',NULL,0,NULL),('37','3','0',NULL,0,NULL),('10070','OK','TRAILERS','Male Officer',0,NULL),('10071','OK','TRAILERS','Male Officer 1',0,NULL),('10073','OK','TRAILERS','Male Officer 3',0,NULL),('10074','OK','TRAILERS','Male Officer 4',0,NULL),('10075','OK','TRAILERS','Male Officer 5',0,NULL),('10076','OK','TRAILERS','Male Officer 6',0,NULL),('10077','OK','TRAILERS','Female Officer',0,NULL),('10078','UNKNOWN','BUILDING 1','RM-1114 ',0,NULL),('10079','UNKNOWN','BUILDING 1','RM-Equip Store',0,NULL),('10080','UNKNOWN','BUILDING 1','RM-1117',0,NULL),('10081','UNKNOWN','BUILDING 1','RM-1117A',0,NULL),('10130','OK','0',NULL,0,NULL),('10131','OK','0',NULL,0,NULL),('10160','OK','0',NULL,0,NULL),('10161','OK','0',NULL,0,NULL),('10163','OK','0',NULL,0,NULL),('10170','OK','AARF','2nd FL ARFF',0,NULL),('10171','OK','AARF','2nd FL ARFF 2',0,NULL),('11160','OK','0',NULL,0,NULL),('11161','OK','0',NULL,0,NULL),('57','8','0',NULL,0,NULL);
+/*!40000 ALTER TABLE `extensions` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2018-03-20 14:53:36
