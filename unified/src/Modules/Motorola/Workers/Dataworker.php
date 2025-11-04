@@ -2,7 +2,7 @@
 
 namespace Kova\Kams\Unified\Modules\Motorola\Workers;
 
-use Kova\Kams\Unified\Modules\Common\Database;
+use Kova\Kams\Common\Database;
 use Kova\Kams\Unified\Modules\Common\Common;
 
 class Dataworker

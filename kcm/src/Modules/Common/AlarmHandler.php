@@ -2,7 +2,7 @@
 
 namespace Kova\Kcm\Modules\Common;
 
-use Kova\Kcm\Modules\Common\Database as DB;
+use Kova\Kams\Common\Database as DB;
 use Kova\Kcm\Modules\Common\Communicator as Comms;
 
 class AlarmHandler

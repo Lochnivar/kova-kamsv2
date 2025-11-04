@@ -3,7 +3,7 @@
 namespace Kova\Kcm\Modules\Crons;
 
 use Kova\Kcm\Modules\Common\Common as Common;
-use Kova\Kcm\Modules\Common\Database as DB;
+use Kova\Kams\Common\Database as DB;
 
 class CronTemplate
 {

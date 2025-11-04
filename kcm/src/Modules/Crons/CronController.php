@@ -8,7 +8,7 @@ use Kova\Kcm\Modules\Serial\SerialCron as SerialCron;
 use Kova\Kcm\Modules\Udp\UdpCron as UdpCron;
 use Kova\Kcm\Modules\Zabbix\ZabbixCron as ZabbixCron;
 use Kova\Kcm\Modules\Reporting\Reporting as Reporting;
-use Kova\Kcm\Modules\Common\Database as DB;
+use Kova\Kams\Common\Database as DB;
 use Kova\Kcm\Modules\Common\Communicator as Comms;
 
 class CronController
