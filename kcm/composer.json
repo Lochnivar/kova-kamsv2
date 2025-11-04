@@ -5,7 +5,8 @@
         "composer/composer": "^2.8",
         "components/jquery": "^3.7",
         "intellitrend/zabbixapi": "^3.3",
-        "php-curl-class/php-curl-class": "^12.0"
+        "php-curl-class/php-curl-class": "^12.0",
+        "doctrine/dbal": "^3.8"
     },
     "autoload": {
         "psr-4": {
