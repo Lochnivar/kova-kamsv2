@@ -3,7 +3,7 @@
 namespace Kova\Kcm\Modules\Zabbix;
 
 use Kova\Kcm\Modules\Common\Common as Common;
-use Kova\Kcm\Modules\Common\Database as DB;
+use Kova\Kams\Common\Database as DB;
 use Kova\Kcm\Modules\Common\AlarmHandler as AH;
 use Kova\Kcm\Modules\Common\Communicator;
 use Kova\Kcm\Modules\Zabbix\ZabbixComms as ZComms;

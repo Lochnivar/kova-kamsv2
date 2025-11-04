@@ -1,0 +1,52 @@
+{
+  "kams": {
+    "database": {
+      "host": "localhost",
+      "username": "kams",
+      "password": "kams7906",
+      "db": "KAMS",
+      "driver": "pdo_mysql",
+      "charset": "utf8mb4"
+    }
+  },
+  "serial": {
+    "database": {
+      "host": "localhost",
+      "username": "webpage",
+      "password": "K0v@W3b",
+      "db": "Serial_Users",
+      "driver": "pdo_mysql",
+      "charset": "utf8mb4"
+    }
+  },
+  "moto": {
+    "database": {
+      "host": "localhost",
+      "username": "webpage",
+      "password": "K0v@W3b",
+      "db": "Channel_Mon",
+      "driver": "pdo_mysql",
+      "charset": "utf8mb4"
+    }
+  },
+  "udp": {
+    "database": {
+      "host": "localhost",
+      "username": "webpage",
+      "password": "K0v@W3b",
+      "db": "Network_Mon",
+      "driver": "pdo_mysql",
+      "charset": "utf8mb4"
+    }
+  },
+  "Network_Mon": {
+    "database": {
+      "host": "localhost",
+      "username": "webpage",
+      "password": "K0v@W3b",
+      "db": "Network_Mon",
+      "driver": "pdo_mysql",
+      "charset": "utf8mb4"
+    }
+  }
+}

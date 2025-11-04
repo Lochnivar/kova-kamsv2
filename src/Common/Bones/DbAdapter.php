@@ -20,8 +20,12 @@ final class DbAdapter
     /**
      * @param string $envPath path to environment.json
      */
-    public function __construct(string $envPath = __DIR__ . '/../../unified/src/configs/environment.json')
+    public function __construct(?string $envPath = null)
     {
+        if ($envPath === null) {
+            $envPath = getenv('KOVA_DB_CONFIG') ?: __DIR__ . '/../../../config/databases.json';
+        }
+
         $this->envPath = $envPath;
         $json = @file_get_contents($this->envPath);
         if ($json === false) {
