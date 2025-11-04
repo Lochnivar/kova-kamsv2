@@ -1,10 +1,10 @@
 <?php
 
-namespace Kova\Unified\Modules\Common;
+namespace Kova\Kams\Unified\Modules\Common;
 
 use IntelliTrend\Zabbix\ZabbixApi;
 use Exception;
-use Kova\Unified\Modules\Common\Config;
+use Kova\Kams\Unified\Modules\Common\Config;
 
 class Communicator
 {

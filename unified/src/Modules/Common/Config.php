@@ -1,8 +1,8 @@
 <?php
 
-namespace Kova\Unified\Modules\Common;
+namespace Kova\Kams\Unified\Modules\Common;
 
-use Kova\Unified\Modules\Common\Database;
+use Kova\Kams\Unified\Modules\Common\Database;
 
 class Config
 {

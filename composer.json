@@ -10,13 +10,15 @@
     "twbs/bootstrap": "^5.3",
     "twbs/bootstrap-icons": "^1.11",
     "twbs/bootstrap-sass": "^3.4",
-    "components/jqueryui": "^1.12"
+    "components/jqueryui": "^1.12",
+    "doctrine/dbal": "^4.0"
   },
   "autoload": {
     "psr-4": {
-      "Kova\\\\Kams\\\\Unified\\\\": "unified/src/",
-      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
-      "Kova\\\\Kams\\\\App\\\\": "app/src/"
+      "Kova\\Kams\\Unified\\": "unified/src/",
+      "Kova\\Kams\\KCM\\": "kcm/src/",
+      "Kova\\Kams\\App\\": "app/src/",
+      "Kova\\Kams\\Common\\": "src/Common/"
     }
   },
   "minimum-stability": "stable",

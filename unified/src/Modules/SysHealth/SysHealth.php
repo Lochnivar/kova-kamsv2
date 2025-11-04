@@ -1,8 +1,8 @@
 <?php
 
-namespace Kova\Unified\Modules\SysHealth;
+namespace Kova\Kams\Unified\Modules\SysHealth;
 
-use Kova\Unified\Modules\Common\Communicator;
+use Kova\Kams\Unified\Modules\Common\Communicator;
 
 class SysHealth
 {

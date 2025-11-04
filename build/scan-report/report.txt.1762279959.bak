@@ -1,0 +1,305 @@
+Scan generated on: Tue Nov  4 05:59:11 PM UTC 2025
+
+[2025-11-04T17:59:11Z] Starting repository scan at /srv/kova
+[2025-11-04T17:59:11Z] Step 1: Git branch & last commit
+refactor/consolidate
+47f5dbc 2025-11-04 12:45:57 -0500 Michael Lockwood placekeeping[2025-11-04T17:59:11Z] Finished Step 1
+[2025-11-04T17:59:11Z] Step 2: composer.json top-level summary
+{
+  "name": "kova/kams",
+  "description": "Kova KAMS Advanced Management System",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "Kova\\\\Kams\\\\Unified\\\\": "unified/src/",
+      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+      "Kova\\\\Kams\\\\App\\\\": "app/src/"
+    }
+  }
+}
+[2025-11-04T17:59:11Z] Finished Step 2
+[2025-11-04T17:59:11Z] Step 3: composer validate (no network, non-interactive)
+./composer.json is valid
+[2025-11-04T17:59:11Z] Finished Step 3
+[2025-11-04T17:59:11Z] Step 4: composer dump-autoload --optimize (this may be slow)
+Generating optimized autoload files
+Generated optimized autoload files containing 667 classes
+[2025-11-04T17:59:12Z] composer dump-autoload finished OK
+[2025-11-04T17:59:12Z] Step 5: capture Composer autoload tables (if available)
+PSR-4 mappings written to: build/scan-report/psr4.json
+Classmap written to: build/scan-report/classmap.json
+[2025-11-04T17:59:12Z] Finished Step 5
+[2025-11-04T17:59:12Z] Step 6: Namespace declarations (sample)
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/UriRetrieverInterface.php:12:namespace JsonSchema;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Enum.php:5:namespace JsonSchema;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Iterator/ObjectIterator.php:12:namespace JsonSchema\Iterator;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Tool/DeepComparer.php:5:namespace JsonSchema\Tool;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Tool/Validator/UriValidator.php:5:namespace JsonSchema\Tool\Validator;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Tool/Validator/RelativeReferenceValidator.php:5:namespace JsonSchema\Tool\Validator;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Tool/DeepCopy.php:5:namespace JsonSchema\Tool;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Rfc3339.php:5:namespace JsonSchema;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Validator.php:12:namespace JsonSchema;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Entity/JsonPointer.php:12:namespace JsonSchema\Entity;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/UriResolverInterface.php:12:namespace JsonSchema;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/ConstraintError.php:5:namespace JsonSchema;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/InvalidSchemaMediaTypeException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/InvalidConfigException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/ResourceNotFoundException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/UnresolvableJsonPointerException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/ValidationException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/InvalidSourceUriException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/JsonDecodingException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/RuntimeException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/UriResolverException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/InvalidSchemaException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/InvalidArgumentException.php:12:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Exception/ExceptionInterface.php:5:namespace JsonSchema\Exception;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/SchemaStorage.php:5:namespace JsonSchema;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/EnumConstraint.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/StringConstraint.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/NumberConstraint.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/ConstraintInterface.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/UndefinedConstraint.php:5:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/BaseConstraint.php:5:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/FormatConstraint.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/TypeCheck/LooseTypeCheck.php:5:namespace JsonSchema\Constraints\TypeCheck;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/TypeCheck/StrictTypeCheck.php:5:namespace JsonSchema\Constraints\TypeCheck;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/TypeCheck/TypeCheckInterface.php:5:namespace JsonSchema\Constraints\TypeCheck;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/Constraint.php:5:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/SchemaConstraint.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/Factory.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/CollectionConstraint.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/TypeConstraint.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/ConstConstraint.php:12:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Constraints/ObjectConstraint.php:5:namespace JsonSchema\Constraints;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/SchemaStorageInterface.php:5:namespace JsonSchema;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Uri/Retrievers/UriRetrieverInterface.php:12:namespace JsonSchema\Uri\Retrievers;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Uri/Retrievers/Curl.php:12:namespace JsonSchema\Uri\Retrievers;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Uri/Retrievers/PredefinedArray.php:5:namespace JsonSchema\Uri\Retrievers;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Uri/Retrievers/FileGetContents.php:12:namespace JsonSchema\Uri\Retrievers;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Uri/Retrievers/AbstractRetriever.php:11:namespace JsonSchema\Uri\Retrievers;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Uri/UriRetriever.php:12:namespace JsonSchema\Uri;
+unified/vendor/justinrainbow/json-schema/src/JsonSchema/Uri/UriResolver.php:12:namespace JsonSchema\Uri;
+unified/vendor/react/promise/src/Internal/CancellationQueue.php:3:namespace React\Promise\Internal;
+unified/vendor/react/promise/src/Internal/RejectedPromise.php:3:namespace React\Promise\Internal;
+unified/vendor/react/promise/src/Internal/FulfilledPromise.php:3:namespace React\Promise\Internal;
+unified/vendor/react/promise/src/Deferred.php:3:namespace React\Promise;
+unified/vendor/react/promise/src/PromiseInterface.php:3:namespace React\Promise;
+unified/vendor/react/promise/src/functions.php:3:namespace React\Promise;
+unified/vendor/react/promise/src/Promise.php:3:namespace React\Promise;
+unified/vendor/react/promise/src/Exception/LengthException.php:3:namespace React\Promise\Exception;
+unified/vendor/react/promise/src/Exception/CompositeException.php:3:namespace React\Promise\Exception;
+unified/vendor/psr/log/src/NullLogger.php:3:namespace Psr\Log;
+unified/vendor/psr/log/src/LoggerAwareTrait.php:3:namespace Psr\Log;
+unified/vendor/psr/log/src/LoggerAwareInterface.php:3:namespace Psr\Log;
+unified/vendor/psr/log/src/LoggerInterface.php:3:namespace Psr\Log;
+unified/vendor/psr/log/src/LoggerTrait.php:3:namespace Psr\Log;
+unified/vendor/psr/log/src/LogLevel.php:3:namespace Psr\Log;
+unified/vendor/psr/log/src/InvalidArgumentException.php:3:namespace Psr\Log;
+unified/vendor/psr/log/src/AbstractLogger.php:3:namespace Psr\Log;
+unified/vendor/psr/container/src/ContainerInterface.php:5:namespace Psr\Container;
+unified/vendor/psr/container/src/ContainerExceptionInterface.php:3:namespace Psr\Container;
+unified/vendor/psr/container/src/NotFoundExceptionInterface.php:3:namespace Psr\Container;
+unified/vendor/composer/class-map-generator/src/PhpFileParser.php:13:namespace Composer\ClassMapGenerator;
+unified/vendor/composer/class-map-generator/src/PhpFileCleaner.php:13:namespace Composer\ClassMapGenerator;
+unified/vendor/composer/class-map-generator/src/FileList.php:13:namespace Composer\ClassMapGenerator;
+unified/vendor/composer/class-map-generator/src/ClassMapGenerator.php:19:namespace Composer\ClassMapGenerator;
+unified/vendor/composer/class-map-generator/src/ClassMap.php:13:namespace Composer\ClassMapGenerator;
+unified/vendor/composer/pcre/src/MatchWithOffsetsResult.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/ReplaceResult.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/MatchAllResult.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/MatchStrictGroupsResult.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/UnexpectedNullMatchException.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/Regex.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/MatchResult.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/Preg.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/MatchAllStrictGroupsResult.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/PcreException.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/MatchAllWithOffsetsResult.php:12:namespace Composer\Pcre;
+unified/vendor/composer/pcre/src/PHPStan/UnsafeStrictGroupsCallRule.php:3:namespace Composer\Pcre\PHPStan;
+unified/vendor/composer/pcre/src/PHPStan/PregMatchFlags.php:3:namespace Composer\Pcre\PHPStan;
+unified/vendor/composer/pcre/src/PHPStan/InvalidRegexPatternRule.php:3:namespace Composer\Pcre\PHPStan;
+unified/vendor/composer/pcre/src/PHPStan/PregMatchTypeSpecifyingExtension.php:3:namespace Composer\Pcre\PHPStan;
+unified/vendor/composer/pcre/src/PHPStan/PregReplaceCallbackClosureTypeExtension.php:3:namespace Composer\Pcre\PHPStan;
+unified/vendor/composer/pcre/src/PHPStan/PregMatchParameterOutTypeExtension.php:3:namespace Composer\Pcre\PHPStan;
+unified/vendor/composer/metadata-minifier/src/MetadataMinifier.php:12:namespace Composer\MetadataMinifier;
+unified/vendor/composer/InstalledVersions.php:13:namespace Composer;
+unified/vendor/composer/autoload_static.php:5:namespace Composer\Autoload;
+unified/vendor/composer/composer/src/Composer/Command/CompletionTrait.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/LicensesCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/InitCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/ShowCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/FundCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/PackageDiscoveryTrait.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/ReinstallCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/ClearCacheCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/SuggestsCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/StatusCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/DumpAutoloadCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/HomeCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/InstallCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/ProhibitsCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/SelfUpdateCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/BaseCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/BumpCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/RunScriptCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/OutdatedCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/AboutCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/GlobalCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/ArchiveCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/SearchCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/CreateProjectCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/CheckPlatformReqsCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/ConfigCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/UpdateCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/AuditCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/RequireCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/ScriptAliasCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/DependsCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/ExecCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/RemoveCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/BaseDependencyCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/DiagnoseCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Command/ValidateCommand.php:13:namespace Composer\Command;
+unified/vendor/composer/composer/src/Composer/Autoload/AutoloadGenerator.php:13:namespace Composer\Autoload;
+unified/vendor/composer/composer/src/Composer/Autoload/AutoloadGenerator.php:1137:namespace Composer\Autoload;
+unified/vendor/composer/composer/src/Composer/Autoload/ClassMapGenerator.php:19:namespace Composer\Autoload;
+unified/vendor/composer/composer/src/Composer/Autoload/ClassLoader.php:13:namespace Composer\Autoload;
+unified/vendor/composer/composer/src/Composer/Plugin/PrePoolCreateEvent.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Plugin/PreFileDownloadEvent.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Plugin/PluginBlockedException.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Plugin/PluginManager.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Plugin/PluginInterface.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Plugin/Capability/CommandProvider.php:13:namespace Composer\Plugin\Capability;
+unified/vendor/composer/composer/src/Composer/Plugin/Capability/Capability.php:13:namespace Composer\Plugin\Capability;
+unified/vendor/composer/composer/src/Composer/Plugin/PluginEvents.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Plugin/Capable.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Plugin/PreCommandRunEvent.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Plugin/CommandEvent.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Plugin/PostFileDownloadEvent.php:13:namespace Composer\Plugin;
+unified/vendor/composer/composer/src/Composer/Config.php:13:namespace Composer;
+unified/vendor/composer/composer/src/Composer/Compiler.php:13:namespace Composer;
+unified/vendor/composer/composer/src/Composer/IO/NullIO.php:13:namespace Composer\IO;
+unified/vendor/composer/composer/src/Composer/IO/BaseIO.php:13:namespace Composer\IO;
+unified/vendor/composer/composer/src/Composer/IO/BufferIO.php:13:namespace Composer\IO;
+unified/vendor/composer/composer/src/Composer/IO/IOInterface.php:13:namespace Composer\IO;
+unified/vendor/composer/composer/src/Composer/IO/ConsoleIO.php:13:namespace Composer\IO;
+unified/vendor/composer/composer/src/Composer/Advisory/IgnoredSecurityAdvisory.php:13:namespace Composer\Advisory;
+unified/vendor/composer/composer/src/Composer/Advisory/SecurityAdvisory.php:13:namespace Composer\Advisory;
+unified/vendor/composer/composer/src/Composer/Advisory/Auditor.php:13:namespace Composer\Advisory;
+unified/vendor/composer/composer/src/Composer/Advisory/PartialSecurityAdvisory.php:13:namespace Composer\Advisory;
+unified/vendor/composer/composer/src/Composer/Cache.php:13:namespace Composer;
+unified/vendor/composer/composer/src/Composer/Platform/Runtime.php:13:namespace Composer\Platform;
+unified/vendor/composer/composer/src/Composer/Platform/Version.php:13:namespace Composer\Platform;
+unified/vendor/composer/composer/src/Composer/Platform/HhvmDetector.php:13:namespace Composer\Platform;
+unified/vendor/composer/composer/src/Composer/Question/StrictConfirmationQuestion.php:13:namespace Composer\Question;
+unified/vendor/composer/composer/src/Composer/InstalledVersions.php:13:namespace Composer;
+unified/vendor/composer/composer/src/Composer/Package/RootAliasPackage.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/Package.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/AliasPackage.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/Locker.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/RootPackageInterface.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/Link.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/PackageInterface.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/CompletePackage.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/Comparer/Comparer.php:13:namespace Composer\Package\Comparer;
+unified/vendor/composer/composer/src/Composer/Package/Archiver/GitExcludeFilter.php:13:namespace Composer\Package\Archiver;
+unified/vendor/composer/composer/src/Composer/Package/Archiver/ArchivableFilesFilter.php:13:namespace Composer\Package\Archiver;
+unified/vendor/composer/composer/src/Composer/Package/Archiver/ArchivableFilesFinder.php:13:namespace Composer\Package\Archiver;
+unified/vendor/composer/composer/src/Composer/Package/Archiver/ZipArchiver.php:13:namespace Composer\Package\Archiver;
+unified/vendor/composer/composer/src/Composer/Package/Archiver/ArchiveManager.php:13:namespace Composer\Package\Archiver;
+unified/vendor/composer/composer/src/Composer/Package/Archiver/PharArchiver.php:13:namespace Composer\Package\Archiver;
+unified/vendor/composer/composer/src/Composer/Package/Archiver/ArchiverInterface.php:13:namespace Composer\Package\Archiver;
+unified/vendor/composer/composer/src/Composer/Package/Archiver/BaseExcludeFilter.php:13:namespace Composer\Package\Archiver;
+unified/vendor/composer/composer/src/Composer/Package/Archiver/ComposerExcludeFilter.php:13:namespace Composer\Package\Archiver;
+unified/vendor/composer/composer/src/Composer/Package/CompletePackageInterface.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/Dumper/ArrayDumper.php:13:namespace Composer\Package\Dumper;
+unified/vendor/composer/composer/src/Composer/Package/Version/VersionSelector.php:13:namespace Composer\Package\Version;
+unified/vendor/composer/composer/src/Composer/Package/Version/VersionGuesser.php:13:namespace Composer\Package\Version;
+unified/vendor/composer/composer/src/Composer/Package/Version/VersionParser.php:13:namespace Composer\Package\Version;
+unified/vendor/composer/composer/src/Composer/Package/Version/StabilityFilter.php:13:namespace Composer\Package\Version;
+unified/vendor/composer/composer/src/Composer/Package/Version/VersionBumper.php:13:namespace Composer\Package\Version;
+unified/vendor/composer/composer/src/Composer/Package/RootPackage.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/CompleteAliasPackage.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/BasePackage.php:13:namespace Composer\Package;
+unified/vendor/composer/composer/src/Composer/Package/Loader/ArrayLoader.php:13:namespace Composer\Package\Loader;
+unified/vendor/composer/composer/src/Composer/Package/Loader/LoaderInterface.php:13:namespace Composer\Package\Loader;
+unified/vendor/composer/composer/src/Composer/Package/Loader/ValidatingArrayLoader.php:13:namespace Composer\Package\Loader;
+unified/vendor/composer/composer/src/Composer/Package/Loader/RootPackageLoader.php:13:namespace Composer\Package\Loader;
+unified/vendor/composer/composer/src/Composer/Package/Loader/JsonLoader.php:13:namespace Composer\Package\Loader;
+unified/vendor/composer/composer/src/Composer/Package/Loader/InvalidPackageException.php:13:namespace Composer\Package\Loader;
+unified/vendor/composer/composer/src/Composer/Installer/InstallerEvents.php:13:namespace Composer\Installer;
+unified/vendor/composer/composer/src/Composer/Installer/BinaryInstaller.php:13:namespace Composer\Installer;
+[2025-11-04T17:59:14Z] Finished Step 6
+[2025-11-04T17:59:14Z] Step 7: Legacy FQCN references scan
+./composer.json:18:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./scripts/rescan_repo.sh:101:grep -R --line-number -E "Kova\\\\Unified|Kova\\\\Kams\\\\Unified|KCM\\\\|\\\\bUnified\\\\" . 2>/dev/null | sed -n '1,200p' > "$LEGACY_REFS" || true
+./unified/composer.json:16:            "Kova\\Kams\\KCM\\": "kova/kcm/src/",
+./unified/src/Dispatcher.php:3:namespace Kova\Unified;
+./unified/src/Dispatcher.php:7:use Kova\Unified\Modules\Common\Config;
+./unified/src/Dispatcher.php:8:use Kova\Unified\Modules\Home\Home;
+./unified/src/Dispatcher.php:9:use Kova\Unified\Modules\Common\Common;
+./unified/src/Dispatcher.php:10:use Kova\Unified\Modules\UDP\Workers\Dataworker as udpDataworker;
+./unified/src/Dispatcher.php:11:use Kova\Unified\Modules\Serial\Workers\Dataworker as serialDataworker;
+./unified/src/Dispatcher.php:12:use Kova\Unified\Modules\Motorola\Workers\Dataworker as motoDataworker;
+./unified/src/Dispatcher.php:13:use Kova\Unified\Modules\SysHealth\SysHealth;
+./unified/src/Modules/Home/Home.php:3:namespace Kova\Unified\Modules\Home;
+./unified/src/Modules/Home/Home.php:5:use Kova\Unified\Modules\Motorola\Moto;
+./unified/src/Modules/Home/Home.php:6:use Kova\Unified\Modules\SysHealth\SysHealth;
+./unified/src/Modules/Home/Home.php:7:use Kova\Unified\Modules\UDP\Udp;
+./unified/src/Modules/Home/Home.php:8:use Kova\Unified\Modules\Serial;
+./unified/src/Modules/Home/Home.php:9:use Kova\Unified\Modules\Serial\Serial as SerialSerial;
+./unified/src/Modules/Serial/Serial.php:3:namespace Kova\Unified\Modules\Serial;
+./unified/src/Modules/Serial/Serial.php:5:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/Serial/Workers/Dataworker.php:3:namespace Kova\Unified\Modules\Serial\Workers;
+./unified/src/Modules/Serial/Workers/Dataworker.php:5:use Kova\Unified\Modules\Common\Database;
+./unified/src/Modules/Serial/Workers/Dataworker.php:6:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/Motorola/Moto.php:3:namespace Kova\Unified\Modules\Motorola;
+./unified/src/Modules/Motorola/Moto.php:5:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/Motorola/Workers/Dataworker.php:3:namespace Kova\Unified\Modules\Motorola\Workers;
+./unified/src/Modules/Motorola/Workers/Dataworker.php:5:use Kova\Unified\Modules\Common\Database;
+./unified/src/Modules/Motorola/Workers/Dataworker.php:6:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/SysHealth/SysHealth.php:3:namespace Kova\Unified\Modules\SysHealth;
+./unified/src/Modules/SysHealth/SysHealth.php:5:use Kova\Unified\Modules\Common\Communicator;
+./unified/src/Modules/UDP/Workers/Dataworker.php:3:namespace Kova\Unified\Modules\UDP\Workers;
+./unified/src/Modules/UDP/Workers/Dataworker.php:5:use Kova\Unified\Modules\Common\Database;
+./unified/src/Modules/UDP/Workers/Dataworker.php:6:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/UDP/Udp.php:3:namespace Kova\Unified\Modules\UDP;
+./unified/src/Modules/UDP/Udp.php:5:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/Common/Communicator.php:3:namespace Kova\Unified\Modules\Common;
+./unified/src/Modules/Common/Communicator.php:7:use Kova\Unified\Modules\Common\Config;
+./unified/src/Modules/Common/Config.php:3:namespace Kova\Unified\Modules\Common;
+./unified/src/Modules/Common/Config.php:5:use Kova\Unified\Modules\Common\Database;
+./unified/src/Modules/Common/Common.php:3:namespace Kova\Unified\Modules\Common;
+./unified/src/Modules/Common/Database.php:3:namespace Kova\Unified\Modules\Common;
+./rescan_repo.sh:93:grep -R --line-number -E "Kova\\\\Unified|Kova\\\\Kams\\\\Unified|KCM\\\\|\\\\bUnified\\\\" . 2>/dev/null | sed -n '1,200p' > "$LEGACY_REFS" || true
+./composer.json.bak:18:            "Kova\\Kams\\KCM\\": "kova/kcm/src/",
+./build/scan-report/psr4.json:65:    "Kova\\\\Kams\\\\KCM\\\\": [
+./build/scan-report/report.txt:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279151.bak:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762278861.bak:14:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279026.bak:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./vendor/composer/autoload_psr4.php:30:    'Kova\\\\Kams\\\\KCM\\\\' => array($baseDir . '/kcm/src'),
+./vendor/composer/autoload_static.php:58:            'Kova\\\\Kams\\\\KCM\\\\' => 17,
+./vendor/composer/autoload_static.php:168:        'Kova\\\\Kams\\\\KCM\\\\' => 
+./kcm/src/Dispatcher.php:2:namespace Kova\Kcm\KCM\src;
+[2025-11-04T17:59:15Z] Finished Step 7
+[2025-11-04T17:59:15Z] Step 8: Autoload smoke tests
+PHP Fatal error:  Uncaught Error: Class "Kova\Unified\Modules\Common\Config" not found in /srv/kova/unified/src/Dispatcher.php:18
+Stack trace:
+#0 /srv/kova/vendor/composer/ClassLoader.php(576): include()
+#1 /srv/kova/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}()
+#2 [internal function]: Composer\Autoload\ClassLoader->loadClass()
+#3 Command line code(1): class_exists()
+#4 {main}
+  thrown in /srv/kova/unified/src/Dispatcher.php on line 18
+[2025-11-04T17:59:15Z] Finished Step 8
+[2025-11-04T17:59:15Z] Step 9: Autoload path sanity checks
+unified/src/ -> OK
+kcm/src/ -> OK
+app/src/ -> MISSING
+[2025-11-04T17:59:15Z] Finished Step 9
+[2025-11-04T17:59:15Z] Scan complete. Files written to build/scan-report/
+
+Scan finished: Tue Nov  4 05:59:15 PM UTC 2025
+[2025-11-04T17:59:15Z] All done

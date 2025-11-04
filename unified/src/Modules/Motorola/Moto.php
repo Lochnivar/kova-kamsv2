@@ -1,8 +1,8 @@
 <?php
 
-namespace Kova\Unified\Modules\Motorola;
+namespace Kova\Kams\Unified\Modules\Motorola;
 
-use Kova\Unified\Modules\Common\Common;
+use Kova\Kams\Unified\Modules\Common\Common;
 
 
 class Moto

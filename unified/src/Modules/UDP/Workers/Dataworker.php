@@ -1,9 +1,9 @@
 <?php
 
-namespace Kova\Unified\Modules\UDP\Workers;
+namespace Kova\Kams\Unified\Modules\UDP\Workers;
 
-use Kova\Unified\Modules\Common\Database;
-use Kova\Unified\Modules\Common\Common;
+use Kova\Kams\Unified\Modules\Common\Database;
+use Kova\Kams\Unified\Modules\Common\Common;
 
 class Dataworker
 {

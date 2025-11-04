@@ -1,0 +1,21 @@
+Scan generated on: Tue Nov  4 05:57:06 PM UTC 2025
+
+[2025-11-04T17:57:06Z] Starting repository scan at /srv/kova
+[2025-11-04T17:57:06Z] Step 1: Git branch & last commit
+refactor/consolidate
+47f5dbc 2025-11-04 12:45:57 -0500 Michael Lockwood placekeeping[2025-11-04T17:57:06Z] Finished Step 1
+[2025-11-04T17:57:06Z] Step 2: composer.json top-level summary
+{
+  "name": "kova/kams",
+  "description": "Kova KAMS Advanced Management System",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "Kova\\\\Kams\\\\Unified\\\\": "unified/src/",
+      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+      "Kova\\\\Kams\\\\App\\\\": "app/src/"
+    }
+  }
+}
+[2025-11-04T17:57:06Z] Finished Step 2
+[2025-11-04T17:57:06Z] Step 3: composer validate (no network)

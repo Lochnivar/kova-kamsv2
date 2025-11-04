@@ -1,0 +1,24 @@
+Scan generated on: Tue Nov  4 05:48:27 PM UTC 2025
+
+=== Git branch & last commit ===
+refactor/consolidate
+47f5dbc 2025-11-04 12:45:57 -0500 Michael Lockwood placekeeping
+=== composer.json (top-level) ===
+{
+  "name": "kova/kams",
+  "description": "Kova KAMS Advanced Management System",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "Kova\\\\Kams\\\\Unified\\\\": "unified/src/",
+      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+      "Kova\\\\Kams\\\\App\\\\": "app/src/"
+    }
+  }
+}
+
+Running composer validate (no network)...
+Do not run Composer as root/super user! See https://getcomposer.org/root for details
+Continue as root/super user [yes]? ./composer.json is valid
+
+Running composer dump-autoload --optimize (this rewrites vendor/composer/*)...

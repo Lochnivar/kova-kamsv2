@@ -1,0 +1,104 @@
+{
+    "Symfony\\Polyfill\\Php81\\": [
+        "\/srv\/kova\/vendor\/symfony\/polyfill-php81"
+    ],
+    "Symfony\\Polyfill\\Php80\\": [
+        "\/srv\/kova\/vendor\/symfony\/polyfill-php80"
+    ],
+    "Symfony\\Polyfill\\Php73\\": [
+        "\/srv\/kova\/vendor\/symfony\/polyfill-php73"
+    ],
+    "Symfony\\Polyfill\\Mbstring\\": [
+        "\/srv\/kova\/vendor\/symfony\/polyfill-mbstring"
+    ],
+    "Symfony\\Polyfill\\Intl\\Normalizer\\": [
+        "\/srv\/kova\/vendor\/symfony\/polyfill-intl-normalizer"
+    ],
+    "Symfony\\Polyfill\\Intl\\Grapheme\\": [
+        "\/srv\/kova\/vendor\/symfony\/polyfill-intl-grapheme"
+    ],
+    "Symfony\\Polyfill\\Ctype\\": [
+        "\/srv\/kova\/vendor\/symfony\/polyfill-ctype"
+    ],
+    "Symfony\\Contracts\\Service\\": [
+        "\/srv\/kova\/vendor\/symfony\/service-contracts"
+    ],
+    "Symfony\\Component\\String\\": [
+        "\/srv\/kova\/vendor\/symfony\/string"
+    ],
+    "Symfony\\Component\\Process\\": [
+        "\/srv\/kova\/vendor\/symfony\/process"
+    ],
+    "Symfony\\Component\\Finder\\": [
+        "\/srv\/kova\/vendor\/symfony\/finder"
+    ],
+    "Symfony\\Component\\Filesystem\\": [
+        "\/srv\/kova\/vendor\/symfony\/filesystem"
+    ],
+    "Symfony\\Component\\Console\\": [
+        "\/srv\/kova\/vendor\/symfony\/console"
+    ],
+    "Seld\\Signal\\": [
+        "\/srv\/kova\/vendor\/seld\/signal-handler\/src"
+    ],
+    "Seld\\PharUtils\\": [
+        "\/srv\/kova\/vendor\/seld\/phar-utils\/src"
+    ],
+    "Seld\\JsonLint\\": [
+        "\/srv\/kova\/vendor\/seld\/jsonlint\/src\/Seld\/JsonLint"
+    ],
+    "React\\Promise\\": [
+        "\/srv\/kova\/vendor\/react\/promise\/src"
+    ],
+    "Psr\\Log\\": [
+        "\/srv\/kova\/vendor\/psr\/log\/src"
+    ],
+    "Psr\\Container\\": [
+        "\/srv\/kova\/vendor\/psr\/container\/src"
+    ],
+    "MabeEnum\\": [
+        "\/srv\/kova\/vendor\/marc-mabe\/php-enum\/src"
+    ],
+    "Kova\\\\Kams\\\\Unified\\\\": [
+        "\/srv\/kova\/unified\/src"
+    ],
+    "Kova\\\\Kams\\\\KCM\\\\": [
+        "\/srv\/kova\/kcm\/src"
+    ],
+    "Kova\\\\Kams\\\\App\\\\": [
+        "\/srv\/kova\/app\/src"
+    ],
+    "JsonSchema\\": [
+        "\/srv\/kova\/vendor\/justinrainbow\/json-schema\/src\/JsonSchema"
+    ],
+    "IntelliTrend\\Zabbix\\": [
+        "\/srv\/kova\/vendor\/intellitrend\/zabbixapi\/src"
+    ],
+    "Curl\\": [
+        "\/srv\/kova\/vendor\/php-curl-class\/php-curl-class\/src\/Curl"
+    ],
+    "Composer\\XdebugHandler\\": [
+        "\/srv\/kova\/vendor\/composer\/xdebug-handler\/src"
+    ],
+    "Composer\\Spdx\\": [
+        "\/srv\/kova\/vendor\/composer\/spdx-licenses\/src"
+    ],
+    "Composer\\Semver\\": [
+        "\/srv\/kova\/vendor\/composer\/semver\/src"
+    ],
+    "Composer\\Pcre\\": [
+        "\/srv\/kova\/vendor\/composer\/pcre\/src"
+    ],
+    "Composer\\MetadataMinifier\\": [
+        "\/srv\/kova\/vendor\/composer\/metadata-minifier\/src"
+    ],
+    "Composer\\ClassMapGenerator\\": [
+        "\/srv\/kova\/vendor\/composer\/class-map-generator\/src"
+    ],
+    "Composer\\CaBundle\\": [
+        "\/srv\/kova\/vendor\/composer\/ca-bundle\/src"
+    ],
+    "Composer\\": [
+        "\/srv\/kova\/vendor\/composer\/composer\/src\/Composer"
+    ]
+}

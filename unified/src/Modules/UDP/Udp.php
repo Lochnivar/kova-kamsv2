@@ -1,8 +1,8 @@
 <?php
 
-namespace Kova\Unified\Modules\UDP;
+namespace Kova\Kams\Unified\Modules\UDP;
 
-use Kova\Unified\Modules\Common\Common;
+use Kova\Kams\Unified\Modules\Common\Common;
 
 
 class Udp

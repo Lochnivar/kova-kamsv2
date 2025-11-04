@@ -1,12 +1,12 @@
 <?php
 
-namespace Kova\Unified\Modules\Home;
+namespace Kova\Kams\Unified\Modules\Home;
 
-use Kova\Unified\Modules\Motorola\Moto;
-use Kova\Unified\Modules\SysHealth\SysHealth;
-use Kova\Unified\Modules\UDP\Udp;
-use Kova\Unified\Modules\Serial;
-use Kova\Unified\Modules\Serial\Serial as SerialSerial;
+use Kova\Kams\Unified\Modules\Motorola\Moto;
+use Kova\Kams\Unified\Modules\SysHealth\SysHealth;
+use Kova\Kams\Unified\Modules\UDP\Udp;
+use Kova\Kams\Unified\Modules\Serial;
+use Kova\Kams\Unified\Modules\Serial\Serial as SerialSerial;
 
 class Home
 {

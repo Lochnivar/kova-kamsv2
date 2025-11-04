@@ -1,8 +1,8 @@
 <?php
 
-namespace Kova\Unified\Modules\Serial;
+namespace Kova\Kams\Unified\Modules\Serial;
 
-use Kova\Unified\Modules\Common\Common;
+use Kova\Kams\Unified\Modules\Common\Common;
 
 
 class Serial

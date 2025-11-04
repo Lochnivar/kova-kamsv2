@@ -1,0 +1,144 @@
+./composer.json:18:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./scripts/namespace_migrate.sh:178:  if grep -qE "^namespace\s+Kova\\\Kcm|KCM\\\src|namespace\s+Kova\\\Kcm\\\KCM" "$KCM_DISPATCHER" 2>/dev/null || grep -q "Kova\\\\Unified" "$KCM_DISPATCHER" 2>/dev/null; then
+./scripts/namespace_migrate.sh:204:if (class_exists(\Kova\Kams\Unified\Dispatcher::class, false) && !class_exists(\Kova\Unified\Dispatcher::class, false)) {
+./scripts/namespace_migrate.sh:205:    class_alias(\Kova\Kams\Unified\Dispatcher::class, \Kova\Unified\Dispatcher::class);
+./scripts/rescan_repo.sh:101:grep -R --line-number -E "Kova\\\\Unified|Kova\\\\Kams\\\\Unified|KCM\\\\|\\\\bUnified\\\\" . 2>/dev/null | sed -n '1,200p' > "$LEGACY_REFS" || true
+./unified/composer.json:16:            "Kova\\Kams\\KCM\\": "kova/kcm/src/",
+./unified/src/Dispatcher.php:3:namespace Kova\Kams\Unified;
+./unified/src/Dispatcher.php:7:use Kova\Kams\Unified\Modules\Common\Config;
+./unified/src/Dispatcher.php:8:use Kova\Kams\Unified\Modules\Home\Home;
+./unified/src/Dispatcher.php:9:use Kova\Kams\Unified\Modules\Common\Common;
+./unified/src/Dispatcher.php:10:use Kova\Kams\Unified\Modules\UDP\Workers\Dataworker as udpDataworker;
+./unified/src/Dispatcher.php:11:use Kova\Kams\Unified\Modules\Serial\Workers\Dataworker as serialDataworker;
+./unified/src/Dispatcher.php:12:use Kova\Kams\Unified\Modules\Motorola\Workers\Dataworker as motoDataworker;
+./unified/src/Dispatcher.php:13:use Kova\Kams\Unified\Modules\SysHealth\SysHealth;
+./unified/src/Modules/Home/Home.php:3:namespace Kova\Kams\Unified\Modules\Home;
+./unified/src/Modules/Home/Home.php:5:use Kova\Kams\Unified\Modules\Motorola\Moto;
+./unified/src/Modules/Home/Home.php:6:use Kova\Kams\Unified\Modules\SysHealth\SysHealth;
+./unified/src/Modules/Home/Home.php:7:use Kova\Kams\Unified\Modules\UDP\Udp;
+./unified/src/Modules/Home/Home.php:8:use Kova\Kams\Unified\Modules\Serial;
+./unified/src/Modules/Home/Home.php:9:use Kova\Kams\Unified\Modules\Serial\Serial as SerialSerial;
+./unified/src/Modules/Home/Home.php.bak:3:namespace Kova\Kams\Unified\Modules\Home;
+./unified/src/Modules/Home/Home.php.bak:5:use Kova\Unified\Modules\Motorola\Moto;
+./unified/src/Modules/Home/Home.php.bak:6:use Kova\Unified\Modules\SysHealth\SysHealth;
+./unified/src/Modules/Home/Home.php.bak:7:use Kova\Unified\Modules\UDP\Udp;
+./unified/src/Modules/Home/Home.php.bak:8:use Kova\Unified\Modules\Serial;
+./unified/src/Modules/Home/Home.php.bak:9:use Kova\Unified\Modules\Serial\Serial as SerialSerial;
+./unified/src/Modules/Serial/Serial.php:3:namespace Kova\Kams\Unified\Modules\Serial;
+./unified/src/Modules/Serial/Serial.php:5:use Kova\Kams\Unified\Modules\Common\Common;
+./unified/src/Modules/Serial/Workers/Dataworker.php.bak:3:namespace Kova\Kams\Unified\Modules\Serial\Workers;
+./unified/src/Modules/Serial/Workers/Dataworker.php.bak:5:use Kova\Unified\Modules\Common\Database;
+./unified/src/Modules/Serial/Workers/Dataworker.php.bak:6:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/Serial/Workers/Dataworker.php:3:namespace Kova\Kams\Unified\Modules\Serial\Workers;
+./unified/src/Modules/Serial/Workers/Dataworker.php:5:use Kova\Kams\Unified\Modules\Common\Database;
+./unified/src/Modules/Serial/Workers/Dataworker.php:6:use Kova\Kams\Unified\Modules\Common\Common;
+./unified/src/Modules/Serial/Serial.php.bak:3:namespace Kova\Kams\Unified\Modules\Serial;
+./unified/src/Modules/Serial/Serial.php.bak:5:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/Motorola/Moto.php.bak:3:namespace Kova\Kams\Unified\Modules\Motorola;
+./unified/src/Modules/Motorola/Moto.php.bak:5:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/Motorola/Moto.php:3:namespace Kova\Kams\Unified\Modules\Motorola;
+./unified/src/Modules/Motorola/Moto.php:5:use Kova\Kams\Unified\Modules\Common\Common;
+./unified/src/Modules/Motorola/Workers/Dataworker.php.bak:3:namespace Kova\Kams\Unified\Modules\Motorola\Workers;
+./unified/src/Modules/Motorola/Workers/Dataworker.php.bak:5:use Kova\Unified\Modules\Common\Database;
+./unified/src/Modules/Motorola/Workers/Dataworker.php.bak:6:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/Motorola/Workers/Dataworker.php:3:namespace Kova\Kams\Unified\Modules\Motorola\Workers;
+./unified/src/Modules/Motorola/Workers/Dataworker.php:5:use Kova\Kams\Unified\Modules\Common\Database;
+./unified/src/Modules/Motorola/Workers/Dataworker.php:6:use Kova\Kams\Unified\Modules\Common\Common;
+./unified/src/Modules/SysHealth/SysHealth.php.bak:3:namespace Kova\Kams\Unified\Modules\SysHealth;
+./unified/src/Modules/SysHealth/SysHealth.php.bak:5:use Kova\Unified\Modules\Common\Communicator;
+./unified/src/Modules/SysHealth/SysHealth.php:3:namespace Kova\Kams\Unified\Modules\SysHealth;
+./unified/src/Modules/SysHealth/SysHealth.php:5:use Kova\Kams\Unified\Modules\Common\Communicator;
+./unified/src/Modules/UDP/Udp.php.bak:3:namespace Kova\Kams\Unified\Modules\UDP;
+./unified/src/Modules/UDP/Udp.php.bak:5:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/UDP/Workers/Dataworker.php.bak:3:namespace Kova\Kams\Unified\Modules\UDP\Workers;
+./unified/src/Modules/UDP/Workers/Dataworker.php.bak:5:use Kova\Unified\Modules\Common\Database;
+./unified/src/Modules/UDP/Workers/Dataworker.php.bak:6:use Kova\Unified\Modules\Common\Common;
+./unified/src/Modules/UDP/Workers/Dataworker.php:3:namespace Kova\Kams\Unified\Modules\UDP\Workers;
+./unified/src/Modules/UDP/Workers/Dataworker.php:5:use Kova\Kams\Unified\Modules\Common\Database;
+./unified/src/Modules/UDP/Workers/Dataworker.php:6:use Kova\Kams\Unified\Modules\Common\Common;
+./unified/src/Modules/UDP/Udp.php:3:namespace Kova\Kams\Unified\Modules\UDP;
+./unified/src/Modules/UDP/Udp.php:5:use Kova\Kams\Unified\Modules\Common\Common;
+./unified/src/Modules/Common/Communicator.php:3:namespace Kova\Kams\Unified\Modules\Common;
+./unified/src/Modules/Common/Communicator.php:7:use Kova\Kams\Unified\Modules\Common\Config;
+./unified/src/Modules/Common/Config.php:3:namespace Kova\Kams\Unified\Modules\Common;
+./unified/src/Modules/Common/Config.php:5:use Kova\Kams\Unified\Modules\Common\Database;
+./unified/src/Modules/Common/Communicator.php.bak:3:namespace Kova\Kams\Unified\Modules\Common;
+./unified/src/Modules/Common/Communicator.php.bak:7:use Kova\Unified\Modules\Common\Config;
+./unified/src/Modules/Common/Common.php:3:namespace Kova\Kams\Unified\Modules\Common;
+./unified/src/Modules/Common/Config.php.bak:3:namespace Kova\Kams\Unified\Modules\Common;
+./unified/src/Modules/Common/Config.php.bak:5:use Kova\Unified\Modules\Common\Database;
+./unified/src/Modules/Common/Common.php.bak:3:namespace Kova\Kams\Unified\Modules\Common;
+./unified/src/Modules/Common/Database.php.bak:3:namespace Kova\Kams\Unified\Modules\Common;
+./unified/src/Modules/Common/Database.php:3:namespace Kova\Kams\Unified\Modules\Common;
+./unified/src/Dispatcher.php.bak:3:namespace Kova\Kams\Unified;
+./unified/src/Dispatcher.php.bak:7:use Kova\Unified\Modules\Common\Config;
+./unified/src/Dispatcher.php.bak:8:use Kova\Unified\Modules\Home\Home;
+./unified/src/Dispatcher.php.bak:9:use Kova\Unified\Modules\Common\Common;
+./unified/src/Dispatcher.php.bak:10:use Kova\Unified\Modules\UDP\Workers\Dataworker as udpDataworker;
+./unified/src/Dispatcher.php.bak:11:use Kova\Unified\Modules\Serial\Workers\Dataworker as serialDataworker;
+./unified/src/Dispatcher.php.bak:12:use Kova\Unified\Modules\Motorola\Workers\Dataworker as motoDataworker;
+./unified/src/Dispatcher.php.bak:13:use Kova\Unified\Modules\SysHealth\SysHealth;
+./rescan_repo.sh:93:grep -R --line-number -E "Kova\\\\Unified|Kova\\\\Kams\\\\Unified|KCM\\\\|\\\\bUnified\\\\" . 2>/dev/null | sed -n '1,200p' > "$LEGACY_REFS" || true
+./composer.json.bak:18:            "Kova\\Kams\\KCM\\": "kova/kcm/src/",
+./build/scan-report/psr4.json:65:    "Kova\\\\Kams\\\\KCM\\\\": [
+./build/scan-report/report.txt:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279151.bak:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762278861.bak:14:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279959.bak:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279959.bak:235:./composer.json:18:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279959.bak:236:./scripts/rescan_repo.sh:101:grep -R --line-number -E "Kova\\\\Unified|Kova\\\\Kams\\\\Unified|KCM\\\\|\\\\bUnified\\\\" . 2>/dev/null | sed -n '1,200p' > "$LEGACY_REFS" || true
+./build/scan-report/report.txt.1762279959.bak:237:./unified/composer.json:16:            "Kova\\Kams\\KCM\\": "kova/kcm/src/",
+./build/scan-report/report.txt.1762279959.bak:238:./unified/src/Dispatcher.php:3:namespace Kova\Unified;
+./build/scan-report/report.txt.1762279959.bak:239:./unified/src/Dispatcher.php:7:use Kova\Unified\Modules\Common\Config;
+./build/scan-report/report.txt.1762279959.bak:240:./unified/src/Dispatcher.php:8:use Kova\Unified\Modules\Home\Home;
+./build/scan-report/report.txt.1762279959.bak:241:./unified/src/Dispatcher.php:9:use Kova\Unified\Modules\Common\Common;
+./build/scan-report/report.txt.1762279959.bak:242:./unified/src/Dispatcher.php:10:use Kova\Unified\Modules\UDP\Workers\Dataworker as udpDataworker;
+./build/scan-report/report.txt.1762279959.bak:243:./unified/src/Dispatcher.php:11:use Kova\Unified\Modules\Serial\Workers\Dataworker as serialDataworker;
+./build/scan-report/report.txt.1762279959.bak:244:./unified/src/Dispatcher.php:12:use Kova\Unified\Modules\Motorola\Workers\Dataworker as motoDataworker;
+./build/scan-report/report.txt.1762279959.bak:245:./unified/src/Dispatcher.php:13:use Kova\Unified\Modules\SysHealth\SysHealth;
+./build/scan-report/report.txt.1762279959.bak:246:./unified/src/Modules/Home/Home.php:3:namespace Kova\Unified\Modules\Home;
+./build/scan-report/report.txt.1762279959.bak:247:./unified/src/Modules/Home/Home.php:5:use Kova\Unified\Modules\Motorola\Moto;
+./build/scan-report/report.txt.1762279959.bak:248:./unified/src/Modules/Home/Home.php:6:use Kova\Unified\Modules\SysHealth\SysHealth;
+./build/scan-report/report.txt.1762279959.bak:249:./unified/src/Modules/Home/Home.php:7:use Kova\Unified\Modules\UDP\Udp;
+./build/scan-report/report.txt.1762279959.bak:250:./unified/src/Modules/Home/Home.php:8:use Kova\Unified\Modules\Serial;
+./build/scan-report/report.txt.1762279959.bak:251:./unified/src/Modules/Home/Home.php:9:use Kova\Unified\Modules\Serial\Serial as SerialSerial;
+./build/scan-report/report.txt.1762279959.bak:252:./unified/src/Modules/Serial/Serial.php:3:namespace Kova\Unified\Modules\Serial;
+./build/scan-report/report.txt.1762279959.bak:253:./unified/src/Modules/Serial/Serial.php:5:use Kova\Unified\Modules\Common\Common;
+./build/scan-report/report.txt.1762279959.bak:254:./unified/src/Modules/Serial/Workers/Dataworker.php:3:namespace Kova\Unified\Modules\Serial\Workers;
+./build/scan-report/report.txt.1762279959.bak:255:./unified/src/Modules/Serial/Workers/Dataworker.php:5:use Kova\Unified\Modules\Common\Database;
+./build/scan-report/report.txt.1762279959.bak:256:./unified/src/Modules/Serial/Workers/Dataworker.php:6:use Kova\Unified\Modules\Common\Common;
+./build/scan-report/report.txt.1762279959.bak:257:./unified/src/Modules/Motorola/Moto.php:3:namespace Kova\Unified\Modules\Motorola;
+./build/scan-report/report.txt.1762279959.bak:258:./unified/src/Modules/Motorola/Moto.php:5:use Kova\Unified\Modules\Common\Common;
+./build/scan-report/report.txt.1762279959.bak:259:./unified/src/Modules/Motorola/Workers/Dataworker.php:3:namespace Kova\Unified\Modules\Motorola\Workers;
+./build/scan-report/report.txt.1762279959.bak:260:./unified/src/Modules/Motorola/Workers/Dataworker.php:5:use Kova\Unified\Modules\Common\Database;
+./build/scan-report/report.txt.1762279959.bak:261:./unified/src/Modules/Motorola/Workers/Dataworker.php:6:use Kova\Unified\Modules\Common\Common;
+./build/scan-report/report.txt.1762279959.bak:262:./unified/src/Modules/SysHealth/SysHealth.php:3:namespace Kova\Unified\Modules\SysHealth;
+./build/scan-report/report.txt.1762279959.bak:263:./unified/src/Modules/SysHealth/SysHealth.php:5:use Kova\Unified\Modules\Common\Communicator;
+./build/scan-report/report.txt.1762279959.bak:264:./unified/src/Modules/UDP/Workers/Dataworker.php:3:namespace Kova\Unified\Modules\UDP\Workers;
+./build/scan-report/report.txt.1762279959.bak:265:./unified/src/Modules/UDP/Workers/Dataworker.php:5:use Kova\Unified\Modules\Common\Database;
+./build/scan-report/report.txt.1762279959.bak:266:./unified/src/Modules/UDP/Workers/Dataworker.php:6:use Kova\Unified\Modules\Common\Common;
+./build/scan-report/report.txt.1762279959.bak:267:./unified/src/Modules/UDP/Udp.php:3:namespace Kova\Unified\Modules\UDP;
+./build/scan-report/report.txt.1762279959.bak:268:./unified/src/Modules/UDP/Udp.php:5:use Kova\Unified\Modules\Common\Common;
+./build/scan-report/report.txt.1762279959.bak:269:./unified/src/Modules/Common/Communicator.php:3:namespace Kova\Unified\Modules\Common;
+./build/scan-report/report.txt.1762279959.bak:270:./unified/src/Modules/Common/Communicator.php:7:use Kova\Unified\Modules\Common\Config;
+./build/scan-report/report.txt.1762279959.bak:271:./unified/src/Modules/Common/Config.php:3:namespace Kova\Unified\Modules\Common;
+./build/scan-report/report.txt.1762279959.bak:272:./unified/src/Modules/Common/Config.php:5:use Kova\Unified\Modules\Common\Database;
+./build/scan-report/report.txt.1762279959.bak:273:./unified/src/Modules/Common/Common.php:3:namespace Kova\Unified\Modules\Common;
+./build/scan-report/report.txt.1762279959.bak:274:./unified/src/Modules/Common/Database.php:3:namespace Kova\Unified\Modules\Common;
+./build/scan-report/report.txt.1762279959.bak:275:./rescan_repo.sh:93:grep -R --line-number -E "Kova\\\\Unified|Kova\\\\Kams\\\\Unified|KCM\\\\|\\\\bUnified\\\\" . 2>/dev/null | sed -n '1,200p' > "$LEGACY_REFS" || true
+./build/scan-report/report.txt.1762279959.bak:276:./composer.json.bak:18:            "Kova\\Kams\\KCM\\": "kova/kcm/src/",
+./build/scan-report/report.txt.1762279959.bak:277:./build/scan-report/psr4.json:65:    "Kova\\\\Kams\\\\KCM\\\\": [
+./build/scan-report/report.txt.1762279959.bak:278:./build/scan-report/report.txt:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279959.bak:279:./build/scan-report/report.txt.1762279151.bak:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279959.bak:280:./build/scan-report/report.txt.1762278861.bak:14:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279959.bak:281:./build/scan-report/report.txt.1762279026.bak:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./build/scan-report/report.txt.1762279959.bak:282:./vendor/composer/autoload_psr4.php:30:    'Kova\\\\Kams\\\\KCM\\\\' => array($baseDir . '/kcm/src'),
+./build/scan-report/report.txt.1762279959.bak:283:./vendor/composer/autoload_static.php:58:            'Kova\\\\Kams\\\\KCM\\\\' => 17,
+./build/scan-report/report.txt.1762279959.bak:284:./vendor/composer/autoload_static.php:168:        'Kova\\\\Kams\\\\KCM\\\\' => 
+./build/scan-report/report.txt.1762279959.bak:285:./kcm/src/Dispatcher.php:2:namespace Kova\Kcm\KCM\src;
+./build/scan-report/report.txt.1762279959.bak:288:PHP Fatal error:  Uncaught Error: Class "Kova\Unified\Modules\Common\Config" not found in /srv/kova/unified/src/Dispatcher.php:18
+./build/scan-report/report.txt.1762279026.bak:15:      "Kova\\\\Kams\\\\KCM\\\\": "kcm/src/",
+./vendor/composer/autoload_psr4.php:30:    'Kova\\\\Kams\\\\KCM\\\\' => array($baseDir . '/kcm/src'),
+./vendor/composer/autoload_static.php:58:            'Kova\\\\Kams\\\\KCM\\\\' => 17,
+./vendor/composer/autoload_static.php:168:        'Kova\\\\Kams\\\\KCM\\\\' => 
+./kcm/src/Dispatcher.php.bak:2:namespace Kova\Kcm\KCM\src;
