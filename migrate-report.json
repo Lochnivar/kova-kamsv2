@@ -1,0 +1,468 @@
+{
+    "converted": [
+        "unified\/src\/Bones\/usr-src\/udpinsert.php",
+        "unified\/src\/Bones\/usr-src\/datainsert.php",
+        "unified\/src\/tests\/proc_open_tests.php",
+        "unified\/src\/Dispatcher.php",
+        "unified\/src\/Modules\/Home\/Home.php",
+        "unified\/src\/Modules\/Serial\/update-time.php",
+        "unified\/src\/Modules\/Serial\/line-good.php",
+        "unified\/src\/Modules\/Serial\/index-data.php",
+        "unified\/src\/Modules\/Serial\/usr-src\/udpinsert.php",
+        "unified\/src\/Modules\/Serial\/usr-src\/datainsert.php",
+        "unified\/src\/Modules\/Serial\/test.php",
+        "unified\/src\/Modules\/Serial\/files.php",
+        "unified\/src\/Modules\/Serial\/Serial.php",
+        "unified\/src\/Modules\/Serial\/Workers\/Dataworker.php",
+        "unified\/src\/Modules\/Serial\/stats.php",
+        "unified\/src\/Modules\/Serial\/index.php",
+        "unified\/src\/Modules\/Motorola\/scripts\/channels-remove.php",
+        "unified\/src\/Modules\/Motorola\/scripts\/email-alarms.php",
+        "unified\/src\/Modules\/Motorola\/scripts\/inactivity-update.php",
+        "unified\/src\/Modules\/Motorola\/scripts\/channels-add.php",
+        "unified\/src\/Modules\/Motorola\/php-mysql\/connection-channels.php",
+        "unified\/src\/Modules\/Motorola\/Moto.php",
+        "unified\/src\/Modules\/Motorola\/Workers\/Dataworker.php",
+        "unified\/src\/Modules\/Motorola\/index.php",
+        "unified\/src\/Modules\/Motorola\/channels-check-ajax.php",
+        "unified\/src\/Modules\/Motorola\/admin.php",
+        "unified\/src\/Modules\/SysHealth\/ZabbixMon.php",
+        "unified\/src\/Modules\/SysHealth\/fetchVersions.php",
+        "unified\/src\/Modules\/SysHealth\/SysHealth.php",
+        "unified\/src\/Modules\/KAMS-ADMIN\/.access.php",
+        "unified\/src\/Modules\/KAMS-ADMIN\/adminWorker.php",
+        "unified\/src\/Modules\/KAMS-ADMIN\/admin.php",
+        "unified\/src\/Modules\/UDP\/Workers\/index-iface.php",
+        "unified\/src\/Modules\/UDP\/Workers\/index.php",
+        "unified\/src\/Modules\/UDP\/Workers\/index-unified.php",
+        "unified\/src\/Modules\/UDP\/Workers\/Dataworker.php",
+        "unified\/src\/Modules\/UDP\/Udp.php",
+        "unified\/src\/Modules\/Common\/Communicator.php",
+        "unified\/src\/Modules\/Common\/Config.php",
+        "unified\/src\/Modules\/Common\/Common.php",
+        "unified\/src\/Modules\/Common\/Database.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/alarms-admin.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/disable-silence.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/acknowledge.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/acknowledge-name.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/emails-mysql-update.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/alarm-edit.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/alarm-mysql-update.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/alarm-add.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/servers-edit.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/servers-mysql-update.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/acknowledge-before.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/servers-add.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/Upload\/importData.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/Upload\/dbConfig.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/Upload\/index.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/server-page.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/server-history.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/index.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/Server-Search\/searched.php",
+        "unified\/src\/Modules\/KAMS-ALERTS\/Server-Search\/index.php",
+        "unified\/src\/Modules\/Server\/scripts\/server-history.php",
+        "unified\/src\/Modules\/Server\/scripts\/severity.php",
+        "unified\/src\/Modules\/Server\/channels-check-ajax.php",
+        "kcm\/CronService.php",
+        "kcm\/Endpoint.php",
+        "kcm\/cronsv2.php",
+        "kcm\/CronMain.php",
+        "kcm\/src\/Tests\/crontest.php",
+        "kcm\/src\/Tests\/formatter.php",
+        "kcm\/src\/Dispatcher.php",
+        "kcm\/src\/Modules\/Serial\/SerialCron.php",
+        "kcm\/src\/Modules\/Serial\/SerialModify.php",
+        "kcm\/src\/Modules\/Serial\/SerialCommon.php",
+        "kcm\/src\/Modules\/Crons\/CronTemplate.php",
+        "kcm\/src\/Modules\/Crons\/CronController.php",
+        "kcm\/src\/Modules\/Motorola\/MotoCron.php",
+        "kcm\/src\/Modules\/Udp\/UdpCron.php",
+        "kcm\/src\/Modules\/Zabbix\/ZabbixComms.php",
+        "kcm\/src\/Modules\/Zabbix\/ZabbixCron.php",
+        "kcm\/src\/Modules\/Reporting\/Reporter.php",
+        "kcm\/src\/Modules\/Common\/Communicator.php",
+        "kcm\/src\/Modules\/Common\/AlarmHandler.php",
+        "kcm\/src\/Modules\/Common\/Config.php",
+        "kcm\/src\/Modules\/Common\/Common.php",
+        "kcm\/src\/Modules\/Common\/Database.php",
+        "kcm\/src\/Modules\/Avtec\/avtec-parser.php",
+        "kcm\/src\/Modules\/Avtec\/AvtecCron.php",
+        "kcm\/src\/Modules\/Avtec\/avtec-test.php",
+        "app\/bootstrap.php",
+        "src\/Common\/Bones\/DbAdapter.php",
+        "src\/Common\/Db.php"
+    ],
+    "fallback": [],
+    "manual_review": [
+        {
+            "file": "unified\/src\/Bones\/usr-src\/udpinsert.php",
+            "notes": "some sites flagged for manual review; inspect udpinsert.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Bones\/usr-src\/datainsert.php",
+            "notes": "some sites flagged for manual review; inspect datainsert.php.codemod"
+        },
+        {
+            "file": "unified\/src\/tests\/proc_open_tests.php",
+            "notes": "some sites flagged for manual review; inspect proc_open_tests.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Dispatcher.php",
+            "notes": "some sites flagged for manual review; inspect Dispatcher.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Home\/Home.php",
+            "notes": "some sites flagged for manual review; inspect Home.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/update-time.php",
+            "notes": "some sites flagged for manual review; inspect update-time.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/line-good.php",
+            "notes": "some sites flagged for manual review; inspect line-good.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/index-data.php",
+            "notes": "some sites flagged for manual review; inspect index-data.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/usr-src\/udpinsert.php",
+            "notes": "some sites flagged for manual review; inspect udpinsert.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/usr-src\/datainsert.php",
+            "notes": "some sites flagged for manual review; inspect datainsert.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/test.php",
+            "notes": "some sites flagged for manual review; inspect test.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/files.php",
+            "notes": "some sites flagged for manual review; inspect files.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/Serial.php",
+            "notes": "some sites flagged for manual review; inspect Serial.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/Workers\/Dataworker.php",
+            "notes": "some sites flagged for manual review; inspect Dataworker.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/stats.php",
+            "notes": "some sites flagged for manual review; inspect stats.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Serial\/index.php",
+            "notes": "some sites flagged for manual review; inspect index.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/scripts\/channels-remove.php",
+            "notes": "some sites flagged for manual review; inspect channels-remove.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/scripts\/email-alarms.php",
+            "notes": "some sites flagged for manual review; inspect email-alarms.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/scripts\/inactivity-update.php",
+            "notes": "some sites flagged for manual review; inspect inactivity-update.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/scripts\/channels-add.php",
+            "notes": "some sites flagged for manual review; inspect channels-add.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/php-mysql\/connection-channels.php",
+            "notes": "some sites flagged for manual review; inspect connection-channels.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/Moto.php",
+            "notes": "some sites flagged for manual review; inspect Moto.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/Workers\/Dataworker.php",
+            "notes": "some sites flagged for manual review; inspect Dataworker.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/index.php",
+            "notes": "some sites flagged for manual review; inspect index.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/channels-check-ajax.php",
+            "notes": "some sites flagged for manual review; inspect channels-check-ajax.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Motorola\/admin.php",
+            "notes": "some sites flagged for manual review; inspect admin.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/SysHealth\/ZabbixMon.php",
+            "notes": "some sites flagged for manual review; inspect ZabbixMon.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/SysHealth\/fetchVersions.php",
+            "notes": "some sites flagged for manual review; inspect fetchVersions.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/SysHealth\/SysHealth.php",
+            "notes": "some sites flagged for manual review; inspect SysHealth.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ADMIN\/.access.php",
+            "notes": "some sites flagged for manual review; inspect .access.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ADMIN\/adminWorker.php",
+            "notes": "some sites flagged for manual review; inspect adminWorker.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ADMIN\/admin.php",
+            "notes": "some sites flagged for manual review; inspect admin.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/UDP\/Workers\/index-iface.php",
+            "notes": "some sites flagged for manual review; inspect index-iface.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/UDP\/Workers\/index.php",
+            "notes": "some sites flagged for manual review; inspect index.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/UDP\/Workers\/index-unified.php",
+            "notes": "some sites flagged for manual review; inspect index-unified.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/UDP\/Workers\/Dataworker.php",
+            "notes": "some sites flagged for manual review; inspect Dataworker.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/UDP\/Udp.php",
+            "notes": "some sites flagged for manual review; inspect Udp.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Common\/Communicator.php",
+            "notes": "some sites flagged for manual review; inspect Communicator.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Common\/Config.php",
+            "notes": "some sites flagged for manual review; inspect Config.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Common\/Common.php",
+            "notes": "some sites flagged for manual review; inspect Common.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Common\/Database.php",
+            "notes": "some sites flagged for manual review; inspect Database.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/alarms-admin.php",
+            "notes": "some sites flagged for manual review; inspect alarms-admin.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/disable-silence.php",
+            "notes": "some sites flagged for manual review; inspect disable-silence.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/acknowledge.php",
+            "notes": "some sites flagged for manual review; inspect acknowledge.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/acknowledge-name.php",
+            "notes": "some sites flagged for manual review; inspect acknowledge-name.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/emails-mysql-update.php",
+            "notes": "some sites flagged for manual review; inspect emails-mysql-update.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/alarm-edit.php",
+            "notes": "some sites flagged for manual review; inspect alarm-edit.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/alarm-mysql-update.php",
+            "notes": "some sites flagged for manual review; inspect alarm-mysql-update.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/alarm-add.php",
+            "notes": "some sites flagged for manual review; inspect alarm-add.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/servers-edit.php",
+            "notes": "some sites flagged for manual review; inspect servers-edit.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/servers-mysql-update.php",
+            "notes": "some sites flagged for manual review; inspect servers-mysql-update.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/acknowledge-before.php",
+            "notes": "some sites flagged for manual review; inspect acknowledge-before.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/scripts\/servers-add.php",
+            "notes": "some sites flagged for manual review; inspect servers-add.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/Upload\/importData.php",
+            "notes": "some sites flagged for manual review; inspect importData.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/Upload\/dbConfig.php",
+            "notes": "some sites flagged for manual review; inspect dbConfig.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/Upload\/index.php",
+            "notes": "some sites flagged for manual review; inspect index.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/server-page.php",
+            "notes": "some sites flagged for manual review; inspect server-page.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/server-history.php",
+            "notes": "some sites flagged for manual review; inspect server-history.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/index.php",
+            "notes": "some sites flagged for manual review; inspect index.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/Server-Search\/searched.php",
+            "notes": "some sites flagged for manual review; inspect searched.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/KAMS-ALERTS\/Server-Search\/index.php",
+            "notes": "some sites flagged for manual review; inspect index.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Server\/scripts\/server-history.php",
+            "notes": "some sites flagged for manual review; inspect server-history.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Server\/scripts\/severity.php",
+            "notes": "some sites flagged for manual review; inspect severity.php.codemod"
+        },
+        {
+            "file": "unified\/src\/Modules\/Server\/channels-check-ajax.php",
+            "notes": "some sites flagged for manual review; inspect channels-check-ajax.php.codemod"
+        },
+        {
+            "file": "kcm\/CronService.php",
+            "notes": "some sites flagged for manual review; inspect CronService.php.codemod"
+        },
+        {
+            "file": "kcm\/Endpoint.php",
+            "notes": "some sites flagged for manual review; inspect Endpoint.php.codemod"
+        },
+        {
+            "file": "kcm\/cronsv2.php",
+            "notes": "some sites flagged for manual review; inspect cronsv2.php.codemod"
+        },
+        {
+            "file": "kcm\/CronMain.php",
+            "notes": "some sites flagged for manual review; inspect CronMain.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Tests\/crontest.php",
+            "notes": "some sites flagged for manual review; inspect crontest.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Tests\/formatter.php",
+            "notes": "some sites flagged for manual review; inspect formatter.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Dispatcher.php",
+            "notes": "some sites flagged for manual review; inspect Dispatcher.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Serial\/SerialCron.php",
+            "notes": "some sites flagged for manual review; inspect SerialCron.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Serial\/SerialModify.php",
+            "notes": "some sites flagged for manual review; inspect SerialModify.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Serial\/SerialCommon.php",
+            "notes": "some sites flagged for manual review; inspect SerialCommon.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Crons\/CronTemplate.php",
+            "notes": "some sites flagged for manual review; inspect CronTemplate.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Crons\/CronController.php",
+            "notes": "some sites flagged for manual review; inspect CronController.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Motorola\/MotoCron.php",
+            "notes": "some sites flagged for manual review; inspect MotoCron.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Udp\/UdpCron.php",
+            "notes": "some sites flagged for manual review; inspect UdpCron.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Zabbix\/ZabbixComms.php",
+            "notes": "some sites flagged for manual review; inspect ZabbixComms.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Zabbix\/ZabbixCron.php",
+            "notes": "some sites flagged for manual review; inspect ZabbixCron.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Reporting\/Reporter.php",
+            "notes": "some sites flagged for manual review; inspect Reporter.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Common\/Communicator.php",
+            "notes": "some sites flagged for manual review; inspect Communicator.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Common\/AlarmHandler.php",
+            "notes": "some sites flagged for manual review; inspect AlarmHandler.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Common\/Config.php",
+            "notes": "some sites flagged for manual review; inspect Config.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Common\/Common.php",
+            "notes": "some sites flagged for manual review; inspect Common.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Common\/Database.php",
+            "notes": "some sites flagged for manual review; inspect Database.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Avtec\/avtec-parser.php",
+            "notes": "some sites flagged for manual review; inspect avtec-parser.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Avtec\/AvtecCron.php",
+            "notes": "some sites flagged for manual review; inspect AvtecCron.php.codemod"
+        },
+        {
+            "file": "kcm\/src\/Modules\/Avtec\/avtec-test.php",
+            "notes": "some sites flagged for manual review; inspect avtec-test.php.codemod"
+        },
+        {
+            "file": "app\/bootstrap.php",
+            "notes": "some sites flagged for manual review; inspect bootstrap.php.codemod"
+        },
+        {
+            "file": "src\/Common\/Bones\/DbAdapter.php",
+            "notes": "some sites flagged for manual review; inspect DbAdapter.php.codemod"
+        },
+        {
+            "file": "src\/Common\/Db.php",
+            "notes": "some sites flagged for manual review; inspect Db.php.codemod"
+        }
+    ],
+    "errors": []
+}

@@ -11,14 +11,16 @@
     "twbs/bootstrap-icons": "^1.11",
     "twbs/bootstrap-sass": "^3.4",
     "components/jqueryui": "^1.12",
-    "doctrine/dbal": "^4.0"
+    "doctrine/dbal": "^4.0",
+    "nikic/php-parser": "^4.13"
   },
   "autoload": {
     "psr-4": {
       "Kova\\Kams\\Unified\\": "unified/src/",
       "Kova\\Kams\\KCM\\": "kcm/src/",
       "Kova\\Kams\\App\\": "app/src/",
-      "Kova\\Kams\\Common\\": "src/Common/"
+      "Kova\\Kams\\Common\\": "src/Common/",
+      "Kova\\Kams\\Bones\\": "src/Bones/"
     }
   },
   "minimum-stability": "stable",
