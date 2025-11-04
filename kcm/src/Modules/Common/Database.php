@@ -76,7 +76,6 @@ class Database
                 return array_map([$this, 'appendNumericIndexes'], $rows);
             }
 
-            // For write operations, execute and return an empty array to preserve legacy behaviour
             $this->dbConn->executeStatement($sql, $values, $types);
 
             return [];
