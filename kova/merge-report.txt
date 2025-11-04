@@ -1,0 +1,13 @@
+Merge report generated on 2025-11-04T16:50:11+00:00
+
+Source composer.json files:
+ - ./kcm/composer.json
+ - ./unified/composer.json
+
+Conflicts found: 1
+----------
+Context: require
+Package: intellitrend/zabbixapi
+First seen value: '^3.3'
+Conflicting value: '^3.2'
+Origin of conflicting value: ./unified/composer.json

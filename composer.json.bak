@@ -1,0 +1,33 @@
+{
+    "name": "kova/kams",
+    "description": "Kova KAMS Advanced Management System",
+    "type": "project",
+    "require": {
+        "composer/composer": "^2.8",
+        "components/jquery": "^3.7",
+        "intellitrend/zabbixapi": "^3.3",
+        "php-curl-class/php-curl-class": "^12.0",
+        "twbs/bootstrap": "^5.3",
+        "twbs/bootstrap-icons": "^1.11",
+        "twbs/bootstrap-sass": "^3.4",
+        "components/jqueryui": "^1.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kova\\Kams\\Unified\\": "kova/unified/src/",
+            "Kova\\Kams\\KCM\\": "kova/kcm/src/",
+            "Kova\\Kams\\App\\": "kova/app/"
+        },
+        "classmap": [
+            "kova/unified/legacy/",
+            "kova/kcm/legacy/"
+        ],
+        "files": [
+            "kova/app/helpers.php",
+            "kova/app/legacy_aliases.php"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "license": "proprietary"
+}

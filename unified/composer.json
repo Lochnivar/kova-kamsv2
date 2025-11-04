@@ -1,6 +1,6 @@
 {
-    "name": "kova/unified",
-    "description": "KAMS Unified",
+    "name": "kova/kams",
+    "description": "KAMS KAMS Advanced Management System",
     "require": {
         "composer/composer": "^2.8",
         "twbs/bootstrap": "^5.3",
@@ -12,8 +12,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Kova\\Unified\\": "src/"
-        }
+            "Kova\\Kams\\Unified\\": "kova/unified/src/",
+            "Kova\\Kams\\KCM\\": "kova/kcm/src/",
+            "Kova\\Kams\\App\\": "kova/app/"
+        },
+        "classmap": [
+            "kova/unified/legacy/",
+            "kova/kcm/legacy/"
+        ],
+        "files": [
+            "kova/app/helpers.php",
+            "kova/app/legacy_aliases.php"
+        ]
     },
     "authors": [
         {

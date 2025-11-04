@@ -2,7 +2,7 @@
 
 namespace Kova\Unified;
 
-require("../vendor/autoload.php");
+require kova_path('app/bootstrap.php');
 
 use Kova\Unified\Modules\Common\Config;
 use Kova\Unified\Modules\Home\Home;
