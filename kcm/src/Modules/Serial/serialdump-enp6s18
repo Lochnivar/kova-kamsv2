@@ -1,0 +1,663 @@
+   SIP Call IDs                                                                    
+
+
+   2024-09-09 11:01:53 - Page 101
+
+
+   Call Detail Record
+
+
+   Agent Out of ACD                                                                
+
+   Sep/09/24 10:59:24 EDT                                                          
+
+   Device Name          Lycoming05                                                 
+
+   Reason               Handling call                                              
+
+   .....                                                                           
+
+
+   3002 Lycoming_Sullivan Co                                                       
+
+
+   Caller ID       4060                                                            
+
+   Name:           CITY OF  PHILAD                                                 
+
+                                                                                   
+
+   TEL: 4060       NAME: CITY OF  PHILAD                                           
+
+   Call 14904702   Arrives On               4060-1          Sep/09/24 10:58:26 EDT 
+
+   4060-1          Queue In                 LYC_Admin       Sep/09/24 10:58:26 EDT 
+
+   LYC_Admin       Queue Out (Answered)     Lycoming01      Sep/09/24 10:58:29 EDT 
+
+   Lycoming01      Picks Up                                 Sep/09/24 10:58:29 EDT 
+
+   Lycoming01      Hangs Up                 Call 14904702   Sep/09/24 10:59:07 EDT 
+
+   4060-1          Hangs Up                 Call 14904702   Sep/09/24 10:59:07 EDT 
+
+   Call 14904702   Finishes                                 Sep/09/24 10:59:07 EDT 
+
+
+   SIP Call IDs                                                                    
+
+
+   1100650684992024105828@10.118.200.182
+
+   1811813387992024105824@10.118.200.182
+
+
+     ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   
+
+
+   Time Stamp                                                                      
+
+   Sep/09/24 11:00:00 EDT                                                          
+
+   .....                                                                           
+
+
+   Agent In ACD                                                                    
+
+   Sep/09/24 11:01:08 EDT                                                          
+
+   Device Name          Lycoming05                                                 
+
+   Reason               Manual ready                                               
+
+   .....                                                                           
+
+
+   Agent Out of ACD                                                                
+
+   Sep/09/24 11:01:19 EDT                                                          
+
+   Device Name          Lycoming02                                                 
+
+   Reason               Handling call                                              
+
+   .....                                                                           
+
+
+   Agent In ACD                                                                    
+
+   Sep/09/24 11:01:24 EDT                                                          
+
+   Device Name          Lycoming02                                                 
+
+   Reason               Manual ready                                               
+
+   .....                                                                           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   2024-09-09 11:06:05 - Page 102
+
+
+   Call Detail Record
+
+
+   3002 Lycoming_Sullivan Co                                                       
+
+
+   ANI             5703227738                                                      
+
+                                                                                   
+
+   Call 14904709   Arrives On               I3LYC-12        Sep/09/24 10:59:20 EDT 
+
+   I3LYC-12        Goes Off Hook                            Sep/09/24 10:59:20 EDT 
+
+   I3LYC-12        Queue In                 I3_LYC_911      Sep/09/24 10:59:20 EDT 
+
+   I3_LYC_911      Queue Out (Answered)     Lycoming05      Sep/09/24 10:59:25 EDT 
+
+   Lycoming05      Picks Up                                 Sep/09/24 10:59:25 EDT 
+
+   I3LYC-12        Is Released                              Sep/09/24 11:01:08 EDT 
+
+   Lycoming05      Hangs Up                 Call 14904709   Sep/09/24 11:01:08 EDT 
+
+   Lycoming05      Releases                 Call 14904709   Sep/09/24 11:01:08 EDT 
+
+   Call 14904709   Finishes                                 Sep/09/24 11:01:08 EDT 
+
+
+   ALI Information                                                                 
+
+
+   570-322-7738 06/22 11:39:38                                     MADEIRA CHARLES 
+
+   F JR                2300        SHERIDAN ST                                     
+
+                                   LOYALSOCK                     PA  ( ) -         
+
+                   LAT:             LON:           ELV:       COF:         COP:    
+
+   MTN:570-322-7738 CPF:VERIZ  RESD                      ESN:      PSP             
+
+                   18-0-LOYALSOCKb                 18-0-LOYALSOCKb                 
+
+
+   SIP Call IDs                                                                    
+
+
+   K86iJ6qUYEWhI5KUL0iGyw..
+
+   qwTGJDDr2P_iJ4q4v5X3Rw..
+
+
+   NENA Call ID                                                                    
+
+
+   urn:nena:uid:callid:D10259BE66DEE5810439051A:ppadphl-lsrg002-prod
+
+
+   NENA Incident ID                                                                
+
+
+   urn:nena:uid:incidentid:5F5F58BE66DEE5810439051A:ppadphl-lsrg002-prod
+
+
+     ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   
+
+
+   3002 Lycoming_Sullivan Co                                                       
+
+
+   Caller ID       2450                                                            
+
+                                                                                   
+
+   TEL: 2450       NAME: ..........                                                
+
+   Call 14904722   Arrives On               SCIM            Sep/09/24 11:01:16 EDT 
+
+   SCIM            Queue In                 LYC_RD          Sep/09/24 11:01:16 EDT 
+
+   LYC_RD          Queue Out (Answered)     Lycoming02      Sep/09/24 11:01:20 EDT 
+
+   Lycoming02      Picks Up                                 Sep/09/24 11:01:20 EDT 
+
+   Lycoming02      Hangs Up                 Call 14904722   Sep/09/24 11:01:23 EDT 
+
+   SCIM            Hangs Up                 Call 14904722   Sep/09/24 11:01:23 EDT 
+
+   Call 14904722   Finishes                                 Sep/09/24 11:01:23 EDT 
+
+
+   SIP Call IDs                                                                    
+
+
+   194210410599202411119@10.118.200.182
+
+   74586520499202411115@10.118.200.182
+
+
+     ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   
+
+
+   Agent Out of ACD                                                                
+
+   Sep/09/24 11:05:42 EDT                                                          
+
+   SIP Call IDs                                                                    
+
+
+   2024-09-09 11:01:53 - Page 101
+
+
+   Call Detail Record
+
+
+   Agent Out of ACD                                                                
+
+   Sep/09/24 10:59:24 EDT                                                          
+
+   Device Name          Lycoming05                                                 
+
+   Reason               Handling call                                              
+
+   .....                                                                           
+
+
+   3002 Lycoming_Sullivan Co                                                       
+
+
+   Caller ID       4060                                                            
+
+   Name:           CITY OF  PHILAD                                                 
+
+                                                                                   
+
+   TEL: 4060       NAME: CITY OF  PHILAD                                           
+
+   Call 14904702   Arrives On               4060-1          Sep/09/24 10:58:26 EDT 
+
+   4060-1          Queue In                 LYC_Admin       Sep/09/24 10:58:26 EDT 
+
+   LYC_Admin       Queue Out (Answered)     Lycoming01      Sep/09/24 10:58:29 EDT 
+
+   Lycoming01      Picks Up                                 Sep/09/24 10:58:29 EDT 
+
+   Lycoming01      Hangs Up                 Call 14904702   Sep/09/24 10:59:07 EDT 
+
+   4060-1          Hangs Up                 Call 14904702   Sep/09/24 10:59:07 EDT 
+
+   Call 14904702   Finishes                                 Sep/09/24 10:59:07 EDT 
+
+
+   SIP Call IDs                                                                    
+
+
+   1100650684992024105828@10.118.200.182
+
+   1811813387992024105824@10.118.200.182
+
+
+     ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   
+
+
+   Time Stamp                                                                      
+
+   Sep/09/24 11:00:00 EDT                                                          
+
+   .....                                                                           
+
+
+   Agent In ACD                                                                    
+
+   Sep/09/24 11:01:08 EDT                                                          
+
+   Device Name          Lycoming05                                                 
+
+   Reason               Manual ready                                               
+
+   .....                                                                           
+
+
+   Agent Out of ACD                                                                
+
+   Sep/09/24 11:01:19 EDT                                                          
+
+   Device Name          Lycoming02                                                 
+
+   Reason               Handling call                                              
+
+   .....                                                                           
+
+
+   Agent In ACD                                                                    
+
+   Sep/09/24 11:01:24 EDT                                                          
+
+   Device Name          Lycoming02                                                 
+
+   Reason               Manual ready                                               
+
+   .....                                                                           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   2024-09-09 11:06:05 - Page 102
+
+
+   Call Detail Record
+
+
+   3002 Lycoming_Sullivan Co                                                       
+
+
+   ANI             5703227738                                                      
+
+                                                                                   
+
+   Call 14904709   Arrives On               I3LYC-12        Sep/09/24 10:59:20 EDT 
+
+   I3LYC-12        Goes Off Hook                            Sep/09/24 10:59:20 EDT 
+
+   I3LYC-12        Queue In                 I3_LYC_911      Sep/09/24 10:59:20 EDT 
+
+   I3_LYC_911      Queue Out (Answered)     Lycoming05      Sep/09/24 10:59:25 EDT 
+
+   Lycoming05      Picks Up                                 Sep/09/24 10:59:25 EDT 
+
+   I3LYC-12        Is Released                              Sep/09/24 11:01:08 EDT 
+
+   Lycoming05      Hangs Up                 Call 14904709   Sep/09/24 11:01:08 EDT 
+
+   Lycoming05      Releases                 Call 14904709   Sep/09/24 11:01:08 EDT 
+
+   Call 14904709   Finishes                                 Sep/09/24 11:01:08 EDT 
+
+
+   ALI Information                                                                 
+
+
+   570-322-7738 06/22 11:39:38                                     MADEIRA CHARLES 
+
+   F JR                2300        SHERIDAN ST                                     
+
+                                   LOYALSOCK                     PA  ( ) -         
+
+                   LAT:             LON:           ELV:       COF:         COP:    
+
+   MTN:570-322-7738 CPF:VERIZ  RESD                      ESN:      PSP             
+
+                   18-0-LOYALSOCKb                 18-0-LOYALSOCKb                 
+
+
+   SIP Call IDs                                                                    
+
+
+   K86iJ6qUYEWhI5KUL0iGyw..
+
+   qwTGJDDr2P_iJ4q4v5X3Rw..
+
+
+   NENA Call ID                                                                    
+
+
+   urn:nena:uid:callid:D10259BE66DEE5810439051A:ppadphl-lsrg002-prod
+
+
+   NENA Incident ID                                                                
+
+
+   urn:nena:uid:incidentid:5F5F58BE66DEE5810439051A:ppadphl-lsrg002-prod
+
+
+     ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   
+
+
+   3002 Lycoming_Sullivan Co                                                       
+
+
+   Caller ID       2450                                                            
+
+                                                                                   
+
+   TEL: 2450       NAME: ..........                                                
+
+   Call 14904722   Arrives On               SCIM            Sep/09/24 11:01:16 EDT 
+
+   SCIM            Queue In                 LYC_RD          Sep/09/24 11:01:16 EDT 
+
+   LYC_RD          Queue Out (Answered)     Lycoming02      Sep/09/24 11:01:20 EDT 
+
+   Lycoming02      Picks Up                                 Sep/09/24 11:01:20 EDT 
+
+   Lycoming02      Hangs Up                 Call 14904722   Sep/09/24 11:01:23 EDT 
+
+   SCIM            Hangs Up                 Call 14904722   Sep/09/24 11:01:23 EDT 
+
+   Call 14904722   Finishes                                 Sep/09/24 11:01:23 EDT 
+
+
+   SIP Call IDs                                                                    
+
+
+   194210410599202411119@10.118.200.182
+
+   74586520499202411115@10.118.200.182
+
+
+     ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   
+
+
+   Agent Out of ACD                                                                
+
+   Sep/09/24 11:05:42 EDT                                                          
+
+   SIP Call IDs                                                                    
+
+
+   2024-09-09 11:01:53 - Page 101
+
+
+   Call Detail Record
+
+
+   Agent Out of ACD                                                                
+
+   Sep/09/24 10:59:24 EDT                                                          
+
+   Device Name          Lycoming05                                                 
+
+   Reason               Handling call                                              
+
+   .....                                                                           
+
+
+   3002 Lycoming_Sullivan Co                                                       
+
+
+   Caller ID       4060                                                            
+
+   Name:           CITY OF  PHILAD                                                 
+
+                                                                                   
+
+   TEL: 4060       NAME: CITY OF  PHILAD                                           
+
+   Call 14904702   Arrives On               4060-1          Sep/09/24 10:58:26 EDT 
+
+   4060-1          Queue In                 LYC_Admin       Sep/09/24 10:58:26 EDT 
+
+   LYC_Admin       Queue Out (Answered)     Lycoming01      Sep/09/24 10:58:29 EDT 
+
+   Lycoming01      Picks Up                                 Sep/09/24 10:58:29 EDT 
+
+   Lycoming01      Hangs Up                 Call 14904702   Sep/09/24 10:59:07 EDT 
+
+   4060-1          Hangs Up                 Call 14904702   Sep/09/24 10:59:07 EDT 
+
+   Call 14904702   Finishes                                 Sep/09/24 10:59:07 EDT 
+
+
+   SIP Call IDs                                                                    
+
+
+   1100650684992024105828@10.118.200.182
+
+   1811813387992024105824@10.118.200.182
+
+
+     ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   
+
+
+   Time Stamp                                                                      
+
+   Sep/09/24 11:00:00 EDT                                                          
+
+   .....                                                                           
+
+
+   Agent In ACD                                                                    
+
+   Sep/09/24 11:01:08 EDT                                                          
+
+   Device Name          Lycoming05                                                 
+
+   Reason               Manual ready                                               
+
+   .....                                                                           
+
+
+   Agent Out of ACD                                                                
+
+   Sep/09/24 11:01:19 EDT                                                          
+
+   Device Name          Lycoming02                                                 
+
+   Reason               Handling call                                              
+
+   .....                                                                           
+
+
+   Agent In ACD                                                                    
+
+   Sep/09/24 11:01:24 EDT                                                          
+
+   Device Name          Lycoming02                                                 
+
+   Reason               Manual ready                                               
+
+   .....                                                                           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   2024-09-09 11:06:05 - Page 102
+
+
+   Call Detail Record
+
+
+   3002 Lycoming_Sullivan Co                                                       
+
+
+   ANI             5703227738                                                      
+
+                                                                                   
+
+   Call 14904709   Arrives On               I3LYC-12        Sep/09/24 10:59:20 EDT 
+
+   I3LYC-12        Goes Off Hook                            Sep/09/24 10:59:20 EDT 
+
+   I3LYC-12        Queue In                 I3_LYC_911      Sep/09/24 10:59:20 EDT 
+
+   I3_LYC_911      Queue Out (Answered)     Lycoming05      Sep/09/24 10:59:25 EDT 
+
+   Lycoming05      Picks Up                                 Sep/09/24 10:59:25 EDT 
+
+   I3LYC-12        Is Released                              Sep/09/24 11:01:08 EDT 
+
+   Lycoming05      Hangs Up                 Call 14904709   Sep/09/24 11:01:08 EDT 
+
+   Lycoming05      Releases                 Call 14904709   Sep/09/24 11:01:08 EDT 
+
+   Call 14904709   Finishes                                 Sep/09/24 11:01:08 EDT 
+
+
+   ALI Information                                                                 
+
+
+   570-322-7738 06/22 11:39:38                                     MADEIRA CHARLES 
+
+   F JR                2300        SHERIDAN ST                                     
+
+                                   LOYALSOCK                     PA  ( ) -         
+
+                   LAT:             LON:           ELV:       COF:         COP:    
+
+   MTN:570-322-7738 CPF:VERIZ  RESD                      ESN:      PSP             
+
+                   18-0-LOYALSOCKb                 18-0-LOYALSOCKb                 
+
+
+   SIP Call IDs                                                                    
+
+
+   K86iJ6qUYEWhI5KUL0iGyw..
+
+   qwTGJDDr2P_iJ4q4v5X3Rw..
+
+
+   NENA Call ID                                                                    
+
+
+   urn:nena:uid:callid:D10259BE66DEE5810439051A:ppadphl-lsrg002-prod
+
+
+   NENA Incident ID                                                                
+
+
+   urn:nena:uid:incidentid:5F5F58BE66DEE5810439051A:ppadphl-lsrg002-prod
+
+
+     ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   
+
+
+   3002 Lycoming_Sullivan Co                                                       
+
+
+   Caller ID       2450                                                            
+
+                                                                                   
+
+   TEL: 2450       NAME: ..........                                                
+
+   Call 14904722   Arrives On               SCIM            Sep/09/24 11:01:16 EDT 
+
+   SCIM            Queue In                 LYC_RD          Sep/09/24 11:01:16 EDT 
+
+   LYC_RD          Queue Out (Answered)     Lycoming02      Sep/09/24 11:01:20 EDT 
+
+   Lycoming02      Picks Up                                 Sep/09/24 11:01:20 EDT 
+
+   Lycoming02      Hangs Up                 Call 14904722   Sep/09/24 11:01:23 EDT 
+
+   SCIM            Hangs Up                 Call 14904722   Sep/09/24 11:01:23 EDT 
+
+   Call 14904722   Finishes                                 Sep/09/24 11:01:23 EDT 
+
+
+   SIP Call IDs                                                                    
+
+
+   194210410599202411119@10.118.200.182
+
+   74586520499202411115@10.118.200.182
+
+
+     ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   
+
+
+   Agent Out of ACD                                                                
+
+   Sep/09/24 11:05:42 EDT                                                          
+

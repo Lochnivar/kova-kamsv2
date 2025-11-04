@@ -1,0 +1,21 @@
+{
+    "name": "kova/kcm",
+    "description": "Kova Central Monitoring",
+    "require": {
+        "composer/composer": "^2.8",
+        "components/jquery": "^3.7",
+        "intellitrend/zabbixapi": "^3.3",
+        "php-curl-class/php-curl-class": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kova\\Kcm\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Michael Lockwood",
+            "email": "mlockwood@kovacorp.com"
+        }
+    ]
+}

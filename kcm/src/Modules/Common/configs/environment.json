@@ -1,0 +1,35 @@
+{
+    "kams": {
+        "database": {
+            "host": "localhost",
+            "username": "kams",
+            "password": "kams7906",
+            "db": "KAMS"
+        }
+    },
+    "serial": {
+        "database": {
+            "host": "localhost",
+            "username": "webpage",
+            "password": "K0v@W3b",
+            "db": "Serial_Users"
+        }
+    },
+    
+    "moto": {
+        "database": {
+            "host": "localhost",
+            "username": "webpage",
+            "password": "K0v@W3b",
+            "db": "Channel_Mon"
+        }
+    },
+    "udp": {
+        "database": {
+            "host": "localhost",
+            "username": "webpage",
+            "password": "K0v@W3b",
+            "db": "Network_Mon"
+        }
+    }
+}

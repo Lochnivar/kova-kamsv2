@@ -1,0 +1,9 @@
+[Unit]
+Description=Systemd service to restart KCM Cron Services
+
+[Service]
+ExecStart=/usr/bin/php /usr/src/KCM/CronService.php >> /tmp/KCM-cron.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
