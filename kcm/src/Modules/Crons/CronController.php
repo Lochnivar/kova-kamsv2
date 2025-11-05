@@ -1,15 +1,15 @@
 <?php
 
-namespace Kova\Kcm\Modules\Crons;
+namespace Kova\Kams\Kcm\Modules\Crons;
 
-use Kova\Kcm\Modules\Common\Config as Config;
-use Kova\Kcm\Modules\Motorola\MotoCron as MotoCron;
-use Kova\Kcm\Modules\Serial\SerialCron as SerialCron;
-use Kova\Kcm\Modules\Udp\UdpCron as UdpCron;
-use Kova\Kcm\Modules\Zabbix\ZabbixCron as ZabbixCron;
-use Kova\Kcm\Modules\Reporting\Reporting as Reporting;
+use Kova\Kams\Kcm\Modules\Common\Config as Config;
+use Kova\Kams\Kcm\Modules\Motorola\MotoCron as MotoCron;
+use Kova\Kams\Kcm\Modules\Serial\SerialCron as SerialCron;
+use Kova\Kams\Kcm\Modules\Udp\UdpCron as UdpCron;
+use Kova\Kams\Kcm\Modules\Zabbix\ZabbixCron as ZabbixCron;
+use Kova\Kams\Kcm\Modules\Reporting\Reporting as Reporting;
 use Kova\Kams\Common\Database as DB;
-use Kova\Kcm\Modules\Common\Communicator as Comms;
+use Kova\Kams\Kcm\Modules\Common\Communicator as Comms;
 
 class CronController
 {
@@ -34,9 +34,7 @@ class CronController
 
         //reset the kamsCrons table 
 
-        $sql = "TRUNCATE kamsCrons";
-
-        $this->dbConn->dbQuery($sql);
+        $this->dbConn->executeQuery("TRUNCATE kamsCrons");
 
         $pids = [];
 
@@ -80,17 +78,95 @@ class CronController
 
     public function StopCrons()
     {
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('*')
+           ->from('kamsCrons');
+        $result = $this->dbConn->executeQueryBuilder($qb);
 
-        $sql = "SELECT * FROM kamsCrons";
-
-        $result = $this->dbConn->dbQuery($sql);
-
-        foreach ($result as $pid) {
-            $cmd = "kill -9 " . $pid['procid'];
-
+        foreach ($result as $row) {
+            $pid = $row['procid'];
+            
+            // Get process group ID to kill entire pipeline
+            $pgid = exec("ps -p " . escapeshellarg($pid) . " -o pgid= 2>/dev/null");
+            
+            if (!empty($pgid)) {
+                $pgid = trim($pgid);
+                // Kill the entire process group to ensure tcpdump/cat and parser all stop
+                $cmd = "kill -9 -" . escapeshellarg($pgid) . " 2>/dev/null";
+                exec($cmd, $output);
+            }
+            
+            // Also kill the specific PID as fallback
+            $cmd = "kill -9 " . escapeshellarg($pid) . " 2>/dev/null";
             exec($cmd, $output);
 
             var_dump($output);
+        }
+    }
+
+    /**
+     * Start crons for a specific module
+     */
+    public function StartCronsForModule(string $module): array
+    {
+        $pids = [];
+        
+        // Get module-specific cron class
+        switch ($module) {
+            case "moto":
+                $cronStart = new MotoCron($this->config);
+                break;
+            case "serial":
+                $cronStart = new SerialCron($this->config);
+                break;
+            case "udp":
+                $cronStart = new UdpCron($this->config);
+                break;
+            case "zabbix":
+                $cronStart = new ZabbixCron($this->config);
+                break;
+            default:
+                return [];
+        }
+
+        if ($cronStart->modEnabled() == "yes") {
+            echo "Mod Enabled, Starting " . $module . " Crons" . PHP_EOL;
+            $pids = $cronStart->startCron();
+        } else {
+            echo $module . " Mod Disabled" . PHP_EOL;
+        }
+
+        return $pids;
+    }
+
+    /**
+     * Stop crons for a specific module
+     */
+    public function StopCronsForModule(string $module): void
+    {
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('*')
+           ->from('kamsCrons')
+           ->where('module = :module')
+           ->setParameter('module', $module);
+        $result = $this->dbConn->executeQueryBuilder($qb);
+
+        foreach ($result as $row) {
+            $pid = $row['procid'];
+            
+            // Get process group ID to kill entire pipeline
+            $pgid = exec("ps -p " . escapeshellarg($pid) . " -o pgid= 2>/dev/null");
+            
+            if (!empty($pgid)) {
+                $pgid = trim($pgid);
+                // Kill the entire process group
+                $cmd = "kill -9 -" . escapeshellarg($pgid) . " 2>/dev/null";
+                exec($cmd, $output);
+            }
+            
+            // Also kill the specific PID as fallback
+            $cmd = "kill -9 " . escapeshellarg($pid) . " 2>/dev/null";
+            exec($cmd, $output);
         }
     }
 

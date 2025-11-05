@@ -3,7 +3,7 @@
         'name' => 'kova/kams',
         'pretty_version' => 'dev-refactor/consolidate',
         'version' => 'dev-refactor/consolidate',
-        'reference' => '175d12f4e99bf78955e36b26c65c2a7fa4d58829',
+        'reference' => 'ab0a90301ff16550e7f37df333e48114c885240b',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -139,7 +139,7 @@
         'kova/kams' => array(
             'pretty_version' => 'dev-refactor/consolidate',
             'version' => 'dev-refactor/consolidate',
-            'reference' => '175d12f4e99bf78955e36b26c65c2a7fa4d58829',
+            'reference' => 'ab0a90301ff16550e7f37df333e48114c885240b',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

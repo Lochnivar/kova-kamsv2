@@ -20,13 +20,12 @@
 
             getHome();
 
-            
+            // Make logo clickable to load admin page
+            $(document).on('click', '.logo', function() {
+                getAdmin();
+            });
 
         });
-
-
-        
-        
 
     </script>
 </head>
@@ -35,7 +34,7 @@
     <table>
         <tr>
             <td>
-                <div id="header"><img src="src/Bones/imgs/kova-logo.png" class="logo">
+                <div id="header"><img src="src/Bones/imgs/kova-logo.png" class="logo" alt="Kova Logo" title="Click to access Admin">
             </td>
             <td>
                 <h2><span id="siteName"></span> KAMS Unified Home</h2>
@@ -48,43 +47,12 @@
 
 
 
-
     </div>
-
 
 
 
 
 </body>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </html>
+

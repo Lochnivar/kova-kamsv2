@@ -1,0 +1,52 @@
+<?php
+//******* MAKE SURE TO ADJUST /etc/netplan/01-netcfg.yaml to remove NICS that dont exist on the system********
+//V15 Auto Add need to make sure the user and password is correct for wsuperuser in  serial-add.php file
+//In Serial for V15 Checks you need to verify $parsedArray if users arent added to the Database, check the Serial log and see what the following phrase is "Call DISCONNECTED BY AGENT" --- Check case of Call
+
+//KAMS Webpages Running on this Server (yes or no Case Sensitive)
+$MotorolaPage = "yes";  //Motorola Channel last activity
+$UDPMonitorPage = "yes"; //Span Port for UDP monitoring
+$SerialMonitorPage ="yes"; //Serial Data Monitoring
+$ZabbixPage = "yes"; //Zabbix front page
+
+
+//Zabbix Settings
+$ZabbixIP = "10.0.160.20"; //IP of the zabbix server
+$servers = array('V15-Server-1','V15-Server-2','V15-Server-3');  //Array of Zabbix server names to show and check
+
+//CLIENT EMAIL NOTIFICATION 
+$ClientEmail = ''; //Client email to also alert for all issues, 1 email allowed
+
+//VIPER SETTINGS
+$VerintIPport = '10.1.18.45:7001';  //ForVerint API calls that need the Port also
+$VerintIP = '10.1.18.45'; //For Verint IP Only
+$VerintOrgID = '151'; //Orginization ID new Users should be added To
+$VerintViperID = '54'; //Viper ID to add channel to 
+$VerintBKViperID = '151'; //Viper BACKUP  ID to add channel to 
+$addSerialUsersV15 = 'true'; //true or false -- Auto add users to V15 system or not
+
+
+//INTERFACE NAME SETTINGS
+$SerialInterfaceName = '/dev/ttyS4';  //Serial TTY interface the system checks 
+$UDPInterfaceName = 'eth1'; //Span Port the System checks for UDP Monitoring /usr/src/netmon
+$MotorolaInterfaceName = 'eth1'; //Span Portfor Motorola Channel Logging /usr/src/Channel-Mon
+
+//SITE SPECIFIC SETTINGS 
+$SiteName = '';  //Site Name for the Notification EMails
+$TimeZone = 'America/New_York'; //System Time Zone for Webpages and time entrires
+$channelSiteHeader = 'Motorola';  //Site Header for Channel Page
+$SerialSiteHeader = 'Viper'; //Site Header for Serial Page
+$netmonSiteHeader = 'Avaya';  //Site Header for Netmon Page
+
+//SSH Settings after setting up passwordless ssh
+$sshName = ""; //the user that was setup on the PBX and BKPBX for login
+
+
+
+//TRIGGER LIMITS FOR MONITORS
+$udpTriggerLimit = '250'; //UDP Trigger limit for Email of Net monitor in /usr/src/Netmon
+$SerialTriggerLimit = '500'; //Serial  Trigger limit for Email of file monitor in /usr/src/Serial
+
+
+?>
+

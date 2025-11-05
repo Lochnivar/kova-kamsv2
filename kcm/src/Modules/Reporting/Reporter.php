@@ -1,6 +1,6 @@
 <?php
 
-namespace Kova\Kcm\Modules\Reporting;
+namespace Kova\Kams\Kcm\Modules\Reporting;
 
 class Reporter
 {

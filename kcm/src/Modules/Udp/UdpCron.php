@@ -1,10 +1,10 @@
 <?php
 
-namespace Kova\Kcm\Modules\Udp;
+namespace Kova\Kams\Kcm\Modules\Udp;
 
-use Kova\Kcm\Modules\Common\Common as Common;
+use Kova\Kams\Kcm\Modules\Common\Common as Common;
 use Kova\Kams\Common\Database as DB;
-use Kova\Kcm\Modules\Common\AlarmHandler as AH;
+use Kova\Kams\Kcm\Modules\Common\AlarmHandler as AH;
 
 class UdpCron
 {
@@ -29,29 +29,35 @@ class UdpCron
 
     public function startCron()
     {
-
         $x = 0;
         $ifs = explode("~", $this->ifaces);
+        $pids = [];
 
         foreach ($ifs as $iface) {
-
             $iArray = explode("|", $iface);
-            $ifArray[$iArray[0]] = [];
-            $udpIFaces[] = $iArray[0];
-
-            // $command = "timeout 600 /usr/bin/tcpdump -tt -i " . $iArray[0] . ">>" . $this->fileName . "-" . $iArray[0] . "  & echo $!";
-
-            //actual command.
-            $command = "timeout 6000 /usr/bin/tcpdump udp -vvvvv -tt -l -i " . $iArray[0] . ">>" . $this->fileName . "-" . $iArray[0] . "  & echo $!";
+            $ifaceName = $iArray[0];
+            
+            // Pipe tcpdump directly to parser
+            // Use process groups for better monitoring and cleanup
+            $parserScript = __DIR__ . '/UdpParser.php';
+            // Create a new process group with setsid so we can kill the entire pipeline
+            $command = "setsid sh -c 'timeout 6000 /usr/bin/tcpdump udp -vvvvv -tt -l -i " . escapeshellarg($ifaceName) 
+                . " | /usr/bin/php " . escapeshellarg($parserScript) . " " . escapeshellarg($ifaceName) 
+                . " > /dev/null 2>&1' & echo $!";
+            
             exec($command, $output);
             echo "Start Cron DB vars" . PHP_EOL;
-            var_dump($this->mod, $output[$x], $iArray[0]);
+            var_dump($this->mod, $output[$x], $ifaceName);
 
-
-            $this->dbConn->putProcID($this->mod, $output[$x], $iArray[0]);
-            $pids[] = $output[$x];
+            // Store the process group leader PID for monitoring
+            // This PID can be used to kill the entire pipeline (tcpdump + parser)
+            $shellPid = $output[$x];
+            $this->dbConn->putProcID($this->mod, $shellPid, $ifaceName);
+            $pids[] = $shellPid;
             $x++;
         }
+        
+        return $pids;
     }
 
     public function ProcessCron()
@@ -64,24 +70,40 @@ class UdpCron
         foreach ($ifaces as $iface) {
             var_dump("Iface", $iface);
 
-            $rawFile = file($this->fileName . "-" . $iface['ifaceid']);
-
-            // Step one: Record Cron results
-
-            $this->RecordCron($rawFile, $iface);
+            // Data is already in database from real-time parser
+            // No need to read files - just query the latest data
+            $this->loadLatestData($iface);
 
             // Step two : Check Alert Conditions
-
-            $modStatus["alerts"] = $this->AlertCron($rawFile, $iface);
-            //Clean up file
-
-            file_put_contents($this->fileName . "-" . $iface['ifaceid'], "");
+            // AlertCron now works from database data, not raw files
+            $modStatus["alerts"] = $this->AlertCron(null, $iface);
         }
+        
         // Step three: Report the results
-
         $modStatus['status'] = $this->ReportCron();
 
         return $modStatus;
+    }
+    
+    /**
+     * Load latest data from database (replaces file reading)
+     */
+    private function loadLatestData($iface): void
+    {
+        // Get the most recent data entry for this interface
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('*')
+           ->from('udp_data')
+           ->where('iface = :iface')
+           ->orderBy('epoch', 'DESC')
+           ->setMaxResults(1)
+           ->setParameter('iface', $iface['ifaceid']);
+        $result = $this->dbConn->executeQueryBuilder($qb);
+        
+        if (!empty($result)) {
+            $this->thru[$iface['ifaceid']] = $result[0]['udp_packets'] ?? 0;
+            $this->lastPacket[$iface['ifaceid']] = $result[0]['tstamp'] ?? null;
+        }
     }
 
     public function RecordCron($file, $iface)
@@ -101,11 +123,15 @@ class UdpCron
         $temp = explode(" ", $line);
         $tstamp = explode(".", $temp[0]);
 
-        file_put_contents("/usr/src/KCM/src/Modules/Crons/KCM-Cron-Service.log", "UDP Cron Run Finished : " . $x  . " lines found, Last time stamp is " . $tstamp[0] . PHP_EOL, FILE_APPEND);
+        $logFile = kova_path('logs/kcm-cron-service.log');
+        @file_put_contents($logFile, "UDP Cron Run Finished : " . $x  . " lines found, Last time stamp is " . $tstamp[0] . PHP_EOL, FILE_APPEND);
 
-        $sql = "INSERT INTO udp_data (iface, udp_packets,epoch, tstamp) VALUES  (?,?,?,?)";
-
-        $this->dbConn->dbQuery($sql, $iface['ifaceid'], $x, $tnow, $tstamp[0]);
+        $this->dbConn->insert('udp_data', [
+            'iface' => $iface['ifaceid'],
+            'udp_packets' => $x,
+            'epoch' => $tnow,
+            'tstamp' => $tstamp[0]
+        ]);
 
         $this->thru[$iface['ifaceid']] = $x;
         $this->lastPacket[$iface['ifaceid']] = $tstamp[0];
@@ -120,17 +146,25 @@ class UdpCron
         $alerts['active'] = [];
         $alerts['clear'] = [];
 
-        $sql = "SELECT * FROM udp_settings where ifaceid = ?";
-
-        $results = $this->dbConn->dbQuery($sql, $iface['ifaceid']);
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('*')
+           ->from('udp_settings')
+           ->where('ifaceid = :iface')
+           ->setParameter('iface', $iface['ifaceid']);
+        $results = $this->dbConn->executeQueryBuilder($qb);
 
         $alarmID = $results[0]['alarmID'];
 
         $oneHourAgo = strtotime("-1 hour");
 
-        $sql = "SELECT count(epoch) AS num, avg(udp_packets) AS avgPackets FROM udp_data WHERE iface = ? AND epoch > ?";
-
-        $results = $this->dbConn->dbQuery($sql, $iface['ifaceid'], $oneHourAgo);
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('COUNT(epoch) AS num', 'AVG(udp_packets) AS avgPackets')
+           ->from('udp_data')
+           ->where('iface = :iface')
+           ->andWhere('epoch > :epoch')
+           ->setParameter('iface', $iface['ifaceid'])
+           ->setParameter('epoch', $oneHourAgo);
+        $results = $this->dbConn->executeQueryBuilder($qb);
 
         $avg = $results[0]['avgPackets'];
         $count = $results[0]['num'];
@@ -163,9 +197,12 @@ class UdpCron
             } else {
                 //Alarm Already Exists.  Continue
                 echo "Alarm already Exists as #" . $alarmID . PHP_EOL;
-                $sql = "SELECT msgLine FROM kamsAlarms where id = ?";
-
-                $results = $this->dbConn->dbQuery($sql, $alarmID);
+                $qb = $this->dbConn->createQueryBuilder();
+                $qb->select('msgLine')
+                   ->from('kamsAlarms')
+                   ->where('id = :id')
+                   ->setParameter('id', $alarmID);
+                $results = $this->dbConn->executeQueryBuilder($qb);
 
                 $alerts['active'][$alarmID] = $results[0]['msgLine'];
             }
@@ -188,10 +225,13 @@ class UdpCron
                 $ah = new AH();
                 $ah->clearAlarm($this->mod, $alarmID, $iface['ifaceid'], $msgline);
 
-                $sql = "SELECT msgLine FROM kamsAlarms where id = ?";
-
-                $results = $this->dbConn->dbQuery($sql, $alarmID);
-                $alerts['clear'][$alarmID] = $results[0]['msgLine'];
+                $qb = $this->dbConn->createQueryBuilder();
+                $qb->select('msgLine')
+                   ->from('kamsAlarms')
+                   ->where('id = :id')
+                   ->setParameter('id', $alarmID);
+                $results = $this->dbConn->executeQueryBuilder($qb);
+                $alerts['clear'][$alarmID] = $results[0]['msgLine'] ?? null;
             } else {
                 //No alarm exists and no new alarm, Continue
             }
@@ -230,8 +270,6 @@ class UdpCron
 
     public function updateAlarmID($iface, $alarmID)
     {
-        $sql = "UPDATE udp_settings SET alarmID = ? WHERE ifaceid = ?";
-
-        $this->dbConn->dbQuery($sql, $alarmID, $iface);
+        $this->dbConn->update('udp_settings', ['alarmID' => $alarmID], ['ifaceid' => $iface]);
     }
 }

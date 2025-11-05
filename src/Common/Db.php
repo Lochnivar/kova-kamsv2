@@ -203,10 +203,6 @@ final class Db
      */
     private function detectType($value): int
     {
-        if (is_int($value)) return ParameterType::INTEGER;
-        if (is_bool($value)) return ParameterType::BOOLEAN;
-        if ($value instanceof \DateTimeInterface) return ParameterType::STRING;
-        if ($value === null) return ParameterType::NULL;
-        return ParameterType::STRING;
+        return TypeDetector::detectParameterType($value);
     }
 }

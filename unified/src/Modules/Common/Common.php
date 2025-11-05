@@ -1,96 +1,109 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kova\Kams\Unified\Modules\Common;
 
-class Common
+use Kova\Kams\Core\Common as CoreCommon;
+
+/**
+ * Common class for Unified module
+ * Extends Core\Common and adds Unified-specific methods
+ */
+class Common extends CoreCommon
 {
-
-    public $cargo;
-    public $config;
-
-    public function __construct($config)
+    /**
+     * Get navigation bar HTML (echoes for web output)
+     * Uses type-safe boolean checks to determine active modules
+     */
+    public function getNavBar(): string
     {
-        $this->config = $config;
-    }
-
-    public function getNavBar()
-    {
-
         $navBar = "";
+        
+        // Use type-safe boolean checks - handles "yes", "1", true, etc.
+        $motorolaPage = $this->isModuleEnabled('MotorolaPage');
+        $udpMonitorPage = $this->isModuleEnabled('UDPMonitorPage');
+        $serialMonitorPage = $this->isModuleEnabled('SerialMonitorPage');
+        $zabbixPage = $this->isModuleEnabled('ZabbixPage');
 
-        if ($this->config['MotorolaPage'] == "yes" && ($this->config['UDPMonitorPage'] == "yes" || $this->config['SerialMonitorPage'] == "yes" || $this->config['ZabbixPage'] == "yes")) {
+        // Motorola-Channels: Show if Motorola is enabled AND at least one other module is enabled
+        if ($motorolaPage && ($udpMonitorPage || $serialMonitorPage || $zabbixPage)) {
             $navBar .= '<button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" class="active" href="../channels/index.php">Motorola-Channels</a></button>';
         }
-        if ($this->config['UDPMonitorPage'] == "yes") {
+        
+        // UDP-Monitor: Show if enabled
+        if ($udpMonitorPage) {
             $navBar .= '<button style="background-color:yellow;border-radius: 6px;color:black"><a style="color:black;" href="../netmon-ng/index.html">UDP-Monitor</a></button>';
         }
-        if ($this->config['SerialMonitorPage'] == "yes") {
+        
+        // Serial-Monitor: Show if enabled
+        if ($serialMonitorPage) {
             $navBar .= '<button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" href="../serial/index.php">Serial-Monitor</a></button>';
         }
-        if ($this->config['ZabbixPage'] == "yes") {
+        
+        // Server-Monitor (Zabbix): Show if enabled
+        if ($zabbixPage) {
             $navBar .= '<button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" href="../Monitor/index.php">Server-Monitor</a></button>';
         }
 
         echo $navBar;
+        return $navBar;
     }
-
-    public function getSiteName()
+    
+    /**
+     * Check if a module is enabled
+     * Handles various boolean representations: "yes", "1", true, 1, etc.
+     * 
+     * @param string $key Setting key (e.g., "MotorolaPage")
+     * @return bool True if module is enabled
+     */
+    private function isModuleEnabled(string $key): bool
     {
-
-        echo $this->config['SiteName'];
-    }
-
-    public function getIfaces($mod)
-    {
-
-        $cargo = "";
-
-        //  var_dump($this->config);
-
-        $configMod = "";
-        switch ($mod) {
-            case "udp":
-
-                $configMod = "UDPInterfaceName";
-                break;
-
-            case "serial":
-                $configMod = "SerialInterfaceName";
-                break;
-
-            case "moto":
-                $configMod = "MotorolaInterfaceName";
-                break;
-
-            case "zbx":
-                $configMod = "zbx";
-                break;
-
-            default:
-
-                break;
-        }
-
-
-        if (is_array($this->config[$configMod])) {
-            $ifaces = $this->config[$configMod];
-        } else {
-            $ifaces = explode("~", $this->config[$configMod]);
+        $value = $this->config[$key] ?? null;
+        
+        if ($value === null) {
+            return false;
         }
         
-
-        foreach ($ifaces as $iface) {
-           
-            $iArray = explode("|", $iface);
-            $ifArray[$iArray[0]]['name'] = $iArray[0];
-            $ifArray[$iArray[0]]['alias'] = $iArray[1];
-            $ifArray[$iArray[0]]['threshold'] = $iArray[2];
+        // If we have a Config object, use type-safe getter
+        if ($this->configObj !== null && method_exists($this->configObj, 'getBool')) {
+            return $this->configObj->getBool($key, false);
         }
+        
+        // Otherwise, normalize manually
+        if (is_bool($value)) {
+            return $value;
+        }
+        
+        if (is_int($value)) {
+            return $value !== 0;
+        }
+        
+        if (is_string($value)) {
+            $normalized = strtolower(trim($value));
+            return in_array($normalized, ['1', 'yes', 'true', 'on'], true);
+        }
+        
+        return false;
+    }
 
-        //var_dump($ifArray);
+    /**
+     * Get site name (returns string only, no echo)
+     * Note: Dispatcher will handle the output
+     */
+    public function getSiteName(): string
+    {
+        $siteName = $this->config['SiteName'] ?? '';
+        // Don't echo here - let the Dispatcher handle output
+        return $siteName;
+    }
 
-        // $cargo = json_encode($ifArray);
-
-        return $ifArray;
+    /**
+     * Get interfaces for a module
+     * Uses parent implementation but can override if needed
+     */
+    public function getIfaces(string $mod): array
+    {
+        return parent::getIfaces($mod);
     }
 }

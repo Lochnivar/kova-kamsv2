@@ -1,0 +1,14 @@
+[Unit]
+Description=KCM Cron Processing Timer
+Documentation=https://github.com/your-repo/kova-kams
+
+[Timer]
+# Run every minute
+OnCalendar=*:0/1
+# Or use: OnCalendar=*:0/1:00
+Persistent=true
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target
+

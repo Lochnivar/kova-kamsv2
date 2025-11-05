@@ -4,9 +4,9 @@
  * Entry point for the cron to start the crons process.
  */
 
- require_once(__DIR__ . "/vendor/autoload.php");
+require_once(__DIR__ . '/../vendor/autoload.php');
 
- $mod = new \Kova\Kcm\Modules\Crons\CronController;
+ $mod = new \Kova\Kams\Kcm\Modules\Crons\CronController;
 
 echo "Starting Crons in CronMain" . PHP_EOL;
 

@@ -1,6 +1,6 @@
 <?
 
-namespace Kova\Kcm\Modules\Serial;
+namespace Kova\Kams\Kcm\Modules\Serial;
 
 class SerialAdd
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Kova\Kcm\Modules\Zabbix;
+namespace Kova\Kams\Kcm\Modules\Zabbix;
 
 
 

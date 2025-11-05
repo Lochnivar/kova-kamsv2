@@ -1,0 +1,60 @@
+body {
+  background-color: #dcdcdc;
+}
+
+#channelLabel {
+  margin-left: 30px;
+}
+
+#logo {
+  position: relative;
+  height: 87px;
+  width: 347px;
+  padding: 3px;
+  margin-bottom: 1px;
+  background-color: #883330;
+  margin-top: 1px;
+  margin-left: 10px;
+  border-radius: 1%;
+}
+
+.flash {
+  animation-name: flash;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-play-state: running;
+}
+
+@keyframes flash {
+  from {
+    color: red;
+  }
+
+  to {
+    color: black;
+  }
+}
+
+#warning {
+  float: right;
+  margin-right: 20px;
+  text-decoration: underline;
+}
+
+.avarages {
+  margin-left: 140px;
+  float: left;
+  border: 2px solid black;
+  padding: 4px;
+  border-radius: 3%;
+}
+
+#siteName {
+  margin-left: 50px;
+}
+
+.clear {
+  clear: both;
+}

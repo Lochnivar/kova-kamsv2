@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Settings Admin</title>
+  <style>
+    :root{--bg:#0f1724;--muted:#9aa4b2;--accent:#6ee7b7;--accent-2:#60a5fa}
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#071023,#071827);color:#e6eef6;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh}
+    .container{max-width:1100px;margin:32px auto;padding:20px}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .h-title{font-size:20px;font-weight:700}
+    .toolbar{display:flex;gap:8px}
+    .btn{background:var(--accent-2);color:#04203a;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:16px;box-shadow:0 6px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    .section{margin-bottom:18px;border-radius:10px;padding:12px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02)}
+    .section-header{font-weight:700;padding:8px 12px;border-bottom:1px dashed rgba(255,255,255,0.03);margin:-12px -12px 10px -12px;background:transparent;color:var(--muted)}
+    .row{display:grid;grid-template-columns:1fr 420px 120px 1fr 120px;gap:12px;align-items:center;padding:8px 6px;border-radius:8px}
+    .row + .row{border-top:1px solid rgba(255,255,255,0.02)}
+    .locked-name{padding:8px;border-radius:6px;background:rgba(255,255,255,0.02);color:var(--muted)}
+    .input{width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    .disabled-input{opacity:0.85;background:rgba(255,255,255,0.01);cursor:not-allowed}
+    .tag{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px;color:var(--muted)}
+    .small{font-size:13px;color:var(--muted)}
+    .controls{display:flex;gap:8px;align-items:center}
+    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:60}
+    .modal-box{background:#071827;padding:18px;border-radius:10px;min-width:360px;border:1px solid rgba(255,255,255,0.04);max-width:92%;max-height:88%;overflow:auto}
+    .kv-label{width:34%;min-width:120px;padding:10px;border-radius:6px;background:rgba(255,255,255,0.02);color:var(--muted)}
+    .kvp-row{display:flex;gap:8px;align-items:stretch;margin-bottom:6px}
+    .json-controls{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+    @media(max-width:980px){.row{grid-template-columns:1fr 1fr 120px 1fr 120px}.section{padding:8px}}
+    .radio-inline{display:flex;gap:8px;align-items:center}
+    .radio-inline label{display:flex;align-items:center;gap:6px}
+    .interface-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .interface-item{display:flex;gap:8px;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);flex-wrap:wrap}
+    .field-label{width:68px;color:var(--muted);font-size:13px;flex:0 0 68px}
+    .interface-item input{padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    .interface-item .remove-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:6px 8px;border-radius:6px;cursor:pointer}
+    .interface-add{display:flex;justify-content:flex-end;margin-top:8px}
+    .label-muted{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .server-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .server-item{display:flex;gap:8px;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);flex-wrap:wrap}
+    .server-item .field-label{width:60px;color:var(--muted);font-size:13px}
+    .server-item input{padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    .server-item .remove-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:6px 8px;border-radius:6px;cursor:pointer}
+    .server-add{display:flex;justify-content:flex-end;margin-top:8px}
+    .tz-wrapper{display:flex;gap:8px;align-items:center}
+    .tz-input{padding:6px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;min-width:220px}
+    .tz-now-btn{padding:6px 8px;border-radius:6px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);cursor:pointer}
+    .invalid{outline:2px solid #e06}
+    .save-status{font-size:13px;margin-left:8px;color:#0a7}
+    .error{color:#c00;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="h-title">Settings Admin</div>
+        <div class="small">Grouped settings view; servers are stored as value-only JSON array of names</div>
+      </div>
+      <div class="toolbar">
+        <button id="reloadBtn" class="btn ghost">Reload</button>
+        <button id="exportBtn" class="btn">Export JSON</button>
+        <button id="logoutBtn" class="btn ghost" style="display:none">Logout</button>
+      </div>
+    </div>
+
+    <div id="mainCard" class="card" style="display:none">
+      <div id="groupsContainer"></div>
+      <div id="empty" class="small" style="display:none;padding:16px;text-align:center;color:var(--muted)">No settings found</div>
+      <div class="small" style="margin-top:12px;color:var(--muted)">Editing only values is allowed. Group and order are not editable here.</div>
+    </div>
+
+    <div id="loginModal" class="modal">
+      <div class="modal-box">
+        <div style="margin-bottom:10px;font-weight:700">Admin Login</div>
+        <div class="small" style="margin-bottom:6px">Password</div>
+        <input id="pw" class="input" type="password" placeholder="Enter password" />
+        <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+          <button id="pwBtn" class="btn">Login</button>
+        </div>
+      </div>
+      <div id="loginMsg" class="small" style="margin-top:8px;color:#fca5a5;display:none"></div>
+    </div>
+
+    <div id="jsonModal" class="modal" style="display:none">
+      <div class="modal-box" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-weight:700" id="jsonModalTitle">JSON Editor</div>
+          <div class="small" id="jsonTypeLabel"></div>
+        </div>
+
+        <div id="jsonEditorBody">
+          <div id="jsonFormContainer"></div>
+        </div>
+
+        <div class="json-controls">
+          <button id="applyJsonBtn" class="btn">Apply</button>
+          <button id="closeJsonBtn" class="btn ghost">Close</button>
+        </div>
+        <div id="jsonMsg" class="small" style="margin-top:8px;color:#fca5a5;display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- Core API and helpers ---------- */
+    const API = './api.php';
+    const groupsContainer = document.getElementById('groupsContainer');
+    const mainCard = document.getElementById('mainCard');
+    const loginModal = document.getElementById('loginModal');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const jsonModal = document.getElementById('jsonModal');
+    const jsonFormContainer = document.getElementById('jsonFormContainer');
+    const jsonMsg = document.getElementById('jsonMsg');
+    const jsonTypeLabel = document.getElementById('jsonTypeLabel');
+    const jsonModalTitle = document.getElementById('jsonModalTitle');
+
+    let currentJsonContext = null;
+
+    async function api(method, path = '', body = null) {
+      const opts = { method, headers: {}, credentials: 'same-origin' };
+      if (body !== null) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+      const res = await fetch(API + path, opts);
+      if (res.status === 204) return null;
+      const txt = await res.text();
+      try { return JSON.parse(txt); } catch (e) { throw new Error(txt || 'API error'); }
+    }
+
+    function esc(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    /* ---------- Timezone utilities & safe attach integration ---------- */
+
+    function getTimeZoneList() {
+      if (typeof Intl === 'object' && typeof Intl.supportedValuesOf === 'function') {
+        try { return Intl.supportedValuesOf('timeZone'); } catch (e) {}
+      }
+      return [
+        "UTC","Etc/UTC","Europe/London","Europe/Paris","Europe/Berlin","Europe/Moscow",
+        "America/New_York","America/Chicago","America/Denver","America/Los_Angeles",
+        "America/Anchorage","America/Phoenix","America/Toronto","America/Vancouver",
+        "America/Sao_Paulo","America/Mexico_City","America/Bogota","America/Caracas",
+        "America/Argentina/Buenos_Aires","Asia/Kolkata","Asia/Shanghai","Asia/Hong_Kong",
+        "Asia/Tokyo","Asia/Seoul","Asia/Singapore","Asia/Dubai","Asia/Jakarta",
+        "Australia/Sydney","Pacific/Auckland","Africa/Johannesburg"
+      ];
+    }
+
+    function createTimeZoneInput(currentValue, idForInput) {
+      const tzList = getTimeZoneList();
+      const wrapper = document.createElement('div');
+      wrapper.className = 'tz-wrapper';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'tz-input';
+      if (idForInput) input.id = 'v_' + idForInput;
+      input.setAttribute('list', 'tz-datalist-' + (idForInput || Math.random().toString(36).slice(2,9)));
+      input.value = currentValue || '';
+      input.placeholder = 'Type or choose timezone e.g. America/New_York';
+      input.autocomplete = 'off';
+
+      const dataList = document.createElement('datalist');
+      dataList.id = input.getAttribute('list');
+      tzList.forEach(tz => { const opt = document.createElement('option'); opt.value = tz; dataList.appendChild(opt); });
+
+      const nowBtn = document.createElement('button');
+      nowBtn.type = 'button';
+      nowBtn.className = 'tz-now-btn';
+      nowBtn.title = 'Use browser time zone';
+      nowBtn.textContent = 'Use Local';
+      nowBtn.addEventListener('click', () => {
+        const local = (Intl.DateTimeFormat && Intl.DateTimeFormat().resolvedOptions().timeZone) || 'UTC';
+        input.value = local;
+      });
+
+      wrapper.appendChild(input);
+      wrapper.appendChild(nowBtn);
+      wrapper.appendChild(dataList);
+      return { wrapper, input };
+    }
+
+    function attachTimeZoneInputToRow(rowElement, id, name, currentValue, onSaveCallback) {
+      if (!rowElement) return;
+      if (rowElement.querySelector('.tz-input')) return;
+
+      const { wrapper, input } = createTimeZoneInput(currentValue, id);
+
+      let vc = rowElement.children[1] || rowElement;
+      if (!vc) vc = rowElement;
+
+      const existingInput = vc.querySelector('#v_' + id);
+      if (existingInput) {
+        const dataType = existingInput.getAttribute('data-type');
+        existingInput.remove();
+        vc.innerHTML = '';
+        vc.appendChild(wrapper);
+        if (dataType) input.setAttribute('data-type', dataType);
+      } else {
+        vc.innerHTML = '';
+        vc.appendChild(wrapper);
+      }
+
+      input.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (typeof onSaveCallback === 'function') {
+            onSaveCallback(id, name, input.value.trim());
+          } else {
+            const tagEl = rowElement.querySelector('.tag') || rowElement.children[2];
+            let type = 'string';
+            if (tagEl) {
+              const dt = tagEl.getAttribute && tagEl.getAttribute('data-type');
+              if (dt) type = dt;
+              else type = tagEl.textContent ? tagEl.textContent.trim() : 'string';
+            }
+            try { saveSettingInline(id, name, type); } catch (err) { console.error('Save callback missing', err); }
+          }
+        }
+      });
+    }
+
+    /* ---------- Detection helpers ---------- */
+    function isInterfaceField(name) {
+      return typeof name === 'string' && (name.indexOf('InterfaceName') !== -1 || name.toLowerCase().indexOf('interfacename') !== -1);
+    }
+    function isServersField(name) {
+      return typeof name === 'string' && name.toLowerCase().indexOf('servers') !== -1;
+    }
+
+    /* ---------- load(), render rows, save flow ---------- */
+    async function checkAuth(){
+      try {
+        const r = await api('GET', '?auth=check');
+        if (r && r.auth === true) { loginModal.style.display = 'none'; mainCard.style.display = 'block'; logoutBtn.style.display = 'inline-block'; load(); return; }
+      } catch (e){}
+      loginModal.style.display = 'flex'; mainCard.style.display = 'none'; logoutBtn.style.display = 'none';
+    }
+
+    async function load(){
+      groupsContainer.innerHTML = '<div class="small">Loading...</div>';
+      try {
+        const rows = await api('GET', '');
+        if (!Array.isArray(rows) || rows.length === 0) { groupsContainer.innerHTML = ''; document.getElementById('empty').style.display = 'block'; return; }
+        document.getElementById('empty').style.display = 'none';
+
+        const groups = {};
+        for (const r of rows) {
+          const group = r.group_name || r.group || 'default';
+          if (!groups[group]) groups[group] = [];
+          groups[group].push(r);
+        }
+
+        const orderedGroupNames = Object.keys(groups).sort((a,b)=>a.localeCompare(b));
+        groupsContainer.innerHTML = '';
+
+        for (const gName of orderedGroupNames) {
+          const items = groups[gName];
+          items.sort((a,b)=>{
+            const oa = (a.sort_order!==undefined && a.sort_order!==null) ? Number(a.sort_order) : 100;
+            const ob = (b.sort_order!==undefined && b.sort_order!==null) ? Number(b.sort_order) : 100;
+            if (oa === ob) return (a.name||'').localeCompare(b.name||'');
+            return oa - ob;
+          });
+
+          const section = document.createElement('div');
+          section.className = 'section';
+          const header = document.createElement('div');
+          header.className = 'section-header';
+          header.innerText = gName;
+          section.appendChild(header);
+
+          for (const item of items) {
+            const name = item.name || item.setname;
+            const rawValue = item.value || item.setvalue || '';
+            const type = item.type || 'string';
+            const desc = item.description || '';
+            const id = item.id || item.setting_id || 0;
+
+            const row = document.createElement('div');
+            row.className = 'row';
+
+            const nameEl = document.createElement('div');
+            nameEl.innerHTML = '<div class="locked-name">' + esc(name) + '</div>';
+
+            const valueContainer = document.createElement('div');
+            if (type === 'bool') {
+              const trueChecked = (String(rawValue) === '1' || String(rawValue).toLowerCase() === 'true') ? 'checked' : '';
+              const falseChecked = (String(rawValue) === '0' || String(rawValue).toLowerCase() === 'false') ? 'checked' : '';
+              valueContainer.innerHTML = ''
+                + '<div class="radio-inline">'
+                + '<label><input type="radio" name="v_' + id + '" value="1" ' + trueChecked + ' /><span class="small">On</span></label>'
+                + '<label><input type="radio" name="v_' + id + '" value="0" ' + falseChecked + ' /><span class="small">Off</span></label>'
+                + '</div>';
+            } else if (['json','list','object'].includes(type)) {
+              valueContainer.innerHTML = '<input class="input disabled-input" id="v_' + id + '" data-type="' + esc(type) + '" value="' + esc(rawValue) + '" disabled />';
+            } else {
+              valueContainer.innerHTML = '<input class="input" id="v_' + id + '" data-type="' + esc(type) + '" value="' + esc(rawValue) + '" />';
+            }
+
+            const typeEl = document.createElement('div');
+            typeEl.innerHTML = '<span class="tag" data-type="' + esc(type) + '">' + esc(type) + '</span>';
+
+            const descEl = document.createElement('div');
+            descEl.innerHTML = '<input class="input" id="d_' + id + '" value="' + esc(desc) + '" />';
+
+            const controls = document.createElement('div');
+            controls.className = 'controls';
+
+            if (['json','list','object'].includes(type)) {
+              const btn = document.createElement('button');
+              btn.className = 'btn ghost';
+              btn.type = 'button';
+              btn.innerText = 'Edit JSON';
+              btn.onclick = () => openJsonEditorForRow(id, rawValue, type, name);
+              controls.appendChild(btn);
+            }
+
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'btn';
+            saveBtn.type = 'button';
+            saveBtn.innerText = 'Save';
+            saveBtn.onclick = () => saveSettingInline(id, name, type);
+            controls.appendChild(saveBtn);
+
+            row.appendChild(nameEl);
+            row.appendChild(valueContainer);
+            row.appendChild(typeEl);
+            row.appendChild(descEl);
+            row.appendChild(controls);
+
+            section.appendChild(row);
+
+            const isTzKey = (/^timezone$/i.test(name) || isInterfaceField(name));
+            if (isTzKey && !['json','list','object','bool'].includes(type)) {
+              try {
+                const curValEl = valueContainer.querySelector('#v_' + id);
+                const curVal = curValEl ? curValEl.value : String(rawValue || '');
+                attachTimeZoneInputToRow(row, id, name, curVal, (sid, sname, svalue) => {
+                  api('PUT', '?id=' + sid, { name: sname, value: svalue, type: 'string' })
+                    .then(()=> load())
+                    .catch(err => { alert('Save failed: ' + (err.message || err)); });
+                });
+              } catch (err) {
+                console.error('Failed to attach tz input for', name, err);
+              }
+            }
+          }
+
+          groupsContainer.appendChild(section);
+        }
+      } catch (e) {
+        groupsContainer.innerHTML = '<div class="small">Error loading</div>';
+        console.error(e);
+      }
+    }
+
+    function readValueFromRow(id, type) {
+      if (type === 'bool') {
+        const radios = document.getElementsByName('v_' + id);
+        for (const r of radios) if (r.checked) return r.value;
+        return '0';
+      }
+      const el = document.getElementById('v_' + id);
+      return el ? el.value : '';
+    }
+
+    async function saveSettingInline(id, name, originalType) {
+      const value = readValueFromRow(id, originalType);
+      const description = (document.getElementById('d_' + id) || {}).value || '';
+      try {
+        await api('PUT', '?id=' + id, { name, value, description, type: originalType });
+        await load();
+      } catch (e) { alert('Save failed: ' + e.message); }
+    }
+
+    /* ---------- JSON editor and helpers ---------- */
+    function safeParseJson(raw) {
+      if (raw === null || raw === undefined) return null;
+      let s = String(raw).trim();
+      if (s === '') return null;
+      if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+        try {
+          const inner = JSON.parse(s);
+          if (typeof inner !== 'string') return inner;
+          s = String(inner).trim();
+        } catch (e) { s = s.substring(1, s.length-1).trim(); }
+      }
+      try { return JSON.parse(s); } catch (e){}
+      try {
+        const objMatch = s.match(new RegExp('\\{[\\s\\S]*\\}'));
+        if (objMatch) { try { return JSON.parse(objMatch[0]); } catch(e){} }
+        const arrMatch = s.match(new RegExp('\\[[\\s\\S]*\\]'));
+        if (arrMatch) { try { return JSON.parse(arrMatch[0]); } catch(e){} }
+      } catch(e){}
+      if (s.indexOf("'") === -1 && s.indexOf('"') !== -1) {
+        try { return JSON.parse(s.replace(/'/g, '"')); } catch(e){}
+      }
+      return null;
+    }
+
+    function clearJsonForm(){ jsonFormContainer.innerHTML=''; jsonMsg.style.display='none'; jsonTypeLabel.innerText=''; jsonModalTitle.innerText='JSON Editor'; }
+    function addKvRowFixedLabel(label,val){
+      const row=document.createElement('div'); row.className='kvp-row';
+      const labelSpan=document.createElement('div'); labelSpan.className='kv-label'; labelSpan.innerText=label;
+      const valueInput=document.createElement('input'); valueInput.type='text'; valueInput.placeholder='value (plain or JSON for nested)'; valueInput.value=val;
+      row.appendChild(labelSpan); row.appendChild(valueInput); jsonFormContainer.appendChild(row);
+    }
+    function stringifyValueForInput(v){ if(v===null) return ''; if(typeof v==='object') return JSON.stringify(v); return String(v); }
+    function buildFormFromObject(obj,type){ clearJsonForm(); if(Array.isArray(obj)){ obj.forEach((v,i)=>addKvRowFixedLabel(String(i),stringifyValueForInput(v))); } else if(obj && typeof obj==='object'){ Object.keys(obj).forEach(k=>addKvRowFixedLabel(k,stringifyValueForInput(obj[k]))); } else { addKvRowFixedLabel('value',stringifyValueForInput(obj)); } }
+
+    function buildInterfaceEditor(parsed,contextName){
+      clearJsonForm();
+      jsonModalTitle.innerText = 'Interface Editor - ' + contextName;
+      jsonTypeLabel.innerText = 'interfaces';
+      const hint=document.createElement('div'); hint.className='label-muted'; hint.innerText='Each interface is an object with keys: interface, label, threshold. Add or remove entries below.'; jsonFormContainer.appendChild(hint);
+      const list=document.createElement('div'); list.className='interface-list'; jsonFormContainer.appendChild(list);
+      let items = [];
+      if (Array.isArray(parsed)) { items = parsed.map(x => (x && typeof x==='object') ? { interface: String(x.interface ?? ''), label: String(x.label ?? ''), threshold: x.threshold ?? '' } : {interface:'',label:'',threshold:''}); }
+      else if (parsed && typeof parsed === 'object') {
+        const vals = Object.keys(parsed).map(k=>parsed[k]).filter(v=>v && typeof v==='object');
+        if (vals.length) items = vals.map(v=>({interface:String(v.interface??''),label:String(v.label??''),threshold:v.threshold??''}));
+        else if ('interface' in parsed || 'label' in parsed || 'threshold' in parsed) items=[{interface:String(parsed.interface??''),label:String(parsed.label??''),threshold:parsed.threshold??''}];
+      }
+      if (items.length===0) items.push({interface:'',label:'',threshold:''});
+      function render(){
+        list.innerHTML='';
+        items.forEach((it,idx)=>{
+          const row=document.createElement('div'); row.className='interface-item';
+          const lblIface=document.createElement('div'); lblIface.className='field-label'; lblIface.innerText='interface';
+          const iface=document.createElement('input'); iface.type='text'; iface.placeholder='interface'; iface.value=it.interface; iface.style.flex='0 0 34%';
+          const lblLabel=document.createElement('div'); lblLabel.className='field-label'; lblLabel.innerText='label';
+          const label=document.createElement('input'); label.type='text'; label.placeholder='label'; label.value=it.label; label.style.flex='0 0 34%';
+          const lblThresh=document.createElement('div'); lblThresh.className='field-label'; lblThresh.innerText='threshold';
+          const thresh=document.createElement('input'); thresh.type='number'; thresh.placeholder='threshold'; thresh.value=it.threshold; thresh.style.flex='0 0 18%';
+          const remove=document.createElement('button'); remove.type='button'; remove.className='remove-btn'; remove.innerText='Remove'; remove.onclick=()=>{ items.splice(idx,1); if(items.length===0) items.push({interface:'',label:'',threshold:''}); render();};
+          iface.addEventListener('input',()=>items[idx].interface=iface.value); label.addEventListener('input',()=>items[idx].label=label.value); thresh.addEventListener('input',()=>items[idx].threshold=thresh.value);
+          const leftWrap=document.createElement('div'); leftWrap.style.display='flex'; leftWrap.style.gap='8px'; leftWrap.style.alignItems='center'; leftWrap.appendChild(lblIface); leftWrap.appendChild(iface);
+          const midWrap=document.createElement('div'); midWrap.style.display='flex'; midWrap.style.gap='8px'; midWrap.style.alignItems='center'; midWrap.appendChild(lblLabel); midWrap.appendChild(label);
+          const rightWrap=document.createElement('div'); rightWrap.style.display='flex'; rightWrap.style.gap='8px'; rightWrap.style.alignItems='center'; rightWrap.appendChild(lblThresh); rightWrap.appendChild(thresh);
+          row.appendChild(leftWrap); row.appendChild(midWrap); row.appendChild(rightWrap); row.appendChild(remove); list.appendChild(row);
+        });
+      }
+      render();
+      const addWrap=document.createElement('div'); addWrap.className='interface-add';
+      const addBtn=document.createElement('button'); addBtn.className='btn'; addBtn.type='button'; addBtn.innerText='Add Interface'; addBtn.onclick=()=>{ items.push({interface:'',label:'',threshold:''}); render();};
+      addWrap.appendChild(addBtn); jsonFormContainer.appendChild(addWrap);
+      return ()=>items.map(it=>({ interface: String(it.interface||''), label: String(it.label||''), threshold: (it.threshold===''? '' : (isNaN(Number(it.threshold)) ? it.threshold : Number(it.threshold))) }));
+    }
+
+    function buildServersEditor(parsed,contextName){
+      clearJsonForm();
+      jsonModalTitle.innerText = 'Servers Editor - ' + contextName;
+      jsonTypeLabel.innerText = 'servers';
+      const hint=document.createElement('div'); hint.className='label-muted'; hint.innerText='Servers are stored as an array of names (value-only JSON). Add or remove entries below.'; jsonFormContainer.appendChild(hint);
+      const list=document.createElement('div'); list.className='server-list'; jsonFormContainer.appendChild(list);
+      let items=[];
+      if (Array.isArray(parsed)) { items = parsed.map(x => (typeof x === 'string') ? String(x) : (x && x.name ? String(x.name) : '')); }
+      else if (parsed && typeof parsed === 'object') {
+        const vals = Object.keys(parsed).map(k=>parsed[k]).filter(v=>typeof v==='string');
+        if (vals.length) items = vals.map(v=>String(v));
+        else if (typeof parsed.name === 'string') items=[String(parsed.name)];
+      }
+      if (items.length===0) items.push('');
+      function render(){
+        list.innerHTML=''; items.forEach((it,idx)=>{
+          const row=document.createElement('div'); row.className='server-item';
+          const lblName=document.createElement('div'); lblName.className='field-label'; lblName.innerText='name';
+          const name=document.createElement('input'); name.type='text'; name.placeholder='server name'; name.value=it; name.style.flex='1';
+          const remove=document.createElement('button'); remove.type='button'; remove.className='remove-btn'; remove.innerText='Remove'; remove.onclick=()=>{ items.splice(idx,1); if(items.length===0) items.push(''); render(); };
+          name.addEventListener('input',()=>items[idx]=name.value);
+          const leftWrap=document.createElement('div'); leftWrap.style.display='flex'; leftWrap.style.gap='8px'; leftWrap.style.alignItems='center'; leftWrap.appendChild(lblName); leftWrap.appendChild(name);
+          row.appendChild(leftWrap); row.appendChild(remove); list.appendChild(row);
+        });
+      }
+      render();
+      const addWrap=document.createElement('div'); addWrap.className='server-add';
+      const addBtn=document.createElement('button'); addBtn.className='btn'; addBtn.type='button'; addBtn.innerText='Add Server'; addBtn.onclick=()=>{ items.push(''); render();};
+      addWrap.appendChild(addBtn); jsonFormContainer.appendChild(addWrap);
+      return ()=>items.map(it=>String(it||'').trim()).filter(n=>n!=='');
+    }
+
+    function parseEditorToObject(type){
+      const rows = Array.from(jsonFormContainer.querySelectorAll('.kvp-row'));
+      if (type === 'list') {
+        const arr = [];
+        rows.forEach(r=>{
+          const key = r.querySelector('.kv-label').innerText.trim();
+          const valInput = r.querySelector('input[type="text"]');
+          const v = parseValueString(valInput.value.trim());
+          if (/^\d+$/.test(key)) arr[Number(key)] = v; else arr.push(v);
+        });
+        return arr.filter((_,i)=>typeof arr[i] !== 'undefined');
+      } else {
+        const obj = {};
+        rows.forEach(r=>{
+          const key = r.querySelector('.kv-label').innerText.trim();
+          const valInput = r.querySelector('input[type="text"]');
+          obj[key] = parseValueString(valInput.value.trim());
+        });
+        return obj;
+      }
+    }
+
+    function parseValueString(s){
+      if (s === '') return '';
+      try { return JSON.parse(s); } catch (e) {
+        if (/^-?\d+$/.test(s)) return parseInt(s,10);
+        if (/^-?\d+\.\d+$/.test(s)) return parseFloat(s);
+        if (/^(true|false)$/i.test(s)) return s.toLowerCase()==='true';
+        return s;
+      }
+    }
+
+    function openJsonEditorForRow(id, rawValue, type, name){
+      currentJsonContext = { id, name, type, initial: rawValue, readFn: null };
+      jsonMsg.style.display='none';
+      jsonTypeLabel.innerText = type;
+      jsonModalTitle.innerText = 'JSON Editor - ' + name;
+
+      if (isServersField(name)) {
+        let parsed = safeParseJson(rawValue);
+        if (parsed === null) {
+          const maybe = String(rawValue).match(new RegExp('\\[[\\s\\S]*\\]|\\{[\\s\\S]*\\}'));
+          if (maybe) parsed = safeParseJson(maybe[0]);
+        }
+        if (Array.isArray(parsed)) { } else if (parsed && typeof parsed === 'object') {
+          const vals = Object.keys(parsed).map(k=>parsed[k]).filter(v=>typeof v==='string');
+          if (vals.length) parsed = vals;
+          else if (typeof parsed.name === 'string') parsed = [parsed.name];
+          else parsed = [];
+        } else parsed = [];
+        if (!Array.isArray(parsed)) parsed = [];
+        const readFn = buildServersEditor(parsed, name);
+        currentJsonContext.readFn = readFn;
+        document.getElementById('applyJsonBtn').onclick = async () => {
+          try {
+            const outArr = readFn();
+            const out = JSON.stringify(outArr);
+            const inlineInput = document.getElementById('v_' + id);
+            if (inlineInput) { inlineInput.value = out; jsonModal.style.display='none'; return; }
+            if (!confirm('Apply servers JSON (array of names) directly to the record?')) return;
+            await api('PUT', '?id=' + id, { name, value: out, type: 'list' });
+            jsonModal.style.display='none';
+            await load();
+          } catch (err) { jsonMsg.innerText = 'Invalid server data: ' + (err.message||err); jsonMsg.style.display='block'; }
+        };
+        jsonModal.style.display='flex';
+        return;
+      }
+
+      if (isInterfaceField(name)) {
+        let parsed = safeParseJson(rawValue);
+        if (parsed === null) {
+          const maybe = String(rawValue).match(new RegExp('\\{[\\s\\S]*\\}'));
+          if (maybe) parsed = safeParseJson(maybe[0]);
+        }
+        if (parsed && !Array.isArray(parsed) && typeof parsed === 'object') {
+          const vkeys = Object.keys(parsed);
+          const looksLikeObjectOfObjects = vkeys.length>0 && vkeys.every(k => (parsed[k] && typeof parsed[k] === 'object'));
+          if (looksLikeObjectOfObjects) parsed = vkeys.map(k=>parsed[k]);
+          else if ('interface' in parsed || 'label' in parsed || 'threshold' in parsed) parsed = [parsed];
+          else parsed = [];
+        }
+        if (!Array.isArray(parsed)) parsed = [];
+        const readFn = buildInterfaceEditor(parsed, name);
+        currentJsonContext.readFn = readFn;
+        document.getElementById('applyJsonBtn').onclick = async () => {
+          try {
+            const outArr = readFn();
+            for (const it of outArr) if (!it.interface || !it.label) throw new Error('Each interface must include non-empty interface and label');
+            const out = JSON.stringify(outArr);
+            const inlineInput = document.getElementById('v_' + id);
+            if (inlineInput) { inlineInput.value = out; jsonModal.style.display='none'; return; }
+            if (!confirm('Apply interfaces JSON directly to the record?')) return;
+            await api('PUT', '?id=' + id, { name, value: out, type: 'object' });
+            jsonModal.style.display='none';
+            await load();
+          } catch (err) { jsonMsg.innerText = 'Invalid interface data: ' + (err.message||err); jsonMsg.style.display='block'; }
+        };
+        jsonModal.style.display='flex';
+        return;
+      }
+
+      let parsed = safeParseJson(rawValue);
+      if (parsed === null) {
+        try { parsed = JSON.parse(rawValue || '{}'); } catch (e) { parsed = (type === 'list') ? [] : {}; }
+      }
+      try { buildFormFromObject(parsed, type); } catch(e) { buildFormFromObject((type === 'list') ? [] : {}, type); }
+      document.getElementById('applyJsonBtn').onclick = async () => {
+        try {
+          const parsedOut = parseEditorToObject(currentJsonContext.type);
+          const out = JSON.stringify(parsedOut);
+          const inlineInput = document.getElementById('v_' + id);
+          if (inlineInput) { inlineInput.value = out; jsonModal.style.display='none'; return; }
+          if (!confirm('Apply JSON directly to the record?')) return;
+          await api('PUT', '?id=' + id, { name, value: out, type: currentJsonContext.type || 'object' });
+          jsonModal.style.display='none';
+          await load();
+        } catch (err) { jsonMsg.innerText = 'Invalid data: ' + (err.message||err); jsonMsg.style.display='block'; }
+      };
+      jsonModal.style.display='flex';
+    }
+
+    document.getElementById('closeJsonBtn').addEventListener('click', ()=>{ jsonModal.style.display='none'; });
+
+    /* ---------- login/logout and basic wiring ---------- */
+    window.doLogin = async function(){
+      const pw = document.getElementById('pw').value;
+      document.getElementById('loginMsg').style.display='none';
+      try {
+        const r = await fetch(API + '?action=login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ password: pw }), credentials:'same-origin' });
+        const txt = await r.text();
+        const json = (()=>{ try { return JSON.parse(txt); } catch(e){ return { error: txt }; }})();
+        if (r.ok && json.success) { document.getElementById('pw').value=''; loginModal.style.display='none'; mainCard.style.display='block'; logoutBtn.style.display='inline-block'; load(); return; }
+        document.getElementById('loginMsg').innerText = json.error || 'Login failed'; document.getElementById('loginMsg').style.display='block';
+      } catch(e) { document.getElementById('loginMsg').innerText='Login error'; document.getElementById('loginMsg').style.display='block'; }
+    };
+    document.getElementById('pwBtn').addEventListener('click', doLogin);
+    document.getElementById('pw').addEventListener('keydown', function(e){ if (e.key === 'Enter'){ e.preventDefault(); doLogin(); }});
+    document.getElementById('reloadBtn').addEventListener('click', load);
+    document.getElementById('exportBtn').addEventListener('click', async ()=>{
+      try {
+        const rows = await api('GET','');
+        const blob = new Blob([JSON.stringify(rows,null,2)],{type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'settings.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      } catch(e){ alert('Export failed'); }
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+      await fetch(API + '?action=logout', { method:'POST', credentials:'same-origin' });
+      document.getElementById('pw').value = ''; loginModal.style.display='flex'; mainCard.style.display='none'; logoutBtn.style.display='none';
+    });
+
+    /* bootstrap */
+    checkAuth();
+  </script>
+</body>
+</html>

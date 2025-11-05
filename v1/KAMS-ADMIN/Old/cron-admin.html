@@ -1,0 +1,406 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Controllers Admin</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+:root{--bg:#0f1724;--muted:#9aa4b2;--accent:#6ee7b7;--accent-2:#60a5fa;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#071023,#071827);color:#e6eef6;min-height:100vh}
+.container{max-width:1100px;margin:32px auto;padding:20px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.h-title{font-size:20px;font-weight:700}
+.toolbar{display:flex;gap:8px}
+.btn{background:var(--accent-2);color:#04203a;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:16px;box-shadow:0 6px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+.form-grid{display:grid;grid-template-columns:1fr 320px;gap:12px;align-items:start}
+.input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+.small{font-size:13px;color:var(--muted)}
+.table{width:100%;border-collapse:collapse;margin-top:14px}
+.table th{font-weight:600;padding:10px;text-align:left;color:var(--muted);font-size:13px}
+.table td{padding:10px;border-top:1px dashed rgba(255,255,255,0.03);vertical-align:top}
+.tag{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px;color:var(--muted)}
+pre{margin:0;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;font-size:13px;color:#dff7ea;white-space:pre-wrap}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:60}
+.modal-box{background:#071827;padding:18px;border-radius:10px;min-width:360px;border:1px solid rgba(255,255,255,0.04);max-width:92%;max-height:88%;overflow:auto}
+.label{font-size:13px;color:var(--muted);margin-bottom:6px}
+.json-form{display:flex;flex-direction:column;gap:8px}
+.kvp-row{display:flex;gap:8px;align-items:stretch}
+.kvp-row .kv-label{width:34%;min-width:120px;padding:10px;border-radius:6px;background:rgba(255,255,255,0.02);color:var(--muted)}
+.kvp-row input[type="text"]{flex:1;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+.kv-actions{display:flex;gap:8px;align-items:center}
+.json-controls{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+@media(max-width:880px){ .form-grid{grid-template-columns:1fr} .header{flex-direction:column;align-items:flex-start;gap:8px} .kvp-row{flex-direction:column} .kvp-row .kv-label{width:auto} }
+.locked-name{padding:8px;border-radius:6px;background:rgba(255,255,255,0.02);color:var(--muted)}
+.disabled-input{opacity:0.85;background:rgba(255,255,255,0.01);cursor:not-allowed}
+.hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="h-title">Controllers Admin</div>
+        <div class="small">Manage device pipelines (tshark / serial) and parsers</div>
+      </div>
+      <div class="toolbar">
+        <button id="refreshBtn" class="btn ghost">Refresh</button>
+        <button id="newBtn" class="btn">New Controller</button>
+        <button id="startAllBtn" class="btn">Start All</button>
+        <button id="stopAllBtn" class="btn ghost">Stop All</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="flash" class="small" style="margin-bottom:8px;color:var(--muted)"></div>
+
+      <div style="display:flex;gap:12px;flex-direction:column">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:700">Registered Controllers</div>
+            <div class="small">Click a row to edit or control</div>
+          </div>
+
+          <table class="table" id="listTable" aria-describedby="controllers-list">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Unit</th>
+                <th>Enabled</th>
+                <th>Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="listBody">
+              <tr><td colspan="6" class="empty">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card form-grid">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div style="font-weight:700" id="formTitle">Create Controller</div>
+              <div class="small">Fill required fields then Save</div>
+            </div>
+
+            <form id="ctrlForm">
+              <input type="hidden" id="id" name="id">
+              <div style="display:flex;gap:8px;margin-bottom:8px">
+                <div style="flex:1">
+                  <label class="label">Name</label>
+                  <input class="input" id="name" name="name" required placeholder="unique-name">
+                </div>
+                <div style="width:160px">
+                  <label class="label">Type</label>
+                  <select id="type" name="type" class="input">
+                    <option value="tshark">tshark</option>
+                    <option value="serial">serial</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display:flex;gap:8px;margin-bottom:8px">
+                <div style="flex:1">
+                  <label class="label">Parser path (required)</label>
+                  <input id="parser" name="parser" class="input" placeholder="/usr/src/.../parser.php" required>
+                </div>
+                <div style="width:140px">
+                  <label class="label">Enabled</label>
+                  <select id="enabled" name="enabled" class="input">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="tsharkFields">
+                <div style="display:flex;gap:8px;margin-bottom:8px">
+                  <div style="flex:1">
+                    <label class="label">Tshark path</label>
+                    <input id="tshark" name="tshark" class="input" placeholder="/usr/bin/tshark">
+                  </div>
+                  <div style="width:140px">
+                    <label class="label">Interface</label>
+                    <input id="interface" name="interface" class="input" placeholder="enp6s18">
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;margin-bottom:8px">
+                  <div style="flex:1">
+                    <label class="label">Filter</label>
+                    <input id="filter" name="filter" class="input" placeholder="tcp and (ip.src==... )">
+                  </div>
+                  <div style="width:220px">
+                    <label class="label">Fields (tshark args)</label>
+                    <input id="fields" name="fields" class="input" placeholder='-T fields -E separator=\| -e ip.src -e data'>
+                  </div>
+                </div>
+              </div>
+
+              <div id="serialFields" class="hidden">
+                <div style="display:flex;gap:8px;margin-bottom:8px">
+                  <div style="flex:1">
+                    <label class="label">Device (e.g. /dev/ttyUSB0)</label>
+                    <input id="device" name="device" class="input" placeholder="/dev/ttyUSB0">
+                  </div>
+                  <div style="width:120px">
+                    <label class="label">Baud</label>
+                    <input id="baud" name="baud" class="input" placeholder="115200">
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;margin-bottom:8px">
+                  <div style="flex:1">
+                    <label class="label">stty args (optional)</label>
+                    <input id="stty" name="stty" class="input" placeholder="115200 raw -echo">
+                  </div>
+                  <div style="width:220px">
+                    <label class="label">Custom read command</label>
+                    <input id="read_cmd" name="read_cmd" class="input" placeholder="socat -u FILE:{device},raw -">
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex;gap:8px;margin-bottom:8px">
+                <div style="flex:1">
+                  <label class="label">PID file (optional)</label>
+                  <input id="pidfile" name="pidfile" class="input" placeholder="/var/run/name.pid">
+                </div>
+                <div style="width:320px">
+                  <label class="label">Pipeline log (optional)</label>
+                  <input id="pipeline_log" name="pipeline_log" class="input" placeholder="/var/log/name_pipeline.log">
+                </div>
+              </div>
+
+              <div>
+                <label class="label">Full config JSON (advanced)</label>
+                <textarea id="configJson" class="input" style="height:140px" placeholder='{"parser":"/path","tshark":"/usr/bin/tshark"}'></textarea>
+              </div>
+
+              <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+                <button id="saveBtn" type="submit" class="btn">Save</button>
+                <button id="clearBtn" type="button" class="btn ghost">Clear</button>
+              </div>
+            </form>
+          </div>
+
+          <div>
+            <div style="font-weight:700;margin-bottom:8px">Details / Preview</div>
+            <div class="small" style="margin-bottom:8px">Selected controller configuration preview and quick actions</div>
+
+            <div id="preview" class="card" style="min-height:280px">
+              <div id="previewEmpty" class="empty">Select or create a controller to preview settings</div>
+              <div id="previewContent" class="hidden">
+                <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:8px">
+                  <div>
+                    <div class="small">Name</div>
+                    <div id="pvName" class="locked-name"></div>
+                  </div>
+                  <div>
+                    <div class="small">Type</div>
+                    <div id="pvType" class="tag"></div>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:8px">
+                  <div class="small">Config JSON</div>
+                  <pre id="pvJson"></pre>
+                </div>
+
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+                  <button id="pvStart" class="btn">Start</button>
+                  <button id="pvStop" class="btn ghost">Stop</button>
+                  <button id="pvDelete" class="btn ghost">Delete</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+const api = 'controllers-api.php';
+const flashEl = document.getElementById('flash');
+function flash(msg, ok=true){ flashEl.style.color = ok ? 'var(--accent-2)' : '#ff6b6b'; flashEl.textContent = msg; setTimeout(()=>{ flashEl.textContent=''; }, 4000); }
+
+async function fetchJson(url, opts={}) {
+  const res = await fetch(url, opts);
+  if (!res.ok) throw new Error('Network error');
+  return res.json();
+}
+
+async function loadList(){
+  try {
+    const rows = await fetchJson(api + '?action=list');
+    const tbody = document.getElementById('listBody');
+    tbody.innerHTML = '';
+    if (!rows || rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">No controllers configured</td></tr>';
+      return;
+    }
+    rows.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><strong>${escapeHtml(row.name)}</strong></td>
+        <td>${escapeHtml(row.type)}</td>
+        <td>${escapeHtml(row.unit||'')}</td>
+        <td>${row.enabled? 'yes':'no'}</td>
+        <td class="small">${escapeHtml(row.updated_at||'')}</td>
+        <td>
+          <button class="btn ghost" data-act="edit" data-name="${escapeHtml(row.name)}">Edit</button>
+          <button class="btn ghost" data-act="delete" data-name="${escapeHtml(row.name)}">Delete</button>
+          <button class="btn" data-act="start" data-name="${escapeHtml(row.name)}">Start</button>
+          <button class="btn ghost" data-act="stop" data-name="${escapeHtml(row.name)}">Stop</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  } catch (e) {
+    document.getElementById('listBody').innerHTML = '<tr><td colspan="6" class="empty">Failed to load list</td></tr>';
+    flash('Failed to load controllers', false);
+    console.error(e);
+  }
+}
+
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+document.getElementById('refreshBtn').addEventListener('click', ()=>loadList());
+document.getElementById('newBtn').addEventListener('click', ()=>{ resetForm(); });
+document.getElementById('startAllBtn').addEventListener('click', ()=>bulkAction('start'));
+document.getElementById('stopAllBtn').addEventListener('click', ()=>bulkAction('stop'));
+
+async function bulkAction(act){
+  try {
+    await fetchJson(api, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:act+'All'}) });
+    flash(act+' all requested');
+  } catch (e) { flash('Bulk action failed', false); }
+}
+
+document.getElementById('listBody').addEventListener('click', async (ev)=>{
+  const btn = ev.target.closest('button');
+  if (!btn) return;
+  const act = btn.dataset.act;
+  const name = btn.dataset.name;
+  if (act === 'edit') return loadController(name);
+  if (act === 'delete') return deleteController(name);
+  if (act === 'start' || act === 'stop') return controlController(act, name);
+});
+
+async function loadController(name){
+  try {
+    const res = await fetchJson(api + '?action=get&name=' + encodeURIComponent(name));
+    if (res.error) { flash(res.error, false); return; }
+    const cfgRow = res.row;
+    document.getElementById('id').value = cfgRow.id || '';
+    document.getElementById('name').value = cfgRow.name || '';
+    document.getElementById('type').value = cfgRow.type || 'tshark';
+    document.getElementById('parser').value = (JSON.parse(cfgRow.config).parser) || '';
+    document.getElementById('unit').value = cfgRow.unit || '';
+    document.getElementById('enabled').value = cfgRow.enabled ? '1':'0';
+    const parsed = JSON.parse(cfgRow.config);
+    document.getElementById('tshark').value = parsed.tshark || '';
+    document.getElementById('interface').value = parsed.interface || '';
+    document.getElementById('filter').value = parsed.filter || '';
+    document.getElementById('fields').value = parsed.fields || '';
+    document.getElementById('device').value = parsed.device || '';
+    document.getElementById('baud').value = parsed.baud || '';
+    document.getElementById('stty').value = parsed.stty || '';
+    document.getElementById('read_cmd').value = parsed.read_cmd || '';
+    document.getElementById('pidfile').value = parsed.pidfile || '';
+    document.getElementById('pipeline_log').value = parsed.pipeline_log || '';
+    document.getElementById('configJson').value = JSON.stringify(parsed, null, 2);
+    toggleTypeFields();
+    showPreview(cfgRow.name, cfgRow.type, parsed);
+    document.getElementById('formTitle').textContent = 'Edit Controller';
+  } catch (e) {
+    flash('Failed to load controller', false);
+    console.error(e);
+  }
+}
+
+function showPreview(name, type, cfg){
+  document.getElementById('previewEmpty').classList.add('hidden');
+  document.getElementById('previewContent').classList.remove('hidden');
+  document.getElementById('pvName').textContent = name;
+  document.getElementById('pvType').textContent = type;
+  document.getElementById('pvJson').textContent = JSON.stringify(cfg, null, 2);
+  document.getElementById('pvStart').onclick = ()=>controlController('start', name);
+  document.getElementById('pvStop').onclick = ()=>controlController('stop', name);
+  document.getElementById('pvDelete').onclick = ()=>deleteController(name);
+}
+
+async function deleteController(name){
+  if (!confirm('Delete ' + name + '?')) return;
+  try {
+    const res = await fetchJson(api, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'delete', name}) });
+    if (res.ok) { flash('Deleted'); resetForm(); loadList(); } else flash(res.error || 'Delete failed', false);
+  } catch (e) { flash('Delete failed', false); }
+}
+
+async function controlController(action, name){
+  try {
+    const res = await fetchJson(api, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action, name}) });
+    if (res.ok) { flash(action + ' requested'); } else flash(res.error || 'Action failed', false);
+  } catch (e) { flash('Action failed', false); }
+}
+
+function resetForm(){
+  document.getElementById('ctrlForm').reset();
+  document.getElementById('configJson').value = '';
+  document.getElementById('formTitle').textContent = 'Create Controller';
+  document.getElementById('previewEmpty').classList.remove('hidden');
+  document.getElementById('previewContent').classList.add('hidden');
+  toggleTypeFields();
+}
+
+function toggleTypeFields(){
+  const t = document.getElementById('type').value;
+  document.getElementById('tsharkFields').classList.toggle('hidden', t!=='tshark');
+  document.getElementById('serialFields').classList.toggle('hidden', t!=='serial');
+}
+
+document.getElementById('type').addEventListener('change', toggleTypeFields);
+document.getElementById('clearBtn').addEventListener('click', resetForm);
+
+document.getElementById('ctrlForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  if (!name) { flash('Name required', false); return; }
+  let cfg = {};
+  try { cfg = JSON.parse(document.getElementById('configJson').value || '{}'); } catch(e){ flash('Invalid JSON config', false); return; }
+  cfg.parser = document.getElementById('parser').value.trim() || cfg.parser;
+  const type = document.getElementById('type').value;
+  if (type === 'tshark') {
+    cfg.tshark = document.getElementById('tshark').value.trim() || cfg.tshark;
+    cfg.interface = document.getElementById('interface').value.trim() || cfg.interface;
+    cfg.filter = document.getElementById('filter').value.trim() || cfg.filter;
+    cfg.fields = document.getElementById('fields').value.trim() || cfg.fields;
+  } else {
+    cfg.device = document.getElementById('device').value.trim() || cfg.device;
+    cfg.baud = document.getElementById('baud').value.trim() || cfg.baud;
+    cfg.stty = document.getElementById('stty').value.trim() || cfg.stty;
+    cfg.read_cmd = document.getElementById('read_cmd').value.trim() || cfg.read_cmd;
+  }
+  cfg.pidfile = document.getElementById('pidfile').value.trim() || cfg.pidfile;
+  cfg.pipeline_log = document.getElementById('pipeline_log').value.trim() || cfg.pipeline_log;
+  cfg.type = type;
+
+  const payload = { action:'upsert', name, unit: document.getElementById('unit') ? document.getElementById('unit').value : null, enabled: document.getElementById('enabled').value === '1' ? 1 : 0, config: cfg };
+  try {
+    const res = await fetchJson(api, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    if (res.ok) { flash('Saved'); resetForm(); loadList(); } else { flash(res.error || 'Save failed', false); }
+  } catch (e) {
+    flash('Save failed', false);
+  }
+});
+
+loadList();
+toggleTypeFields();
+</script>
+</body>
+</html>

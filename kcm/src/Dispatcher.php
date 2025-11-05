@@ -1,5 +1,5 @@
 <?php
-namespace Kova\Kams\KCM;
+namespace Kova\Kams\Kcm;
 
 require("../vendor/autoload.php");
 

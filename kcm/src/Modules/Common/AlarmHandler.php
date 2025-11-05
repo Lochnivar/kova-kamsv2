@@ -1,9 +1,9 @@
 <?php
 
-namespace Kova\Kcm\Modules\Common;
+namespace Kova\Kams\Kcm\Modules\Common;
 
 use Kova\Kams\Common\Database as DB;
-use Kova\Kcm\Modules\Common\Communicator as Comms;
+use Kova\Kams\Kcm\Modules\Common\Communicator as Comms;
 
 class AlarmHandler
 {
@@ -26,41 +26,39 @@ class AlarmHandler
         $tnow = time();
         $active = "1";
 
-        $sql = "INSERT INTO kamsAlarms(active, timestamp, module, iface, msgline) VALUES (?,?,?,?,?)";
-        $this->dbConn->dbQuery($sql, $active, $tnow, $mod, $iface, $msgline);
+        $this->dbConn->insert('kamsAlarms', [
+            'active' => $active,
+            'timestamp' => $tnow,
+            'module' => $mod,
+            'iface' => $iface,
+            'msgline' => $msgline
+        ]);
 
-        $sql = "SELECT LAST_INSERT_ID()";
-        $result = $this->dbConn->dbQuery($sql);
+        $lastId = $this->dbConn->lastInsertId();
 
         
         $this->comms->SendComms($msgline);
 
-        return $result[0];
+        return ['LAST_INSERT_ID()' => $lastId];
     }
 
     public function clearAlarm($mod, $alarmID, $iface, $msgline)
     {
-        $sql = "";
         switch ($mod) {
             case "moto":
-                $sql = "UPDATE moto_channel_data SET alarm = NULL WHERE channel_id = ? AND alarm = ?";
+                $this->dbConn->update('moto_channel_data', ['alarm' => null], ['channel_id' => $iface, 'alarm' => $alarmID]);
                 break;
             case "serial":
-                $sql = "UPDATE serial_settings SET alarmID = NULL WHERE ifaceid = ? AND alarmID = ?";
+                $this->dbConn->update('serial_settings', ['alarmID' => null], ['ifaceid' => $iface, 'alarmID' => $alarmID]);
                 break;
             case "udp":
-                $sql = "UPDATE udp_settings SET alarmID = NULL WHERE ifaceid = ? AND alarmID = ?";
+                $this->dbConn->update('udp_settings', ['alarmID' => null], ['ifaceid' => $iface, 'alarmID' => $alarmID]);
                 break;
             default:
                 break;
         }
 
-        if ($sql) {
-            $this->dbConn->dbQuery($sql, $iface, $alarmID);
-        }
-        $sql = "UPDATE kamsAlarms SET active = '0' WHERE id = ?";
-
-        $this->dbConn->dbQuery($sql, $alarmID);
+        $this->dbConn->update('kamsAlarms', ['active' => '0'], ['id' => $alarmID]);
 
         $this->comms->SendComms($msgline);
 

@@ -17,6 +17,9 @@ final class DBALConfigProvider
     private Connection $connection;
     private string $table;
     private ?int $ttl;
+    
+    /** @var array<string, string> Cache of setting types from database */
+    private array $typeCache = [];
 
     /** @var array<string, mixed> */
     private array $cache = [];
@@ -45,12 +48,99 @@ final class DBALConfigProvider
 
     /**
      * Get a single config value, or default if missing.
+     * 
+     * @param string $key The setting key
+     * @param mixed $default Default value if not found
+     * @param string|null $expectedType Optional type for normalization (bool, int, string, object, list)
+     * @return mixed The config value, normalized if type is provided
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, $default = null, ?string $expectedType = null)
     {
         $config = $this->all();
-
-        return $config[$key] ?? $default;
+        $value = $config[$key] ?? $default;
+        
+        // Type normalization if type is provided
+        if ($expectedType !== null && $value !== null) {
+            return SettingsValueNormalizer::normalizeForUse($value, $expectedType);
+        }
+        
+        // If we have type info from DB, use it
+        if ($value !== null && isset($this->typeCache[$key])) {
+            return SettingsValueNormalizer::normalizeForUse($value, $this->typeCache[$key]);
+        }
+        
+        return $value;
+    }
+    
+    /**
+     * Get a boolean config value.
+     * 
+     * @param string $key The setting key
+     * @param bool $default Default value if not found
+     * @return bool The boolean value
+     */
+    public function getBool(string $key, bool $default = false): bool
+    {
+        $value = $this->get($key, $default ? '1' : '0', 'bool');
+        return SettingsValueNormalizer::normalizeBool($value);
+    }
+    
+    /**
+     * Get an integer config value.
+     * 
+     * @param string $key The setting key
+     * @param int $default Default value if not found
+     * @return int The integer value
+     */
+    public function getInt(string $key, int $default = 0): int
+    {
+        $value = $this->get($key, (string)$default, 'int');
+        return (int)$value;
+    }
+    
+    /**
+     * Get a string config value.
+     * 
+     * @param string $key The setting key
+     * @param string $default Default value if not found
+     * @return string The string value
+     */
+    public function getString(string $key, string $default = ''): string
+    {
+        $value = $this->get($key, $default, 'string');
+        return (string)$value;
+    }
+    
+    /**
+     * Get an object/array config value.
+     * 
+     * @param string $key The setting key
+     * @param array $default Default value if not found
+     * @return array The array/object value
+     */
+    public function getObject(string $key, array $default = []): array
+    {
+        $value = $this->get($key, json_encode($default), 'object');
+        if (is_array($value)) {
+            return $value;
+        }
+        return $default;
+    }
+    
+    /**
+     * Get a list/array config value.
+     * 
+     * @param string $key The setting key
+     * @param array $default Default value if not found
+     * @return array The list value
+     */
+    public function getList(string $key, array $default = []): array
+    {
+        $value = $this->get($key, json_encode($default), 'list');
+        if (is_array($value)) {
+            return $value;
+        }
+        return $default;
     }
 
     /**
@@ -62,17 +152,22 @@ final class DBALConfigProvider
         $result = $this->connection->executeQuery($sql);
 
         $data = [];
+        $types = [];
+        
         while ($row = $result->fetchAssociative()) {
             if ($row === false) {
                 continue;
             }
 
+            // Determine key and value columns (handle both old and new schemas)
             if (array_key_exists('setname', $row)) {
                 $key = $row['setname'];
                 $value = $row['setvalue'] ?? null;
+                $type = $row['type'] ?? null;
             } elseif (array_key_exists('name', $row)) {
                 $key = $row['name'];
                 $value = $row['value'] ?? null;
+                $type = $row['type'] ?? null;
             } else {
                 $values = array_values($row);
                 if (count($values) < 2) {
@@ -80,13 +175,35 @@ final class DBALConfigProvider
                 }
                 $key = (string) $values[0];
                 $value = $values[1];
+                $type = null;
+            }
+            
+            // Store type info for normalization
+            if ($type) {
+                $types[$key] = $type;
             }
 
-            $data[$key] = $this->normalizeValue($value);
+            // Normalize value based on type if available
+            if ($type) {
+                $data[$key] = SettingsValueNormalizer::normalizeForUse($value, $type);
+            } else {
+                $data[$key] = $this->normalizeValue($value);
+            }
         }
 
         $this->cache = $data;
+        $this->typeCache = $types;
         $this->lastLoaded = time();
+    }
+    
+    /**
+     * Clear the cache (force reload on next access).
+     */
+    public function clearCache(): void
+    {
+        $this->cache = [];
+        $this->typeCache = [];
+        $this->lastLoaded = null;
     }
 
     private function shouldReload(): bool

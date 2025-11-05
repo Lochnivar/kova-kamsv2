@@ -17,10 +17,11 @@
   "autoload": {
     "psr-4": {
       "Kova\\Kams\\Unified\\": "unified/src/",
-      "Kova\\Kams\\KCM\\": "kcm/src/",
+      "Kova\\Kams\\Kcm\\": "kcm/src/",
       "Kova\\Kams\\App\\": "app/src/",
       "Kova\\Kams\\Common\\": "src/Common/",
-      "Kova\\Kams\\Bones\\": "src/Bones/"
+      "Kova\\Kams\\Bones\\": "src/Common/Bones/",
+      "Kova\\Kams\\Core\\": "src/Core/"
     }
   },
   "minimum-stability": "stable",

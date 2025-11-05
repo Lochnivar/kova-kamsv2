@@ -1,0 +1,170 @@
+		<!DOCTYPE html>
+	
+	
+	<html>
+	  <head>
+		<meta
+		  http-equiv="refresh"
+		  content="600; URL=http://10.100.1.37/serial-unified/index.html"
+		/>
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<link rel="stylesheet" href="css/morris.css" />
+	
+		<script src="js/jquery.min.js"></script>
+	
+		<script src="js/raphael-min.js"></script>
+	
+		<script src="js/morris.min.js"></script>
+	
+		<script src="bootstrap/js/bootstrap.min.js"></script>
+	
+		<script>
+			$(function() {
+			setInterval(function(){
+
+			var d = new Date();
+			var s = d.getSeconds();
+  			var m = d.getMinutes();
+  			var h = d.getHours();
+  		 $(".clock").html(("0" + h).substr(-2) + ":" + ("0" + m).substr(-2) + ":" + ("0" + s).substr(-2));
+		}, 1000);
+
+});
+</script>
+
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+	
+		<style>
+		.clock {
+			position: absolute;
+ 			top: 25px;
+  			right: 150px;
+ 			width: 100px;
+  			height: 50px;
+			font-size: 50px;
+		}
+
+		  #channelLabel {
+			margin-left: 5px;
+		  }
+	
+		  #logo {
+			position: relative;
+			height: 87px;
+			width: 347px;
+			padding: 3px;
+			margin-bottom: 1px;
+			background-color: #883330;
+			margin-top: 1px;
+			margin-left: 10px;
+			border-radius: 1%;
+		  }
+	
+		  .flash {
+			animation-name: flash;
+			animation-duration: 0.3s;
+			animation-timing-function: linear;
+			animation-iteration-count: infinite;
+			animation-direction: alternate;
+			animation-play-state: running;
+		  }
+	
+		  @keyframes flash {
+			from {
+			  color: red;
+			}
+			to {
+			  color: black;
+			}
+		  }
+	
+		  #warning {
+			float: right;
+			margin-right: 20px;
+			text-decoration: underline;
+		  }
+	
+		  .averages {
+			margin-left: 140px;
+			float: left;
+			border: 2px solid black;
+			padding: 4px;
+			border-radius: 3%;
+		  }
+	
+		  #siteName {
+			margin-left: 50px;
+		  }
+	
+		  .clear {
+			clear: both;
+		  }
+
+		.tablehead {
+			font-size: 24px;
+			color: #0059FF;
+		}
+		</style>
+	
+		
+	  </head>
+	
+	  <body style="padding: 5px 5px 5px 5px; background-color: #dcdcdc">
+	  <p><img src="kova-logo.png" id="logo"></img></p>
+	 
+		<span class = "clock" id="jclock"></span>
+ <table id = "graph_table" cols = 3 border = 1 width = '100%'>
+	  <tr><td colspan = 3 align='center'><strong><span class='tablehead'><a href='http://10.100.1.37/serial/index.php'>CSR-KAMS : 10.100.1.37 CSR1</a></span></strong></td></tr><tr align='center'><td colspan = 3> Total Serial Througput: 9.58 KB</td></tr><tr align='center'><td>One Hour Average: 1830 KB</td><td>Two Hour Average: 3024.1666666667 KB</td><td>Three Hour Average: 4032.25 KB</td></tr><tr align = 'center'><td colspan = 3><div id='graph-10.100.1.37-CSR1'></div><script type='text/javascript'>
+
+
+		Morris.Area({
+
+	element: 'graph-10.100.1.37-CSR1',
+
+	data: [{x: '2024-09-18 22:20:01', y:0.00},{x: '2024-09-18 22:10:02', y:0.00},{x: '2024-09-18 22:00:01', y:0.00},{x: '2024-09-18 21:50:01', y:0.00},{x: '2024-09-18 21:40:01', y:0.00},{x: '2024-09-18 21:30:01', y:1.79},{x: '2024-09-18 21:20:01', y:1.69},{x: '2024-09-18 21:10:01', y:5.48},{x: '2024-09-18 21:00:01', y:1.22},{x: '2024-09-18 20:50:01', y:1.73},{x: '2024-09-18 20:40:01', y:5.81},{x: '2024-09-18 20:30:01', y:0.00},{x: '2024-09-18 20:20:01', y:3.63},{x: '2024-09-18 20:10:01', y:7.03},{x: '2024-09-18 20:00:01', y:3.96},{x: '2024-09-18 19:50:01', y:3.06},{x: '2024-09-18 19:40:01', y:3.59},{x: '2024-09-18 19:30:01', y:8.27},{x: '2024-09-18 19:20:01', y:7.23},{x: '2024-09-18 19:10:01', y:5.72},{x: '2024-09-18 19:00:01', y:3.85},{x: '2024-09-18 18:50:01', y:4.11},{x: '2024-09-18 18:40:01', y:6.16},{x: '2024-09-18 18:30:01', y:3.07},{x: '2024-09-18 18:20:01', y:5.92},{x: '2024-09-18 18:10:01', y:5.68},{x: '2024-09-18 18:00:01', y:6.03},{x: '2024-09-18 17:50:02', y:4.51},{x: '2024-09-18 17:40:01', y:6.91},{x: '2024-09-18 17:30:01', y:5.96},{x: '2024-09-18 17:20:01', y:5.40},{x: '2024-09-18 17:10:01', y:4.49},{x: '2024-09-18 17:00:01', y:9.08},{x: '2024-09-18 16:50:01', y:2.64},{x: '2024-09-18 16:40:02', y:7.30},{x: '2024-09-18 16:30:01', y:7.65},{x: '2024-09-18 16:20:01', y:2.92},{x: '2024-09-18 16:10:01', y:7.21},{x: '2024-09-18 16:00:01', y:8.97},{x: '2024-09-18 15:50:01', y:4.97},{x: '2024-09-18 15:40:01', y:12.81},{x: '2024-09-18 15:30:01', y:1.04},{x: '2024-09-18 15:20:01', y:7.22},{x: '2024-09-18 15:10:01', y:14.00},{x: '2024-09-18 15:00:01', y:9.57},],
+
+	lineColors: ['green'],
+
+	xkey: 'x',
+
+	ykeys: ['y'],
+
+	labels: ['Input'],
+
+	postUnits: [' KB'],
+
+	fillOpacity: '.7',
+
+}).on('click', function(i, row) {
+
+	console.log(i, row);
+
+});
+</script></td></tr><tr><td colspan = 3 align='center'><strong><span class='tablehead'><a href='http://10.100.1.37/serial2/index.php'>CSR-KAMS : 10.100.1.37 CSR2</a></span></strong></td></tr><tr align='center'><td colspan = 3> Total Serial Througput: 7.59 KB</td></tr><tr align='center'><td>One Hour Average: 2102 KB</td><td>Two Hour Average: 3445.3333333333 KB</td><td>Three Hour Average: 4552.5 KB</td></tr><tr align = 'center'><td colspan = 3><div id='graph-10.100.1.37-CSR2'></div><script type='text/javascript'>
+
+
+		Morris.Area({
+
+	element: 'graph-10.100.1.37-CSR2',
+
+	data: [{x: '2024-09-18 22:20:01', y:0.00},{x: '2024-09-18 22:10:02', y:0.00},{x: '2024-09-18 22:00:01', y:0.00},{x: '2024-09-18 21:50:01', y:0.00},{x: '2024-09-18 21:40:01', y:0.00},{x: '2024-09-18 21:30:01', y:2.05},{x: '2024-09-18 21:20:01', y:3.36},{x: '2024-09-18 21:10:01', y:4.40},{x: '2024-09-18 21:00:01', y:2.59},{x: '2024-09-18 20:50:01', y:2.11},{x: '2024-09-18 20:40:01', y:5.68},{x: '2024-09-18 20:30:01', y:0.00},{x: '2024-09-18 20:20:01', y:4.13},{x: '2024-09-18 20:10:01', y:8.05},{x: '2024-09-18 20:00:01', y:5.69},{x: '2024-09-18 19:50:01', y:3.40},{x: '2024-09-18 19:40:01', y:4.12},{x: '2024-09-18 19:30:01', y:7.78},{x: '2024-09-18 19:20:01', y:12.29},{x: '2024-09-18 19:10:01', y:5.12},{x: '2024-09-18 19:00:01', y:4.01},{x: '2024-09-18 18:50:01', y:3.17},{x: '2024-09-18 18:40:01', y:8.20},{x: '2024-09-18 18:30:01', y:4.83},{x: '2024-09-18 18:20:01', y:8.23},{x: '2024-09-18 18:10:01', y:6.26},{x: '2024-09-18 18:00:01', y:4.80},{x: '2024-09-18 17:50:02', y:1.99},{x: '2024-09-18 17:40:01', y:8.94},{x: '2024-09-18 17:30:01', y:4.30},{x: '2024-09-18 17:20:01', y:6.47},{x: '2024-09-18 17:10:01', y:3.00},{x: '2024-09-18 17:00:01', y:13.65},{x: '2024-09-18 16:50:01', y:2.39},{x: '2024-09-18 16:40:02', y:6.71},{x: '2024-09-18 16:30:01', y:10.81},{x: '2024-09-18 16:20:01', y:5.89},{x: '2024-09-18 16:10:01', y:6.78},{x: '2024-09-18 16:00:01', y:15.00},{x: '2024-09-18 15:50:01', y:9.81},{x: '2024-09-18 15:40:01', y:9.92},{x: '2024-09-18 15:30:01', y:2.85},{x: '2024-09-18 15:20:01', y:8.65},{x: '2024-09-18 15:10:01', y:15.42},{x: '2024-09-18 15:00:01', y:7.57},],
+
+	lineColors: ['green'],
+
+	xkey: 'x',
+
+	ykeys: ['y'],
+
+	labels: ['Input'],
+
+	postUnits: [' KB'],
+
+	fillOpacity: '.7',
+
+}).on('click', function(i, row) {
+
+	console.log(i, row);
+
+});
+</script></td></tr></body></html>

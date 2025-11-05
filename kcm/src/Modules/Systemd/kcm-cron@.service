@@ -1,0 +1,37 @@
+[Unit]
+Description=KCM Cron Service - %i Module
+Documentation=https://github.com/your-repo/kova-kams
+After=network.target mysql.service
+Requires=mysql.service
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/php /srv/kova/kcm/src/Modules/Crons/CronModuleStarter.php %i
+PIDFile=/run/kcm-cron-%i.pid
+Restart=always
+RestartSec=10
+
+# Working directory
+WorkingDirectory=/srv/kova/kcm
+
+# User/Group (may need root for tcpdump)
+# User=kcm
+# Group=kcm
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+LimitCORE=0
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kcm-cron-%i
+
+[Install]
+WantedBy=multi-user.target
+

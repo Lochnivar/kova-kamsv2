@@ -23,7 +23,12 @@ final class DbAdapter
     public function __construct(?string $envPath = null)
     {
         if ($envPath === null) {
-            $envPath = getenv('KOVA_DB_CONFIG') ?: __DIR__ . '/../../../config/databases.json';
+            $envPath = getenv('KOVA_DB_CONFIG');
+            if ($envPath === false || $envPath === '') {
+                $envPath = function_exists('kova_path') 
+                    ? kova_path('config/databases.json')
+                    : (defined('KOVA_ROOT') ? KOVA_ROOT . '/config/databases.json' : __DIR__ . '/../../../config/databases.json');
+            }
         }
 
         $this->envPath = $envPath;

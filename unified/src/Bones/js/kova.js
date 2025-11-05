@@ -36,6 +36,16 @@ function getHome() {
 
 }
 
+function getAdmin() {
+  console.log("Getting Admin");
+  $.post("src/Dispatcher.php", { action: "getAdmin" }, function (data) {
+    $("#mainDisplay").html(data);
+  }).fail(function(xhr, status, error) {
+    console.error("Error loading admin:", error);
+    $("#mainDisplay").html("<div style='padding:20px;color:red;'>Error loading admin page: " + error + "</div>");
+  });
+}
+
 function reloadHome() {
   $.post("src/Dispatcher.php", { action: "getSysHealth" }, function (data) {
 

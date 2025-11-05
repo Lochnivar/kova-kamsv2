@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cron Service Management</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --muted:#9aa4b2;
+      --accent:#6ee7b7;
+      --accent-2:#60a5fa;
+      --success:#10b981;
+      --error:#ef4444;
+      --warning:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#071023,#071827);
+      color:#e6eef6;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      min-height:100vh;
+      padding:20px;
+    }
+    .container{max-width:1200px;margin:0 auto}
+    .header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:24px;
+    }
+    .h-title{font-size:24px;font-weight:700;margin-bottom:8px}
+    .subtitle{color:var(--muted);font-size:14px;max-width:600px}
+    .toolbar{display:flex;gap:8px}
+    .btn{
+      background:var(--accent-2);
+      color:#04203a;
+      border:none;
+      padding:10px 16px;
+      border-radius:8px;
+      font-weight:600;
+      cursor:pointer;
+      transition:opacity 0.2s;
+    }
+    .btn:hover{opacity:0.9}
+    .btn:disabled{opacity:0.5;cursor:not-allowed}
+    .btn.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);
+    }
+    .btn.danger{background:var(--error)}
+    .btn.success{background:var(--success)}
+    .btn.warning{background:var(--warning)}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:20px;
+      box-shadow:0 6px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+      margin-bottom:20px;
+    }
+    .service-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+      gap:16px;
+    }
+    .service-card{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.05);
+      border-radius:10px;
+      padding:16px;
+      transition:all 0.2s;
+    }
+    .service-card:hover{
+      border-color:var(--accent-2);
+      background:rgba(255,255,255,0.03);
+    }
+    .service-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .service-name{
+      font-weight:700;
+      font-size:18px;
+      text-transform:uppercase;
+    }
+    .status-badge{
+      padding:4px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:600;
+    }
+    .status-active{
+      background:rgba(16,185,129,0.2);
+      color:var(--success);
+      border:1px solid var(--success);
+    }
+    .status-inactive{
+      background:rgba(239,68,68,0.2);
+      color:var(--error);
+      border:1px solid var(--error);
+    }
+    .status-not-installed{
+      background:rgba(156,163,175,0.2);
+      color:var(--muted);
+      border:1px solid var(--muted);
+    }
+    .service-info{
+      margin-bottom:12px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .service-info-item{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:4px;
+    }
+    .service-controls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .service-controls .btn{
+      flex:1;
+      min-width:80px;
+      font-size:12px;
+      padding:8px 12px;
+    }
+    .loading{
+      display:inline-block;
+      width:16px;
+      height:16px;
+      border:2px solid rgba(255,255,255,0.3);
+      border-top-color:var(--accent);
+      border-radius:50%;
+      animation:spin 0.8s linear infinite;
+    }
+    @keyframes spin{
+      to{transform:rotate(360deg)}
+    }
+    .message{
+      padding:12px;
+      border-radius:8px;
+      margin-bottom:16px;
+      display:none;
+    }
+    .message.success{
+      background:rgba(16,185,129,0.2);
+      border:1px solid var(--success);
+      color:var(--success);
+    }
+    .message.error{
+      background:rgba(239,68,68,0.2);
+      border:1px solid var(--error);
+      color:var(--error);
+    }
+    .process-info{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid rgba(255,255,255,0.05);
+      font-size:12px;
+    }
+    .process-info-item{
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+    .info-box{
+      background:rgba(96,165,250,0.1);
+      border:1px solid rgba(96,165,250,0.3);
+      border-radius:8px;
+      padding:12px;
+      margin-bottom:16px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .info-box strong{
+      color:var(--accent-2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="h-title">Cron Service Management</div>
+        <div class="subtitle">Pause/Resume services or enable/disable on boot. Pausing stops the service but keeps it enabled for boot.</div>
+      </div>
+      <div class="toolbar">
+        <button id="refreshBtn" class="btn ghost">Refresh</button>
+        <button id="backBtn" class="btn ghost">Back to Admin</button>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Status States:</strong><br>
+      • <strong>Database Enabled</strong> = Module enabled in settings (MotorolaPage, SerialPage, etc.)<br>
+      • <strong>Running</strong> = Systemd service is currently active<br>
+      • <strong>Enabled for Boot</strong> = Service will start automatically on reboot<br><br>
+      <strong>Actions:</strong><br>
+      • <strong>Pause</strong> = Stop service temporarily (keeps enabled for boot and database)<br>
+      • <strong>Resume</strong> = Start a paused service<br>
+      • <strong>Enable/Disable Boot</strong> = Control whether service starts on reboot<br><br>
+      <strong>Alarms:</strong> If Database Enabled = Yes but Running = No, an alarm should be raised.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <div id="servicesContainer" class="service-grid">
+      <!-- Service cards will be inserted here -->
+    </div>
+  </div>
+
+  <script>
+    const API = 'src/Modules/Admin/api.php';
+
+    async function api(method, path = '', body = null) {
+      const opts = { method, headers: {}, credentials: 'same-origin' };
+      if (body !== null) {
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = JSON.stringify(body);
+      }
+      const res = await fetch(API + path, opts);
+      const txt = await res.text();
+      try {
+        return JSON.parse(txt);
+      } catch (e) {
+        throw new Error(txt || 'API error');
+      }
+    }
+
+    function showMessage(text, type = 'success') {
+      const msg = document.getElementById('message');
+      msg.textContent = text;
+      msg.className = `message ${type}`;
+      msg.style.display = 'block';
+      setTimeout(() => {
+        msg.style.display = 'none';
+      }, 5000);
+    }
+
+    function getStatusClass(status) {
+      switch (status) {
+        case 'active': return 'status-active';
+        case 'inactive': return 'status-inactive';
+        case 'not-installed': return 'status-not-installed';
+        default: return 'status-inactive';
+      }
+    }
+
+    function getStatusText(status) {
+      switch (status) {
+        case 'active': return 'Running';
+        case 'inactive': return 'Paused';
+        case 'not-installed': return 'Not Installed';
+        default: return 'Unknown';
+      }
+    }
+
+    function createServiceCard(module, data) {
+      const card = document.createElement('div');
+      card.className = 'service-card';
+      card.id = `service-${module}`;
+
+      const status = data.status || 'unknown';
+      const enabled = data.enabled || false;
+      const processes = data.processes || { count: 0 };
+
+      card.innerHTML = `
+        <div class="service-header">
+          <div class="service-name">${module}</div>
+          <div class="status-badge ${getStatusClass(status)}">${getStatusText(status)}</div>
+        </div>
+        <div class="service-info">
+          <div class="service-info-item">
+            <span>Service:</span>
+            <span>${data.service || 'kcm-cron@' + module}</span>
+          </div>
+          <div class="service-info-item">
+            <span>Database Enabled:</span>
+            <span style="color: ${data.database_enabled ? 'var(--success)' : 'var(--error)'}">
+              ${data.database_enabled ? 'Yes' : 'No'}
+            </span>
+          </div>
+          <div class="service-info-item">
+            <span>Running:</span>
+            <span style="color: ${status === 'active' ? 'var(--success)' : 'var(--error)'}">
+              ${status === 'active' ? 'Yes' : 'No'}
+            </span>
+          </div>
+          <div class="service-info-item">
+            <span>Enabled for Boot:</span>
+            <span>${enabled ? 'Yes' : 'No'}</span>
+          </div>
+          <div class="service-info-item">
+            <span>Operational:</span>
+            <span style="color: ${data.operational_status === 'operational' ? 'var(--success)' : 
+              data.operational_status === 'enabled_but_stopped' ? 'var(--warning)' : 'var(--error)'}">
+              ${data.operational_status || 'unknown'}
+            </span>
+          </div>
+          <div class="service-info-item">
+            <span>Processes:</span>
+            <span>${processes.count || 0}</span>
+          </div>
+        </div>
+        <div class="service-controls">
+          <button class="btn ${status === 'active' ? 'danger' : 'success'}" 
+                  onclick="serviceAction('${module}', '${status === 'active' ? 'stop' : 'start'}')"
+                  ${status === 'not-installed' ? 'disabled' : ''}
+                  title="${status === 'active' ? 'Pause service (stops running but keeps enabled for boot)' : 'Resume service (starts running)'}">
+            ${status === 'active' ? 'Pause' : 'Resume'}
+          </button>
+          <button class="btn warning" onclick="serviceAction('${module}', 'restart')"
+                  ${status === 'not-installed' ? 'disabled' : ''}
+                  title="Restart the service">
+            Restart
+          </button>
+          <button class="btn ghost" onclick="serviceAction('${module}', '${enabled ? 'disable' : 'enable'}')"
+                  ${status === 'not-installed' ? 'disabled' : ''}
+                  title="${enabled ? 'Disable service from starting on boot (does not stop if running)' : 'Enable service to start on boot'}">
+            ${enabled ? 'Disable Boot' : 'Enable Boot'}
+          </button>
+          <button class="btn ghost" onclick="viewLogs('${module}')"
+                  ${status === 'not-installed' ? 'disabled' : ''}
+                  title="View service logs">
+            Logs
+          </button>
+        </div>
+        ${processes.count > 0 && processes.details ? `
+          <div class="process-info">
+            <div class="process-info-item"><strong>Running Processes:</strong></div>
+            ${Object.entries(processes.details).map(([type, procs]) => 
+              procs.map(p => `<div class="process-info-item">${type}: ${p}</div>`).join('')
+            ).join('')}
+          </div>
+        ` : ''}
+      `;
+
+      return card;
+    }
+
+    async function loadServices() {
+      try {
+        const container = document.getElementById('servicesContainer');
+        container.innerHTML = '<div class="loading"></div>';
+
+        const result = await api('GET', '?action=cron-status');
+        
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to load services');
+        }
+
+        container.innerHTML = '';
+        
+        const modules = ['moto', 'serial', 'udp', 'zabbix'];
+        modules.forEach(module => {
+          const data = result.data[module] || {
+            module,
+            status: 'unknown',
+            service: `kcm-cron@${module}`,
+            enabled: false,
+            active: false
+          };
+          container.appendChild(createServiceCard(module, data));
+        });
+      } catch (error) {
+        showMessage('Error loading services: ' + error.message, 'error');
+        document.getElementById('servicesContainer').innerHTML = 
+          '<div class="message error">Failed to load services</div>';
+      }
+    }
+
+    async function serviceAction(module, action) {
+      try {
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading"></span>';
+
+        const result = await api('POST', '?action=cron-service', {
+          action,
+          module
+        });
+
+        if (result.success !== false && !result.error) {
+          const actionLabels = {
+            'start': 'resumed',
+            'stop': 'paused',
+            'restart': 'restarted',
+            'enable': 'enabled for boot',
+            'disable': 'disabled from boot'
+          };
+          showMessage(`${module} service ${actionLabels[action] || action}`, 'success');
+          await loadServices();
+        } else {
+          throw new Error(result.error || 'Action failed');
+        }
+      } catch (error) {
+        showMessage('Error: ' + error.message, 'error');
+      } finally {
+        await loadServices();
+      }
+    }
+
+    function viewLogs(module) {
+      alert(`Logs for ${module} module\n\nView logs using: journalctl -u kcm-cron@${module} -f`);
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', loadServices);
+    document.getElementById('backBtn').addEventListener('click', async () => {
+      try {
+        // Try to load admin page via Dispatcher
+        const response = await fetch('src/Dispatcher.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: 'action=getAdmin'
+        });
+        const html = await response.text();
+        const mainDisplay = window.parent?.document.getElementById('mainDisplay') || document.getElementById('mainDisplay');
+        if (mainDisplay) {
+          mainDisplay.innerHTML = html;
+        } else if (typeof getHome === 'function') {
+          getHome();
+        } else {
+          window.location.href = './admin.html';
+        }
+      } catch(e) {
+        // Fallback
+        if (typeof getHome === 'function') {
+          getHome();
+        } else {
+          window.location.href = './admin.html';
+        }
+      }
+    });
+
+    // Load services on page load
+    loadServices();
+
+    // Auto-refresh every 30 seconds
+    setInterval(loadServices, 30000);
+  </script>
+</body>
+</html>

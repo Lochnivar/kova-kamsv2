@@ -1,0 +1,35 @@
+[Unit]
+Description=KCM Cron Services - Data Collection (Monitored Version)
+Documentation=https://github.com/your-repo/kova-kams
+After=network.target mysql.service
+Requires=mysql.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/php /srv/kova/kcm/CronService.php
+Restart=always
+RestartSec=10
+
+# Working directory
+WorkingDirectory=/srv/kova/kcm
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+LimitCORE=0
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kcm-cron
+
+# Watchdog (optional - requires script to send heartbeat)
+# WatchdogSec=60
+
+[Install]
+WantedBy=multi-user.target
+

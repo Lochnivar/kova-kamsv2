@@ -1,6 +1,6 @@
 <?php
 
-namespace Kova\Kcm\Modules\Serial;
+namespace Kova\Kams\Kcm\Modules\Serial;
 
 class SerialModify
 {

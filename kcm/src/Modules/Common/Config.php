@@ -1,6 +1,6 @@
 <?php
 
-namespace Kova\Kcm\Modules\Common;
+namespace Kova\Kams\Kcm\Modules\Common;
 
 use Kova\Kams\Common\Config as SharedConfig;
 

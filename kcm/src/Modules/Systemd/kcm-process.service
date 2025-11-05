@@ -1,0 +1,20 @@
+[Unit]
+Description=KCM Cron Processing Service
+Documentation=https://github.com/your-repo/kova-kams
+After=network.target mysql.service kcm-cron.service
+Requires=mysql.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/php /srv/kova/kcm/CronMain.php
+WorkingDirectory=/srv/kova/kcm
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kcm-process
+
+# Resource limits
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,90 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="Bones/css/morris.css">
+    <link rel="stylesheet" href="Bones/css/kova.css">
+    <script src="Bones/js/jquery.min.js"></script>
+    <script src="Bones/js/raphael-min.js"></script>
+    <script src="Bones/js/morris.min.js"></script>
+    <script src="Bones/js/gauge.min.js"></script>
+    <script src="Bones/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="Bones/bootstrap/css/bootstrap.css">
+    <script src="Bones/js/js-cookie.js"></script>
+    <script src="Bones/js/kova.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            //First thing, fetch the UDP list from Worker.
+
+            getNavBar();
+
+            getUDPTable();
+
+
+        });
+
+        setInterval(reloadPage, 60000);
+        
+        
+
+    </script>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td>
+                <div id="header"><img src="Bones/imgs/kova-logo.png" class="logo">
+            </td>
+            <td>
+                <h2><span id="siteName"></span> KAMS UDP Monitoring</h2>
+            </td>
+        </tr>
+    </table>
+    </div>
+    <div class='topnav'></div>
+    <div id="mainDisplay">
+
+
+
+
+    </div>
+
+
+
+
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

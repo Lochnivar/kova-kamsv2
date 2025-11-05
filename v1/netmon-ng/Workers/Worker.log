@@ -1,0 +1,100 @@
+select udp_packets from data_unified WHERE iface = 'ens17f1' ORDER BY epoch DESC LIMIT 60
+select udp_packets from data_unified WHERE iface = 'ens17f2' ORDER BY epoch DESC LIMIT 60
+select udp_packets from data_unified WHERE iface = 'ens17f3' ORDER BY epoch DESC LIMIT 60
+select udp_packets from data_unified WHERE iface = 'name' ORDER BY epoch DESC LIMIT 60
+Array
+(
+    [ens17f1] => Array
+        (
+            [name] => ens17f1
+            [alias] => Viper 1
+        )
+
+    [ens17f2] => Array
+        (
+            [name] => ens17f2
+            [alias] => Viper 2
+        )
+
+    [ens17f3] => Array
+        (
+            [name] => ens17f3
+            [alias] => Viper 3
+        )
+
+)
+
+select udp_packets from data_unified WHERE iface = 'ens17f1' ORDER BY epoch DESC LIMIT 60
+select udp_packets from data_unified WHERE iface = 'ens17f2' ORDER BY epoch DESC LIMIT 60
+select udp_packets from data_unified WHERE iface = 'ens17f3' ORDER BY epoch DESC LIMIT 60
+Array
+(
+    [name] => ens17f1
+    [alias] => Viper 1
+)
+
+select udp_packets from data_unified WHERE iface = 'name' ORDER BY epoch DESC LIMIT 60
+Array
+(
+    [ens17f1] => Array
+        (
+            [name] => ens17f1
+            [alias] => Viper 1
+        )
+
+    [ens17f2] => Array
+        (
+            [name] => ens17f2
+            [alias] => Viper 2
+        )
+
+    [ens17f3] => Array
+        (
+            [name] => ens17f3
+            [alias] => Viper 3
+        )
+
+)
+
+Array
+(
+    [name] => ens17f1
+    [alias] => Viper 1
+)
+
+Array
+(
+    [ens17f1] => Array
+        (
+            [name] => ens17f1
+            [alias] => Viper 1
+        )
+
+    [ens17f2] => Array
+        (
+            [name] => ens17f2
+            [alias] => Viper 2
+        )
+
+    [ens17f3] => Array
+        (
+            [name] => ens17f3
+            [alias] => Viper 3
+        )
+
+)
+
+select udp_packets from data_unified WHERE iface = 'ens17f1' ORDER BY epoch DESC LIMIT 60
+select udp_packets from data_unified WHERE iface = 'ens17f2' ORDER BY epoch DESC LIMIT 60
+select udp_packets from data_unified WHERE iface = 'ens17f3' ORDER BY epoch DESC LIMIT 60
+Array
+(
+    [ens17f1] => Array
+        (
+            [name] => ens17f1
+            [alias] => Viper 1
+        )
+
+)
+
+select udp_packets from data_unified WHERE iface = 'ens17f1' ORDER BY epoch DESC LIMIT 60

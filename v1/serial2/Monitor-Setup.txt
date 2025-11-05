@@ -1,0 +1,74 @@
+
+yum -y install sysstat httpd bind-utils wget
+
+Install through yum for mysqld
+wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+sudo rpm -ivh mysql-community-release-el7-5.noarch.rpm
+yum update
+
+yum install mysql-server
+
+disable selinux
+chkconfig mysqld and httpd on
+
+
+rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+yum install php70w php70w-opcache php70w-common php70w-bcmath php70w-devel php70w-mysqlnd php70w-mysqlnd
+
+
+
+
+Move over the data.sh and udp.sh scritp and change mod +x 
+
+INstall the database, set permissions and change username and ip in link settings. 
+
+Change $link for Mysql
+change refresh location
+
+For install change the ip in both interfaces, 
+ifcfg-enp2s0 for the mirror top port
+ifcfg-eno1 for the web interface bottom port
+change ip in variables in index.php
+
+
+PHP 7 was installed on test
+
+Crontab 
+* * * * * /usr/src/data.sh
+* * * * * /usr/src/udp.sh
+5 0 * * * /usr/bin/php /var/www/html/network-monitor/stats.php
+
+
+change network interface in the /usr/src/ php scripts for pattern match
+chmod +x and 777 the data.sh and udp.sh files
+
+/usr/src/data.sh
+#!/bin/bash
+/usr/bin/rm /usr/src/file.txt
+sleep 2
+
+sleep 2
+
+/usr/src/udp.sh
+#!/bin/bash
+/usr/bin/rm /usr/src/file.txt
+sleep 2
+sar -n UDP 1 30 >> /usr/src/file.txt
+sleep 2
+
+running this to update
+/usr/bin/php /var/www/html/jquery-ui/udp.insert and 
+/usr/bin/php /var/www/html/jquery-ui/data.insert
+exit
+
+set cron to only keep a year of data
+
+I am checking for 30 seconds every minute, so any time frame should be based off of that. 
+change page refresh to whatever the ip is
+adjust the eth id in the scritps
+
+FIx the Data settings
+sar.php
+
+http://morrisjs.github.io/morris.js/lines.html

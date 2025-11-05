@@ -1,9 +1,37 @@
 [Unit]
-Description=Systemd service to restart KCM Cron Services
+Description=KCM Cron Services - Data Collection
+Documentation=https://github.com/your-repo/kova-kams
+After=network.target mysql.service
+Requires=mysql.service
 
 [Service]
-ExecStart=/usr/bin/php /usr/src/KCM/CronService.php >> /tmp/KCM-cron.log
-Restart=always
+Type=oneshot
+ExecStart=/usr/bin/php /srv/kova/kcm/CronService.php
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=30
+RestartPreventExitStatus=0
+
+# Working directory
+WorkingDirectory=/srv/kova/kcm
+
+# User/Group (adjust as needed - may need root for tcpdump)
+# User=kcm
+# Group=kcm
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+LimitCORE=0
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Logging - use systemd journal
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kcm-cron
 
 [Install]
 WantedBy=multi-user.target

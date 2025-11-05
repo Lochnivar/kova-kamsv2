@@ -1,0 +1,3 @@
+[2025-11-05 04:09:56] [INFO] Starting settings schema standardization migration
+[2025-11-05 04:09:56] [INFO] Unique index on name created
+[2025-11-05 04:09:56] [INFO] Migration completed successfully

@@ -1,11 +1,11 @@
 <?php
 
-namespace Kova\Kcm\Modules\Serial;
+namespace Kova\Kams\Kcm\Modules\Serial;
 
-use Kova\Kcm\Modules\Common\Common as Common;
+use Kova\Kams\Kcm\Modules\Common\Common as Common;
 use Kova\Kams\Common\Database as DB;
-use Kova\Kcm\Modules\Common\AlarmHandler as AH;
-use Kova\Kcm\Modules\Common\Communicator;
+use Kova\Kams\Kcm\Modules\Common\AlarmHandler as AH;
+use Kova\Kams\Kcm\Modules\Common\Communicator;
 
 class SerialCron
 {
@@ -32,26 +32,35 @@ class SerialCron
 
     public function startCron()
     {
-
         $x = 0;
         $ifs = explode("~", $this->ifaces);
+        $pids = [];
 
         foreach ($ifs as $iface) {
-
             $iArray = explode("|", $iface);
-            $ifArray[$iArray[0]] = [];
-            $udpIFaces[] = $iArray[0];
-            $command = "timeout 6000 cat /dev/" . $iArray[0] . " >> " . $this->fileName . "-" . $iArray[0] . " & echo $!";
+            $ifaceName = $iArray[0];
+            
+            // Pipe serial device directly to parser
+            // Use process groups for better monitoring and cleanup
+            $parserScript = __DIR__ . '/SerialParser.php';
+            // Create a new process group with setsid so we can kill the entire pipeline
+            $command = "setsid sh -c 'timeout 6000 cat /dev/" . escapeshellarg($ifaceName) 
+                . " | /usr/bin/php " . escapeshellarg($parserScript) . " " . escapeshellarg($ifaceName) 
+                . " > /dev/null 2>&1' & echo $!";
+            
             echo $command . PHP_EOL;
             exec($command, $output);
             echo "Start Cron DB vars" . PHP_EOL;
-            var_dump($this->mod, $output[$x], $iArray[0]);
+            var_dump($this->mod, $output[$x], $ifaceName);
 
-
-            $this->dbConn->putProcID($this->mod, $output[$x], $iArray[0]);
-            $pids[] = $output[$x];
+            // Store the process group leader PID for monitoring
+            $shellPid = $output[$x];
+            $this->dbConn->putProcID($this->mod, $shellPid, $ifaceName);
+            $pids[] = $shellPid;
             $x++;
         }
+        
+        return $pids;
     }
 
 
@@ -61,48 +70,72 @@ class SerialCron
         $ifaces = $this->dbConn->getIfaces($this->mod);
 
         foreach ($ifaces as $iface) {
-
             var_dump($iface['ifaceid']);
 
-            $rawFile = file($this->fileName . "-" . $iface['ifaceid']);
-
-            // Step one: Record Cron results
-
-            $this->RecordCron($rawFile, $iface);
+            // Data is already in database from real-time parser
+            // No need to read files - just query the latest data
+            $this->loadLatestData($iface);
 
             // Step two : Check Alert Conditions
-
-            $modStatus["alerts"] = $this->AlertCron($rawFile, $iface);
+            // AlertCron now works from database data, not raw files
+            $modStatus["alerts"] = $this->AlertCron(null, $iface);
 
             // Step three: Report the results
-
             $modStatus['status'] = $this->ReportCron();
         }
 
-        //Clean up file
-
-        file_put_contents($this->fileName . "-" . $iface['ifaceid'], "");
-
         return $modStatus;
+    }
+    
+    /**
+     * Load latest data from database (replaces file reading)
+     */
+    private function loadLatestData($iface): void
+    {
+        // Get the most recent data entry for this interface
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('*')
+           ->from('serial_data')
+           ->where('iface = :iface')
+           ->orderBy('epoch', 'DESC')
+           ->setMaxResults(1)
+           ->setParameter('iface', $iface['ifaceid']);
+        $result = $this->dbConn->executeQueryBuilder($qb);
+        
+        if (!empty($result)) {
+            $this->thru[$iface['ifaceid']] = $result[0]['size'] ?? 0;
+        }
     }
 
     public function AlertCron($rawFile, $iface)
     {
-
         $alerts['active'] = [];
         $alerts['clear'] = [];
 
-        $sql = "SELECT issueCount, alarmID FROM serial_settings WHERE ifaceid = ?";
-
-        $results = $this->dbConn->dbQuery($sql, $iface['ifaceid']);
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('issueCount', 'alarmID')
+           ->from('serial_settings')
+           ->where('ifaceid = :iface')
+           ->setParameter('iface', $iface['ifaceid']);
+        $results = $this->dbConn->executeQueryBuilder($qb);
 
         $issueCount = $results[0]['issueCount'] ? $results[0]['issueCount'] : 0;
         $alarmID = $results[0]['alarmID'];
 
         var_dump($results);
 
-        $lines = count($rawFile);
-        //    $lines = 0;
+        // Get line count from database instead of file
+        // Get the most recent data entry
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('size')
+           ->from('serial_data')
+           ->where('iface = :iface')
+           ->orderBy('epoch', 'DESC')
+           ->setMaxResults(1)
+           ->setParameter('iface', $iface['ifaceid']);
+        $dataResult = $this->dbConn->executeQueryBuilder($qb);
+        
+        $lines = !empty($dataResult) ? ($dataResult[0]['size'] ?? 0) : 0;
 
         if ($lines < $this->config['SerialTriggerLimit']) {
             $hour = date('H');
@@ -110,9 +143,7 @@ class SerialCron
             if ($issueCount <= 2.5) {
                 $icInc = $this->checkNightHours($hour);
                 $issueCount += $icInc;
-                $sql = "UPDATE serial_settings SET issueCount = ? WHERE ifaceid = ?";
-
-                $this->dbConn->dbQuery($sql, $issueCount, $iface['ifaceid']);
+                $this->dbConn->update('serial_settings', ['issueCount' => $issueCount], ['ifaceid' => $iface['ifaceid']]);
             } else {
 
                 // Check to see if Alarm is already active
@@ -142,9 +173,12 @@ class SerialCron
                     //Alarm still active
 
                     echo "Alarm Active, Skipping" . PHP_EOL;
-                    $sql = "SELECT msgLine FROM kamsAlarms where id = ?";
-
-                    $results = $this->dbConn->dbQuery($sql, $alarmID);
+                    $qb = $this->dbConn->createQueryBuilder();
+                    $qb->select('msgLine')
+                       ->from('kamsAlarms')
+                       ->where('id = :id')
+                       ->setParameter('id', $alarmID);
+                    $results = $this->dbConn->executeQueryBuilder($qb);
 
                     $alerts['active'][$alarmID] = $results[0]['msgLine'];
                 }
@@ -167,19 +201,15 @@ class SerialCron
 
                 $sql = "SELECT msgLine FROM kamsAlarms where id = ?";
 
-                $results = $this->dbConn->dbQuery($sql, $alarmID);
+                $results = $this->dbConn->select("SELECT msgLine FROM kamsAlarms where id = ?", $alarmID);
                 $alerts['clear'][$alarmID] = $results[0]['msgLine'];
 
                 //Resetting Issue Count
 
-                $sql = "UPDATE serial_settings SET issueCount = 0 WHERE ifaceid = ?";
-
-                $this->dbConn->dbQuery($sql, $iface['ifaceid']);
+                $this->dbConn->update('serial_settings', ['issueCount' => 0], ['ifaceid' => $iface['ifaceid']]);
             } else {
 
-                $sql = "UPDATE serial_settings SET issueCount = 0 WHERE ifaceid = ?";
-
-                $this->dbConn->dbQuery($sql, $iface['ifaceid']);
+                $this->dbConn->update('serial_settings', ['issueCount' => 0], ['ifaceid' => $iface['ifaceid']]);
                 //No alarm, no foul
             }
         }
@@ -223,18 +253,20 @@ class SerialCron
         $line = "";
         $tnow = time();
 
-        file_put_contents("/usr/src/KCM/src/Modules/Crons/KCM-Cron-Service.log", "Serial Cron Run Finished : " . $x  . " lines found, Last time stamp is " . $tnow . PHP_EOL, FILE_APPEND);
-        $sql = "INSERT INTO serial_data (iface, size,epoch) VALUES  (?,?,?)";
-
-        $this->dbConn->dbQuery($sql, $iface['ifaceid'], $x, $tnow);
+        $logFile = kova_path('logs/kcm-cron-service.log');
+        @file_put_contents($logFile, "Serial Cron Run Finished : " . $x  . " lines found, Last time stamp is " . $tnow . PHP_EOL, FILE_APPEND);
+        $this->dbConn->insert('serial_data', [
+            'iface' => $iface['ifaceid'],
+            'size' => $x,
+            'epoch' => $tnow
+        ]);
 
         $this->thru[$iface['ifaceid']] = $x;
     }
 
     private function updateChannelAlarm($channel, $alarmID)
     {
-        $sql = "UPDATE channel_data SET alarm = ? WHERE channel_id = ?";
-        $this->dbConn->dbQuery($sql, (string) $alarmID, $channel);
+        $this->dbConn->update('channel_data', ['alarm' => (string) $alarmID], ['channel_id' => $channel]);
     }
 
     public function modEnabled()
@@ -284,26 +316,35 @@ class SerialCron
             echo "\n";
             echo "\n";
 
-            $sql = "SELECT * FROM serial_entries WHERE AgentID = ?";
-
-            $IDresult = $this->dbConn->dbQuery($sql, $Number);
+            $qb = $this->dbConn->createQueryBuilder();
+            $qb->select('*')
+               ->from('serial_entries')
+               ->where('AgentID = :agent')
+               ->setParameter('agent', $Number);
+            $IDresult = $this->dbConn->executeQueryBuilder($qb);
 
             //Check if the Number Exists in the Database 
-            if ($IDresult->num_rows === 0) {  //Start Duplicate Extension Loop 
+            if (count($IDresult) === 0) {  //Start Duplicate Extension Loop 
 
                 //Check if the Name already exists with another Extension 
-                $sql = "SELECT * FROM serial_entries WHERE Name = ?";
-                $NAMEresult = $this->dbConn->dbQuery($sql, $Name);
+                $qb = $this->dbConn->createQueryBuilder();
+                $qb->select('*')
+                   ->from('serial_entries')
+                   ->where('Name = :name')
+                   ->setParameter('name', $Name);
+                $NAMEresult = $this->dbConn->executeQueryBuilder($qb);
 
 
-                if ($NAMEresult->num_rows !== 0) {  //Name Check Loop 
-                    $sql = "INSERT INTO serial_entries (Name,Roles,AgentID) VALUES (?,?,?)";
-                    $result = $this->dbConn->dbQuery($sql, $Name, $Role, $Number);
+                if (count($NAMEresult) !== 0) {  //Name Check Loop 
+                    $this->dbConn->insert('serial_entries', [
+                        'Name' => $Name,
+                        'Roles' => $Role,
+                        'AgentID' => $Number
+                    ]);
                     echo "Did Find a Name  is here \n";
                     print_r($result);
 
-                    for ($i = 0; $i  < mysqli_num_rows($NAMEresult); $i++) {
-                        $CurrentNAMERow =  mysqli_fetch_array($NAMEresult);
+                    foreach ($NAMEresult as $CurrentNAMERow) {
                         $Number .= "," . $CurrentNAMERow['AgentID'];
                         echo "The new number is " . $Number . "\n";
                     }
@@ -321,11 +362,15 @@ class SerialCron
 
 
                     $MyMessage = "The system tried to insert " . $query . " and if there was an error it was " . mysqli_error($link);
-                    file_put_contents('/usr/src/Serial/issue-mysql.txt', $MyMessage);
+                    $issueLog = kova_path('logs/serial-issues.log');
+                    @file_put_contents($issueLog, $MyMessage . PHP_EOL, FILE_APPEND);
                     echo "Im Here";
 
                     if ($this->config['addSerialUsersV15'] == 'true') {  //Check the KAMS-Setting-file to see if we are adding
-                        include('/usr/src/Serial/serial-add.php');
+                        $addScript = kova_path('kcm/src/Modules/Serial/serial-add.php');
+                        if (file_exists($addScript)) {
+                            include($addScript);
+                        }
                     } //End KAMS-Settings-file
 
                 } //End of else statement 
@@ -337,8 +382,6 @@ class SerialCron
 
     public function updateAlarmID($iface, $alarmID)
     {
-        $sql = "UPDATE serial_settings SET alarmID = ? WHERE ifaceid = ?";
-
-        $this->dbConn->dbQuery($sql, $alarmID, $iface);
+        $this->dbConn->update('serial_settings', ['alarmID' => $alarmID], ['ifaceid' => $iface]);
     }
 }

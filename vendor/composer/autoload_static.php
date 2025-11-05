@@ -57,7 +57,8 @@ class ComposerStaticInitf67980941ef7eb9bd6ae6028dca8f29c
         'K' => 
         array (
             'Kova\\Kams\\Unified\\' => 18,
-            'Kova\\Kams\\KCM\\' => 14,
+            'Kova\\Kams\\Kcm\\' => 14,
+            'Kova\\Kams\\Core\\' => 15,
             'Kova\\Kams\\Common\\' => 17,
             'Kova\\Kams\\Bones\\' => 16,
             'Kova\\Kams\\App\\' => 14,
@@ -182,9 +183,13 @@ class ComposerStaticInitf67980941ef7eb9bd6ae6028dca8f29c
         array (
             0 => __DIR__ . '/../..' . '/unified/src',
         ),
-        'Kova\\Kams\\KCM\\' => 
+        'Kova\\Kams\\Kcm\\' => 
         array (
             0 => __DIR__ . '/../..' . '/kcm/src',
+        ),
+        'Kova\\Kams\\Core\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Core',
         ),
         'Kova\\Kams\\Common\\' => 
         array (
@@ -192,7 +197,7 @@ class ComposerStaticInitf67980941ef7eb9bd6ae6028dca8f29c
         ),
         'Kova\\Kams\\Bones\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/Bones',
+            0 => __DIR__ . '/../..' . '/src/Common/Bones',
         ),
         'Kova\\Kams\\App\\' => 
         array (

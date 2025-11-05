@@ -2,7 +2,7 @@
 
 namespace Kova\Kams\Unified\Modules\Serial\Workers;
 
-use Kova\Kams\Common\Database;
+use Kova\Kams\Unified\Modules\Common\Database;
 use Kova\Kams\Unified\Modules\Common\Common;
 
 class Dataworker

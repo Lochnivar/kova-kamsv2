@@ -1,9 +1,9 @@
 <?php
 
-namespace Kova\Kcm\Modules\Serial;
+namespace Kova\Kams\Kcm\Modules\Serial;
 
 use Curl\Curl;
-use Kova\Kcm\Modules\Common\Common as Common;
+use Kova\Kams\Kcm\Modules\Common\Common as Common;
 
 
 class SerialCommon

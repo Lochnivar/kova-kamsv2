@@ -1,0 +1,68 @@
+<?php
+
+require(__DIR__ . "/.access.php");
+
+$dbuser = 'kams';
+$dbpass = 'kams7906';
+$dbhost = 'localhost';
+$dbname = 'asterisk_status';
+
+$mysqli = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
+
+$sql = "SELECT * FROM settings";
+
+$response = $mysqli->query($sql);
+
+$results = $response->fetch_all(MYSQLI_ASSOC);
+
+?>
+
+<html>
+
+<head>
+
+</head>
+
+
+<body>
+    <form action="./adminWorker.php" method="POST">
+        <table>
+            <tr>
+                <th>Setting Name</th>
+                <th>Setting Value</th>
+            </tr>
+            <?php
+            foreach ($results as $row) {
+
+                $k = $row['setname'];
+                /*?  if (strpos($row['setvalue'], "~")) {
+                $v = explode("~", $row['setvalue']);
+            } else {
+                */
+                $v = $row['setvalue'];
+                //}
+
+            ?>
+                <tr>
+                    <td>
+                        <?php echo $k ?>
+                    </td>
+                    <td>
+                        <input name="<?php echo $k ?>" value=<?php echo $v ?>>
+                        </input>
+                    </td>
+                </tr>
+            <?php
+            }
+
+            ?>
+
+
+
+        </table>
+        <button type="submit" formtarget="_self">Save Settings</button>
+    </form>
+
+</body>
+
+</html>

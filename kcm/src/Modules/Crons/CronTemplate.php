@@ -1,8 +1,8 @@
 <?php
 
-namespace Kova\Kcm\Modules\Crons;
+namespace Kova\Kams\Kcm\Modules\Crons;
 
-use Kova\Kcm\Modules\Common\Common as Common;
+use Kova\Kams\Kcm\Modules\Common\Common as Common;
 use Kova\Kams\Common\Database as DB;
 
 class CronTemplate

@@ -1,11 +1,11 @@
 <?php
 
-namespace Kova\Kcm\Modules\Motorola;
+namespace Kova\Kams\Kcm\Modules\Motorola;
 
-use Kova\Kcm\Modules\Common\Common as Common;
-use Kova\Kcm\Modules\Common\Communicator;
+use Kova\Kams\Kcm\Modules\Common\Common as Common;
+use Kova\Kams\Kcm\Modules\Common\Communicator;
 use Kova\Kams\Common\Database as DB;
-use Kova\Kcm\Modules\Common\AlarmHandler as AH;
+use Kova\Kams\Kcm\Modules\Common\AlarmHandler as AH;
 
 
 class MotoCron
@@ -26,62 +26,57 @@ class MotoCron
         $this->config = $config->config;
         $this->common = new Common($this->config);
         $this->ifaces = $this->config['MotorolaInterfaceName'];
-        $this->fileName = __DIR__ . "/" . $this->mod . "dump";
+        $this->fileName = kova_path('tmp/' . $this->mod . 'dump');
         $this->modEnabled = strtolower($this->config['MotorolaPage']);
     }
 
     public function startCron()
     {
         $x = 0;
-
         $ifs = explode("~", $this->ifaces);
+        $pids = [];
 
         foreach ($ifs as $iface) {
-
             $iArray = explode("|", $iface);
-            $ifArray[$iArray[0]] = [];
-            $udpIFaces[] = $iArray[0];
-            $command = "timeout 6000 /usr/bin/tcpdump -vvvvv -tt -A -i " . $iArray[0] . " dst port 50150 and greater 100 >>" . $this->fileName . "-" . $iArray[0] . " & echo $!";
+            $ifaceName = $iArray[0];
+            
+            // Pipe tcpdump directly to parser
+            // Use process groups for better monitoring and cleanup
+            $parserScript = __DIR__ . '/MotoParser.php';
+            // Create a new process group with setsid so we can kill the entire pipeline
+            $command = "setsid sh -c 'timeout 6000 /usr/bin/tcpdump -vvvvv -tt -A -i " . escapeshellarg($ifaceName) 
+                . " dst port 50150 and greater 100 | /usr/bin/php " . escapeshellarg($parserScript) 
+                . " > /dev/null 2>&1' & echo $!";
+            
             exec($command, $output);
             echo "Start Cron DB vars" . PHP_EOL;
-            var_dump($this->mod, $output[$x], $iArray[0]);
+            var_dump($this->mod, $output[$x], $ifaceName);
 
-
-            $this->dbConn->putProcID($this->mod, $output[$x], $iArray[0]);
-            $pids[] = $output[$x];
+            // Store the process group leader PID for monitoring
+            $shellPid = $output[$x];
+            $this->dbConn->putProcID($this->mod, $shellPid, $ifaceName);
+            $pids[] = $shellPid;
             $x++;
         }
+        
+        return $pids;
     }
 
     public function ProcessCron()
     {
-
         $modStatus = [];
         $ifaces = $this->dbConn->getIfaces($this->mod);
 
         var_dump("ifaces", $ifaces);
-        foreach ($ifaces as $iface) {
+        
+        // Data is already in database from real-time parser
+        // No need to read files - just process alerts and reports
+        
+        // Step two : Check Alert Conditions
+        $modStatus["alerts"] = $this->AlertCron();
 
-            var_dump($iface['ifaceid']);
-
-            $rawFile = file($this->fileName . "-" . $iface['ifaceid']);
-
-            $file = file_get_contents($this->fileName . "-" . $iface['ifaceid']);
-
-            // Step one: Record Cron results
-
-            $this->RecordCron($rawFile);
-
-            // Step two : Check Alert Conditions
-            $modStatus["alerts"] = $this->AlertCron();
-
-            // Step three: Report the results
-            $modStatus['status'] = $this->ReportCron();
-
-            //Clean up file
-
-            file_put_contents($this->fileName . "-" . $iface['ifaceid'], "");
-        }
+        // Step three: Report the results
+        $modStatus['status'] = $this->ReportCron();
 
         var_dump("Tracker 1", $modStatus);
 
@@ -91,8 +86,13 @@ class MotoCron
     public function AlertCron()
     {
         $alerts = [];
-        $sql = "SELECT * from moto_channel_data WHERE timeout_number <> '0' ORDER BY last_activity DESC ,channel_id";
-        $results = $this->dbConn->dbQuery($sql);
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('*')
+           ->from('moto_channel_data')
+           ->where("timeout_number <> '0'")
+           ->orderBy('last_activity', 'DESC')
+           ->addOrderBy('channel_id', 'ASC');
+        $results = $this->dbConn->executeQueryBuilder($qb);
         $valArray = [];
         $issues = 0;
 
@@ -138,9 +138,12 @@ class MotoCron
                 } else {
                     //Alarm still active.  Get Current Alarm Line
 
-                    $sql = "SELECT msgLine FROM kamsAlarms where id = ?";
-
-                    $results = $this->dbConn->dbQuery($sql, $row['alarm']);
+                    $qb = $this->dbConn->createQueryBuilder();
+                    $qb->select('msgLine')
+                       ->from('kamsAlarms')
+                       ->where('id = :id')
+                       ->setParameter('id', $row['alarm']);
+                    $results = $this->dbConn->executeQueryBuilder($qb);
 
                     $alerts['active'][$row['alarm']] = $results[0]['msgLine'];
 
@@ -163,9 +166,12 @@ class MotoCron
                     $ah = new AH();
                     $ah->clearAlarm($this->mod, $row['alarm'], $row['channel_id'], $msgline);
 
-                    $sql = "SELECT msgLine FROM kamsAlarms where id = ?";
-
-                    $results = $this->dbConn->dbQuery($sql, $row['alarm']);
+                    $qb = $this->dbConn->createQueryBuilder();
+                    $qb->select('msgLine')
+                       ->from('kamsAlarms')
+                       ->where('id = :id')
+                       ->setParameter('id', $row['alarm']);
+                    $results = $this->dbConn->executeQueryBuilder($qb);
 
 
                     $alerts['clear'][$row['alarm']] = $results[0]['msgLine'];
@@ -184,24 +190,31 @@ class MotoCron
          * Method of reporting.  Total channels - Channels active - not monitored;
          */
 
-        $sql = "SELECT count(id) AS count FROM moto_channel_data WHERE timeout_number <> '0'";
-
-        $request = $this->dbConn->dbQuery($sql);
-
-        $countActive = $request[0]['count'];
-
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('COUNT(id) AS count')
+           ->from('moto_channel_data')
+           ->where("timeout_number <> '0'");
+        $request = $this->dbConn->executeQueryBuilder($qb);
+        $countActive = $request[0]['count'] ?? 0;
         $modStatus['activeChannels'] = $countActive;
 
-        $sql = "SELECT count(id) AS count FROM moto_channel_data WHERE timeout_number = '0'";
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('COUNT(id) AS count')
+           ->from('moto_channel_data')
+           ->where("timeout_number = '0'");
+        $request = $this->dbConn->executeQueryBuilder($qb);
 
-        $request = $this->dbConn->dbQuery($sql);
-
-        $notMonitored = $request[0]['count'];
+        $notMonitored = $request[0]['count'] ?? 0;
 
         $modStatus['notMonitored'] = $notMonitored;
 
-        $sql = "SELECT * from moto_channel_data WHERE timeout_number <> '0' ORDER BY last_activity DESC ,channel_id";
-        $result = $this->dbConn->dbQuery($sql);
+        $qb = $this->dbConn->createQueryBuilder();
+        $qb->select('*')
+           ->from('moto_channel_data')
+           ->where("timeout_number <> '0'")
+           ->orderBy('last_activity', 'DESC')
+           ->addOrderBy('channel_id', 'ASC');
+        $result = $this->dbConn->executeQueryBuilder($qb);
         $issues = 0;
 
         foreach ($result as $rowOne) {
@@ -234,62 +247,21 @@ class MotoCron
         return $modStatus;
     }
 
+    /**
+     * RecordCron is no longer needed - data is recorded in real-time by MotoParser
+     * This method is kept for backward compatibility but does nothing
+     */
     public function RecordCron($file, $iface = null)
     {
-
-        echo "Recording Cron " . PHP_EOL;
-        $timeNow = time();
-
-        $sql = "SELECT * FROM moto_channel_data";
-
-        $results = $this->dbConn->dbQuery($sql);
-
-        $channelIDs = [];
-        foreach ($file as $line) {
-
-            if (strpos($line, "<DeviceID>") <> 0) {
-
-                $stringpos = strpos($line, "<AstroEvent");
-   
-                $line = substr($line, $stringpos);
-
-                $packet = simplexml_load_string($line);
-
-                $lineid = $packet->CallStatusEventArgs->CallStatus->DeviceID;
-                $channelIDs[] = (string) $lineid;
-            }
-        }
-        $uniqueIDs = array_unique($channelIDs);
-
-        foreach ($uniqueIDs as $id) {
-
-            if ($id == ""){
-                echo "ID is Blank, Skipping" . PHP_EOL; 
-                continue;
-            }
-
-            $sql = "SELECT channel_id FROM moto_channel_data WHERE channel_id = ?";
-            $result = $this->dbConn->dbQuery($sql, $id);
-
-            if (count($result) == 0) {
-                echo $id . " Missing, Inserting into table" . PHP_EOL;
-                try {
-                    $sql = "INSERT INTO moto_channel_data (channel_id) VALUES (?)";
-                    $result = $this->dbConn->dbQuery($sql, $id);
-                } catch (\Exception $e) {
-                    echo "Error " . $e->getMessage();
-                }
-            }
-
-            $sql = "UPDATE moto_channel_data SET last_activity = ? WHERE channel_id = ?";
-            $result = $this->dbConn->dbQuery($sql, $timeNow, $id);
-        }
+        // Data is already in database from real-time parser
+        // No action needed
+        echo "RecordCron: Data already in database from real-time parser" . PHP_EOL;
+        return;
     }
 
     private function updateChannelAlarm($channel, $alarmID)
     {
-        $sql = "UPDATE moto_channel_data SET alarm = ? WHERE channel_id = ?";
-        $this->dbConn->dbQuery($sql, (string) $alarmID, $channel);
+        $this->dbConn->update('moto_channel_data', ['alarm' => (string) $alarmID], ['channel_id' => $channel]);
     }
 
     public function modEnabled()

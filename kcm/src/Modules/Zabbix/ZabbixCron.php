@@ -1,12 +1,12 @@
 <?php
 
-namespace Kova\Kcm\Modules\Zabbix;
+namespace Kova\Kams\Kcm\Modules\Zabbix;
 
-use Kova\Kcm\Modules\Common\Common as Common;
+use Kova\Kams\Kcm\Modules\Common\Common as Common;
 use Kova\Kams\Common\Database as DB;
-use Kova\Kcm\Modules\Common\AlarmHandler as AH;
-use Kova\Kcm\Modules\Common\Communicator;
-use Kova\Kcm\Modules\Zabbix\ZabbixComms as ZComms;
+use Kova\Kams\Kcm\Modules\Common\AlarmHandler as AH;
+use Kova\Kams\Kcm\Modules\Common\Communicator;
+use Kova\Kams\Kcm\Modules\Zabbix\ZabbixComms as ZComms;
 
 class ZabbixCron
 {
@@ -62,8 +62,14 @@ class ZabbixCron
 
             // Check if an alarm exists for this server/iface
 
-            $sql = "SELECT id FROM kamsAlarms WHERE module = 'zabbix' AND iface = ? AND active = '1'";
-            $results = $this->dbConn->dbQuery($sql, $server['name']);
+            $qb = $this->dbConn->createQueryBuilder();
+            $qb->select('id')
+               ->from('kamsAlarms')
+               ->where("module = 'zabbix'")
+               ->andWhere('iface = :iface')
+               ->andWhere("active = '1'")
+               ->setParameter('iface', $server['name']);
+            $results = $this->dbConn->executeQueryBuilder($qb);
 
             $alarmID = ($results) ? $results[0] : "";
 
