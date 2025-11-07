@@ -5,24 +5,23 @@ declare(strict_types=1);
 namespace Kova\Kams\Unified\Modules\Admin;
 
 use Kova\Kams\Unified\Modules\Admin\Handlers\CronServiceHandler;
-use Kova\Kams\Unified\Modules\Admin\Handlers\SettingsHandler;
+use Kova\Kams\Unified\Modules\Admin\Handlers\SuperadminSettingsHandler;
 use Kova\Kams\Unified\Modules\Admin\Handlers\AuthHandler;
-use Kova\Kams\Unified\Modules\Admin\Handlers\UtilitiesHandler;
 use Kova\Kams\Unified\Modules\Admin\Http\CorsHandler;
 use Kova\Kams\Common\Logger;
 
 /**
- * AdminApi
+ * SuperadminApi
  * 
- * Main API class for admin functionality.
- * Handles settings management and cron service management.
+ * Main API class for superadmin functionality.
+ * Provides full CRUD access to settings (including type, group_name, sort_order)
+ * and cron service management.
  */
-class AdminApi
+class SuperadminApi
 {
-    private SettingsHandler $settingsHandler;
+    private SuperadminSettingsHandler $settingsHandler;
     private AuthHandler $authHandler;
     private CronServiceHandler $cronServiceHandler;
-    private UtilitiesHandler $utilitiesHandler;
     private CorsHandler $corsHandler;
     private Logger $logger;
 
@@ -31,9 +30,8 @@ class AdminApi
         $this->logger = new Logger('admin.log');
         $this->corsHandler = new CorsHandler();
         $this->authHandler = new AuthHandler(null, $this->logger);
-        $this->settingsHandler = new SettingsHandler(null, null, null, $this->logger);
+        $this->settingsHandler = new SuperadminSettingsHandler(null, null, null, $this->logger);
         $this->cronServiceHandler = new CronServiceHandler(null, $this->logger);
-        $this->utilitiesHandler = new UtilitiesHandler($this->logger);
     }
 
     /**
@@ -46,25 +44,8 @@ class AdminApi
             $this->corsHandler->handle();
 
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-            
-            // Read raw input once (can only be read once)
-            $rawInput = file_get_contents('php://input');
-            $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-            
-            // Parse input based on content type
-            $input = [];
-            if ($method === 'POST') {
-                if (strpos($contentType, 'application/json') !== false) {
-                    $input = json_decode($rawInput, true) ?: [];
-                } elseif (strpos($contentType, 'application/x-www-form-urlencoded') !== false) {
-                    parse_str($rawInput, $input);
-                }
-            }
-            // Merge with $_POST if available
-            $input = array_merge($input, $_POST);
-            
-            // Get action from GET, POST, or parsed input
-            $action = $_GET['action'] ?? $input['action'] ?? null;
+            $input = json_decode(file_get_contents('php://input'), true) ?: [];
+            $action = $_GET['action'] ?? null;
             $module = $_GET['module'] ?? null;
 
             // Handle OPTIONS
@@ -77,9 +58,6 @@ class AdminApi
             if (str_starts_with($action ?? '', 'cron')) {
                 // Cron service management
                 $this->handleCronService($method, $action, $module, $input);
-            } elseif (in_array($action, ['sendUdpTest', 'sendSerialTest', 'testAlarm', 'clearAlarm', 'fireDrill'])) {
-                // Utilities
-                $this->handleUtilities($action, $input);
             } elseif (in_array($action, ['login', 'logout', 'check'])) {
                 // Authentication
                 $this->authHandler->handleRequest($method, $action, $input);
@@ -89,7 +67,7 @@ class AdminApi
             }
         } catch (\Throwable $e) {
             $errorMessage = $e->getMessage() ?: 'Unknown error';
-            $this->logger->error('Admin API error', [
+            $this->logger->error('Superadmin API error', [
                 'error' => $errorMessage,
                 'trace' => $e->getTraceAsString(),
                 'file' => $e->getFile(),
@@ -100,7 +78,6 @@ class AdminApi
             http_response_code(500);
             header('Content-Type: application/json');
             
-            // Ensure we output valid JSON even if there's an encoding issue
             $errorResponse = [
                 'error' => 'Server error',
                 'message' => $errorMessage,
@@ -109,7 +86,6 @@ class AdminApi
                 'class' => get_class($e)
             ];
             
-            // Try to include trace in development
             if (defined('KOVA_ENV') && KOVA_ENV === 'development') {
                 $errorResponse['trace'] = $e->getTraceAsString();
             }
@@ -145,29 +121,7 @@ class AdminApi
     }
 
     /**
-     * Handle utilities requests
-     */
-    private function handleUtilities(string $action, array $input): void
-    {
-        header('Content-Type: application/json');
-
-        // Check authentication for utilities
-        if (!$this->authHandler->check()) {
-            http_response_code(401);
-            echo json_encode(['success' => false, 'error' => 'Authentication required']);
-            exit;
-        }
-
-        // Input is already parsed in handleRequest(), just merge with GET/POST
-        $parsedInput = array_merge($_GET, $_POST, $input);
-
-        $result = $this->utilitiesHandler->handleRequest($action, $parsedInput);
-        echo json_encode($result);
-        exit;
-    }
-
-    /**
-     * Handle settings management requests
+     * Handle settings management requests (full CRUD for superadmin)
      */
     private function handleSettings(string $method, array $input): void
     {
@@ -183,6 +137,16 @@ class AdminApi
             } else {
                 echo json_encode($result);
             }
+        } elseif ($method === 'POST') {
+            // Create new setting
+            $result = $this->settingsHandler->handlePost($input);
+            if ($result['success']) {
+                http_response_code(201);
+                echo json_encode($result);
+            } else {
+                http_response_code(400);
+                echo json_encode($result);
+            }
         } elseif ($method === 'PUT') {
             if (!$id) {
                 http_response_code(400);
@@ -190,6 +154,19 @@ class AdminApi
                 exit;
             }
             $result = $this->settingsHandler->handlePut($id, $input);
+            if ($result['success']) {
+                http_response_code(204);
+            } else {
+                http_response_code(400);
+                echo json_encode($result);
+            }
+        } elseif ($method === 'DELETE') {
+            if (!$id) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Missing id']);
+                exit;
+            }
+            $result = $this->settingsHandler->handleDelete($id);
             if ($result['success']) {
                 http_response_code(204);
             } else {

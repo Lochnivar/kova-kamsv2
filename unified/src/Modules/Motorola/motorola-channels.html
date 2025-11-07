@@ -1,0 +1,243 @@
+<!doctype html>
+<div id="motorolaChannelsContainer">
+  <style>
+    /* v2 CSS Standards - Unified page compatible */
+    .moto-channels-wrapper {
+      padding: 20px;
+      background: #f5f5f5;
+      min-height: 100%;
+    }
+    .moto-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #ddd;
+    }
+    .moto-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+    .moto-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .moto-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .moto-btn:hover {
+      opacity: 0.8;
+    }
+    .moto-btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+    .moto-btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+    .moto-section {
+      margin-bottom: 30px;
+    }
+    .moto-section-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+      padding: 10px;
+      border-bottom: 2px dashed #ccc;
+    }
+    .moto-section-title.warning {
+      color: #dc3545;
+    }
+    .moto-section-title.active {
+      color: #28a745;
+    }
+    .moto-section-title.unmonitored {
+      color: #6c757d;
+    }
+    .moto-channels-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      padding: 15px 0;
+    }
+    .moto-channel-btn {
+      margin: 5px;
+      min-width: 155px;
+      height: 75px;
+      font-size: 90%;
+      line-height: 1.2;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 8px;
+      text-align: center;
+      white-space: normal;
+      word-wrap: break-word;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .moto-channel-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .moto-channel-btn.success {
+      background-color: #28a745;
+      color: white;
+    }
+    .moto-channel-btn.warning {
+      background-color: #ffc107;
+      color: #212529;
+    }
+    .moto-channel-btn.danger {
+      background-color: #dc3545;
+      color: white;
+    }
+    .moto-channel-btn.secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+    .moto-status-ok {
+      color: #28a745;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+    }
+    .moto-loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    .moto-refresh-indicator {
+      font-size: 12px;
+      color: #999;
+      margin-left: 10px;
+    }
+    @media (max-width: 768px) {
+      .moto-channels-grid {
+        justify-content: flex-start;
+      }
+      .moto-channel-btn {
+        min-width: 140px;
+        height: 70px;
+        font-size: 85%;
+      }
+    }
+  </style>
+
+  <div class="moto-channels-wrapper">
+    <div class="moto-header">
+      <div class="moto-title">Motorola Channel Status</div>
+      <div class="moto-controls">
+        <button class="moto-btn moto-btn-primary" onclick="getHome(); return false;" title="Return to home page">Home</button>
+        <button class="moto-btn moto-btn-secondary" id="refreshBtn" title="Refresh now">Refresh</button>
+        <span class="moto-refresh-indicator" id="refreshIndicator">Auto-refreshing...</span>
+      </div>
+    </div>
+
+    <div id="channelsContent" class="moto-loading">Loading channel status...</div>
+  </div>
+
+  <script>
+    /* ---------- Core API and helpers ---------- */
+    // Use var to allow redeclaration when page is reloaded via AJAX
+    var CHANNELS_API = 'src/Modules/Motorola/channels-check-ajax.php';
+    var channelsContent = document.getElementById('channelsContent');
+    var refreshBtn = document.getElementById('refreshBtn');
+    var refreshIndicator = document.getElementById('refreshIndicator');
+    var refreshInterval = null;
+    var lastRefreshTime = null;
+
+    function esc(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[c]));
+    }
+
+    function formatTime(seconds) {
+      if (!seconds) return 'No Activity';
+      const date = new Date(seconds * 1000);
+      return date.toLocaleString();
+    }
+
+    function updateRefreshIndicator() {
+      if (lastRefreshTime) {
+        const secondsAgo = Math.floor((Date.now() - lastRefreshTime) / 1000);
+        refreshIndicator.textContent = `Last updated: ${secondsAgo}s ago`;
+      }
+    }
+
+    /* ---------- Load and render channels ---------- */
+    async function loadChannels() {
+      try {
+        channelsContent.innerHTML = '<div class="moto-loading">Loading channel status...</div>';
+        
+        const response = await fetch(CHANNELS_API, {
+          method: 'GET',
+          headers: { 'Content-Type': 'text/html' },
+          credentials: 'same-origin',
+          cache: 'no-cache'
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const html = await response.text();
+        channelsContent.innerHTML = html;
+        lastRefreshTime = Date.now();
+        updateRefreshIndicator();
+      } catch (error) {
+        console.error('Error loading channels:', error);
+        channelsContent.innerHTML = `<div style="padding:20px;color:#dc3545;">Error loading channel status: ${esc(error.message)}</div>`;
+      }
+    }
+
+    /* ---------- Auto-refresh setup ---------- */
+    function setupAutoRefresh() {
+      // Clear existing interval
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+      
+      // Refresh every 15 seconds
+      refreshInterval = setInterval(function() {
+        loadChannels();
+      }, 15000);
+      
+      // Update refresh indicator every second
+      setInterval(function() {
+        updateRefreshIndicator();
+      }, 1000);
+    }
+
+    /* ---------- Event listeners ---------- */
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function() {
+        loadChannels();
+      });
+    }
+
+    /* ---------- Initialize ---------- */
+    // Load immediately
+    loadChannels();
+    
+    // Setup auto-refresh
+    setupAutoRefresh();
+  </script>
+</div>
+

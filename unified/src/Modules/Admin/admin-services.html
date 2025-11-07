@@ -190,6 +190,7 @@
         <div class="subtitle">Pause/Resume services or enable/disable on boot. Pausing stops the service but keeps it enabled for boot.</div>
       </div>
       <div class="toolbar">
+        <button class="btn" onclick="getHome(); return false;" title="Return to home page">Home</button>
         <button id="refreshBtn" class="btn ghost">Refresh</button>
         <button id="backBtn" class="btn ghost">Back to Admin</button>
       </div>
@@ -215,7 +216,8 @@
   </div>
 
   <script>
-    const API = 'src/Modules/Admin/api.php';
+    // Use var to allow redeclaration when page is reloaded via AJAX
+    var API = 'src/Modules/Admin/api.php';
 
     async function api(method, path = '', body = null) {
       const opts = { method, headers: {}, credentials: 'same-origin' };

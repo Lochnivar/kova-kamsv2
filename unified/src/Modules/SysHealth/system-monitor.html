@@ -1,0 +1,388 @@
+<!doctype html>
+<div id="systemMonitorContainer">
+  <style>
+    /* v2 CSS Standards - Unified page compatible */
+    .system-monitor-wrapper {
+      padding: 20px;
+      background: #f5f5f5;
+      min-height: 100%;
+    }
+    .system-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #ddd;
+    }
+    .system-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+    .system-time {
+      color: #007bff;
+      font-size: 16px;
+    }
+    .system-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .system-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .system-btn:hover {
+      opacity: 0.8;
+    }
+    .system-btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+    .system-btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+    .server-status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .server-status-btn {
+      width: 100%;
+      height: 90px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.6;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-align: center;
+      font-weight: 500;
+    }
+    .server-status-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .server-status-ok {
+      background-color: #28a745;
+      color: white;
+    }
+    .server-status-severity-0 {
+      background-color: #28a745;
+      color: white;
+    }
+    .server-status-severity-1 {
+      background-color: #007bff;
+      color: white;
+    }
+    .server-status-severity-2 {
+      background-color: #999900;
+      color: white;
+    }
+    .server-status-severity-3 {
+      background-color: #BA4A00;
+      color: white;
+    }
+    .server-status-severity-4 {
+      background-color: #ff0000;
+      color: white;
+    }
+    .server-status-severity-5 {
+      background-color: #8b0000;
+      color: white;
+    }
+    .history-section {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .history-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #333;
+      text-align: center;
+    }
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    .history-table th {
+      background-color: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      border-bottom: 2px solid #dee2e6;
+      font-weight: 600;
+      color: #495057;
+    }
+    .history-table td {
+      padding: 12px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    .history-table tr:hover {
+      background-color: #f8f9fa;
+    }
+    .severity-color-0 { color: #28a745; font-weight: bold; }
+    .severity-color-1 { color: #007bff; font-weight: bold; }
+    .severity-color-2 { color: #999900; font-weight: bold; }
+    .severity-color-3 { color: #BA4A00; font-weight: bold; }
+    .severity-color-4 { color: #ff0000; font-weight: bold; }
+    .severity-color-5 { color: #8b0000; font-weight: bold; }
+    .severity-color-empty { color: #6c757d; font-weight: bold; }
+    .legend-section {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      text-align: center;
+    }
+    .legend-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .legend-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .legend-btn {
+      width: 160px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: default;
+    }
+    .error-message {
+      padding: 20px;
+      background-color: #f8d7da;
+      color: #721c24;
+      border-radius: 6px;
+      margin: 20px 0;
+      border: 1px solid #f5c6cb;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6c757d;
+      font-size: 18px;
+    }
+  </style>
+
+  <div class="system-monitor-wrapper">
+    <div class="system-header">
+      <div>
+        <h1 class="system-title"><?php echo htmlspecialchars($SiteName ?? 'System'); ?> Servers Status</h1>
+        <div class="system-time" id="lastUpdate">Loading...</div>
+      </div>
+      <div class="system-controls">
+        <button class="system-btn system-btn-primary" onclick="getHome(); return false;" title="Return to home page">Home</button>
+        <button class="system-btn system-btn-secondary" onclick="refreshSystemMonitor()">Refresh</button>
+      </div>
+    </div>
+
+    <div id="errorMessage" style="display: none;"></div>
+    <div id="loadingMessage" class="loading">Loading server status...</div>
+
+    <div id="serverStatusContainer" style="display: none;">
+      <div class="server-status-grid" id="serverStatusGrid"></div>
+    </div>
+
+    <div id="historyContainer" style="display: none;">
+      <div class="history-section">
+        <h2 class="history-title">Last 7 Days</h2>
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Server</th>
+              <th>Time Stamp</th>
+              <th>Message Description</th>
+              <th>Severity</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="legend-section">
+      <h3 class="legend-title">MESSAGE SEVERITY LEGEND</h3>
+      <div class="legend-buttons">
+        <button class="legend-btn" style="background-color: #28a745; color: white;">Severity 0<br>RESOLVED</button>
+        <button class="legend-btn" style="background-color: #007bff; color: white;">Severity 1<br>INFORMATIONAL</button>
+        <button class="legend-btn" style="background-color: #999900; color: white;">Severity 2<br>WARNING</button>
+        <button class="legend-btn" style="background-color: #BA4A00; color: white;">Severity 3<br>AVERAGE PROBLEM</button>
+        <button class="legend-btn" style="background-color: #ff0000; color: white;">Severity 4<br>HIGH</button>
+        <button class="legend-btn" style="background-color: #8b0000; color: white;">Severity 5<br>CRITICAL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var SYSTEM_API = 'src/Modules/SysHealth/system-monitor-ajax.php';
+var systemMonitorRefreshInterval = null;
+
+function loadSystemMonitor() {
+  fetch(SYSTEM_API)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.status);
+      }
+      return response.json();
+    })
+    .then(data => {
+      document.getElementById('loadingMessage').style.display = 'none';
+      document.getElementById('errorMessage').style.display = 'none';
+      
+      if (data.error) {
+        showSystemMonitorError(data.error + (data.message ? ': ' + data.message : ''));
+        return;
+      }
+
+      renderServerStatus(data.servers || []);
+      renderHistory(data.history || []);
+      
+      document.getElementById('serverStatusContainer').style.display = 'block';
+      document.getElementById('historyContainer').style.display = 'block';
+      
+      updateLastUpdateTime();
+    })
+    .catch(error => {
+      console.error('Error loading system monitor:', error);
+      document.getElementById('loadingMessage').style.display = 'none';
+      showSystemMonitorError('Failed to load system monitor data: ' + error.message);
+    });
+}
+
+function renderServerStatus(servers) {
+  const grid = document.getElementById('serverStatusGrid');
+  grid.innerHTML = '';
+  
+  servers.forEach(server => {
+    const btn = document.createElement('button');
+    btn.className = 'server-status-btn';
+    
+    if (!server.hasProblem || server.severity <= 3) {
+      btn.className += ' server-status-ok';
+      btn.innerHTML = server.host + '<br>Server is Okay<br>';
+    } else {
+      btn.className += ' server-status-severity-' + server.severity;
+      const description = server.description.length < 35 
+        ? server.description 
+        : server.description.substring(0, 35) + '...';
+      btn.innerHTML = server.host + '<br>Severity - ' + server.severity + '<br>' + description;
+    }
+    
+    grid.appendChild(btn);
+  });
+}
+
+function renderHistory(history) {
+  const tbody = document.getElementById('historyTableBody');
+  tbody.innerHTML = '';
+  
+  if (history.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #6c757d;">No history data available</td></tr>';
+    return;
+  }
+  
+  history.forEach(row => {
+    const tr = document.createElement('tr');
+    
+    const host = row.host === 'Zabbix server' ? 'Monitor Server' : row.host;
+    const severity = row.severity !== null && row.severity !== undefined ? row.severity : '';
+    const description = (severity === 0 ? 'Restored - ' : '') + row.description;
+    const timestamp = formatTimestamp(row.clock);
+    
+    const severityClass = severity === '' ? 'severity-color-empty' : 'severity-color-' + severity;
+    
+    tr.innerHTML = `
+      <td class="${severityClass}">${escapeHtml(host)}</td>
+      <td class="${severityClass}">${escapeHtml(timestamp)}</td>
+      <td class="${severityClass}">${escapeHtml(description)}</td>
+      <td class="${severityClass}">${escapeHtml(String(severity))}</td>
+    `;
+    
+    tbody.appendChild(tr);
+  });
+}
+
+function formatTimestamp(clock) {
+  if (!clock) return '';
+  const date = new Date(clock * 1000);
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function showSystemMonitorError(message) {
+  const errorDiv = document.getElementById('errorMessage');
+  errorDiv.textContent = message;
+  errorDiv.style.display = 'block';
+}
+
+function updateLastUpdateTime() {
+  const now = new Date();
+  document.getElementById('lastUpdate').textContent = 'Last updated: ' + now.toLocaleTimeString();
+}
+
+function refreshSystemMonitor() {
+  document.getElementById('loadingMessage').style.display = 'block';
+  document.getElementById('serverStatusContainer').style.display = 'none';
+  document.getElementById('historyContainer').style.display = 'none';
+  loadSystemMonitor();
+}
+
+function startSystemMonitorAutoRefresh() {
+  if (systemMonitorRefreshInterval) {
+    clearInterval(systemMonitorRefreshInterval);
+  }
+  systemMonitorRefreshInterval = setInterval(loadSystemMonitor, 5000);
+}
+
+function stopSystemMonitorAutoRefresh() {
+  if (systemMonitorRefreshInterval) {
+    clearInterval(systemMonitorRefreshInterval);
+    systemMonitorRefreshInterval = null;
+  }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  loadSystemMonitor();
+  startSystemMonitorAutoRefresh();
+});
+
+// Clean up on page unload
+window.addEventListener('beforeunload', function() {
+  stopSystemMonitorAutoRefresh();
+});
+</script>
+

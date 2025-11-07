@@ -51,6 +51,30 @@ class AdminController
     }
 
     /**
+     * Render the superadmin page
+     */
+    public function renderSuperadminPage(): string
+    {
+        $superadminHtmlPath = __DIR__ . '/superadmin.html';
+        
+        // Check if superadmin.html exists
+        if (!file_exists($superadminHtmlPath)) {
+            return '<div style="padding:20px;color:red;">Superadmin page not found</div>';
+        }
+        
+        $html = file_get_contents($superadminHtmlPath);
+        
+        // Update API path to work when loaded via AJAX
+        $html = preg_replace(
+            "/const\s+API\s*=\s*['\"][^'\"]*superadmin_api\.php['\"];?/",
+            "const API = 'src/Modules/Admin/superadmin_api.php';",
+            $html
+        );
+        
+        return $html;
+    }
+
+    /**
      * Render the cron services page
      */
     public function renderCronServicesPage(): string
@@ -62,6 +86,29 @@ class AdminController
         }
         
         $html = file_get_contents($servicesHtmlPath);
+        
+        // Update API path to work when loaded via AJAX
+        $html = preg_replace(
+            "/const\s+API\s*=\s*['\"][^'\"]*api\.php['\"];?/",
+            "const API = 'src/Modules/Admin/api.php';",
+            $html
+        );
+        
+        return $html;
+    }
+
+    /**
+     * Render the utilities page
+     */
+    public function renderUtilitiesPage(): string
+    {
+        $utilitiesHtmlPath = __DIR__ . '/admin-utilities.html';
+        
+        if (!file_exists($utilitiesHtmlPath)) {
+            return '<div style="padding:20px;color:red;">Utilities page not found</div>';
+        }
+        
+        $html = file_get_contents($utilitiesHtmlPath);
         
         // Update API path to work when loaded via AJAX
         $html = preg_replace(

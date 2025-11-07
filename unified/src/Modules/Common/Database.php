@@ -17,31 +17,8 @@ class Database extends CommonDatabase
      */
     public function dbQuery($sql, ...$values)
     {
-        // Legacy method - convert to QueryBuilder if possible
-        // For now, delegate to parent's executeQuery if it exists
-        if (method_exists('parent', 'executeQuery')) {
-            return parent::executeQuery($sql, $values);
-        }
-        
-        // Fallback: use PDO directly (not recommended)
-        $qry = $this->getDb()->prepare($sql);
-        $x = 1;
-        foreach ($values as $value) {
-            if (is_int($value)) {
-                $param = \PDO::PARAM_INT;
-            } elseif (is_bool($value)) {
-                $param = \PDO::PARAM_BOOL;
-            } elseif (is_null($value)) {
-                $param = \PDO::PARAM_NULL;
-            } elseif (is_string($value)) {
-                $param = \PDO::PARAM_STR;
-            } else {
-                $param = \PDO::PARAM_STR;
-            }
-            $qry->bindValue($x, $value, $param);
-            $x++;
-        }
-        $qry->execute();
-        return $qry->fetchAll();
+        // Legacy method - delegate to parent's select() method for SELECT queries
+        // This maintains backward compatibility with old dbQuery() calls
+        return parent::select($sql, ...$values);
     }
 }

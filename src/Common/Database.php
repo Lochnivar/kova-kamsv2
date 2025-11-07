@@ -207,6 +207,7 @@ class Database
 
     /**
      * Execute a QueryBuilder and return all rows with numeric indexes.
+     * Use this for SELECT queries.
      * 
      * @param QueryBuilder $qb QueryBuilder instance
      * @return array<int, array<int|string, mixed>>
@@ -228,6 +229,34 @@ class Database
                 throw $e;
             }
             return [];
+        }
+    }
+
+    /**
+     * Execute a QueryBuilder statement (INSERT/UPDATE/DELETE).
+     * Use this for non-SELECT queries.
+     * 
+     * @param QueryBuilder $qb QueryBuilder instance
+     * @return int Number of affected rows
+     */
+    public function executeStatementBuilder(QueryBuilder $qb): int
+    {
+        try {
+            $sql = $qb->getSQL();
+            $params = $qb->getParameters();
+            $types = $qb->getParameterTypes();
+            return $this->db->getConnection()->executeStatement($sql, $params, $types);
+        } catch (Throwable $e) {
+            $this->logError('DB StatementBuilder error: ' . $e->getMessage(), [
+                'sql' => $qb->getSQL(),
+                'params' => $qb->getParameters(),
+                'exception' => get_class($e),
+                'trace' => $e->getTraceAsString()
+            ]);
+            if (defined('KOVA_ENV') && KOVA_ENV === 'development') {
+                throw $e;
+            }
+            return 0;
         }
     }
 

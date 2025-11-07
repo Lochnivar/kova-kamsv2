@@ -28,25 +28,25 @@ class Common extends CoreCommon
 
         // Motorola-Channels: Show if Motorola is enabled AND at least one other module is enabled
         if ($motorolaPage && ($udpMonitorPage || $serialMonitorPage || $zabbixPage)) {
-            $navBar .= '<button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" class="active" href="../channels/index.php">Motorola-Channels</a></button>';
+            $navBar .= '<button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" class="active" href="#" onclick="getMotorolaChannels(); return false;">Motorola-Channels</a></button>';
         }
         
         // UDP-Monitor: Show if enabled
         if ($udpMonitorPage) {
-            $navBar .= '<button style="background-color:yellow;border-radius: 6px;color:black"><a style="color:black;" href="../netmon-ng/index.html">UDP-Monitor</a></button>';
+            $navBar .= '<button style="background-color:yellow;border-radius: 6px;color:black"><a style="color:black;" href="#" onclick="getUdpMonitor(); return false;">UDP-Monitor</a></button>';
         }
         
         // Serial-Monitor: Show if enabled
         if ($serialMonitorPage) {
-            $navBar .= '<button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" href="../serial/index.php">Serial-Monitor</a></button>';
+            $navBar .= '<button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" href="#" onclick="getSerialMonitor(); return false;">Serial-Monitor</a></button>';
         }
         
         // Server-Monitor (Zabbix): Show if enabled
         if ($zabbixPage) {
-            $navBar .= '<button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" href="../Monitor/index.php">Server-Monitor</a></button>';
+            $navBar .= '<button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" href="#" onclick="getSystemMonitor(); return false;">Server-Monitor</a></button>';
         }
 
-        echo $navBar;
+        // Don't echo here - Dispatcher handles output
         return $navBar;
     }
     

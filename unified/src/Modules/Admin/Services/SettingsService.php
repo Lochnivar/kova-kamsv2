@@ -82,39 +82,138 @@ class SettingsService
     {
         // Normalize value before storage if type is provided
         if (isset($data['value']) && isset($data['type'])) {
+            $originalValue = $data['value'];
             $data['value'] = SettingsValueNormalizer::normalizeForStorage(
                 $data['value'],
                 $data['type']
             );
+            // Debug logging
+            error_log("SettingsService::update - ID: {$id}, Type: {$data['type']}, Original: " . substr((string)$originalValue, 0, 200) . ", Normalized: " . substr($data['value'], 0, 200));
         }
         
         $qb = $this->db->createQueryBuilder();
         $qb->update('settings');
         
+        $fieldsSet = 0;
         if (isset($data['name'])) {
             $qb->set('name', ':name')->setParameter('name', $data['name']);
+            $fieldsSet++;
         }
         if (isset($data['value'])) {
             $qb->set('value', ':value')->setParameter('value', $data['value']);
+            $fieldsSet++;
         }
         if (isset($data['type'])) {
             $qb->set('type', ':type')->setParameter('type', $data['type']);
+            $fieldsSet++;
         }
         if (isset($data['description'])) {
             $qb->set('description', ':description')->setParameter('description', $data['description']);
+            $fieldsSet++;
+        }
+        if (isset($data['group_name'])) {
+            $qb->set('group_name', ':group_name')->setParameter('group_name', $data['group_name']);
+            $fieldsSet++;
+        }
+        if (isset($data['sort_order'])) {
+            $qb->set('sort_order', ':sort_order')->setParameter('sort_order', $data['sort_order']);
+            $fieldsSet++;
         }
         
-        // Note: updated_at column will be added in Phase 2 (database migration)
-        // For now, we skip it to maintain backward compatibility
+        if ($fieldsSet === 0) {
+            error_log("SettingsService::update - No fields to update for ID: {$id}");
+            return false;
+        }
         
         $qb->where('id = :id')->setParameter('id', $id);
         
-        $this->db->executeQueryBuilder($qb);
+        // For UPDATE queries, use executeStatementBuilder (not executeQueryBuilder which is for SELECT)
+        try {
+            $affectedRows = $this->db->executeStatementBuilder($qb);
+            error_log("SettingsService::update - ID: {$id}, Fields set: {$fieldsSet}, SQL: " . $qb->getSQL() . ", Params: " . json_encode($qb->getParameters()) . ", Affected rows: {$affectedRows}");
+        } catch (\Throwable $e) {
+            error_log("SettingsService::update - ERROR for ID: {$id}: " . $e->getMessage() . ", SQL: " . $qb->getSQL() . ", Params: " . json_encode($qb->getParameters()));
+            throw $e;
+        }
         
         // Invalidate config cache after update
         $this->invalidateConfigCache();
         
-        return true;
+        return $affectedRows > 0;
+    }
+
+    public function create(array $data): int
+    {
+        // Validate required fields
+        if (empty($data['name'])) {
+            throw new \InvalidArgumentException('Setting name is required');
+        }
+
+        // Check for duplicate name
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('id')
+           ->from('settings')
+           ->where('(setname = :name OR name = :name)')
+           ->setParameter('name', $data['name'])
+           ->setMaxResults(1);
+        
+        $existing = $this->db->executeQueryBuilder($qb);
+        if (!empty($existing)) {
+            throw new \InvalidArgumentException('Setting with this name already exists');
+        }
+
+        // Normalize value before storage if type is provided
+        if (isset($data['value']) && isset($data['type'])) {
+            $data['value'] = SettingsValueNormalizer::normalizeForStorage(
+                $data['value'],
+                $data['type']
+            );
+        }
+
+        // Prepare data for insert
+        $insertData = [];
+        if (isset($data['name'])) {
+            $insertData['name'] = $data['name'];
+        }
+        if (isset($data['value'])) {
+            $insertData['value'] = $data['value'];
+        }
+        if (isset($data['type'])) {
+            $insertData['type'] = $data['type'];
+        }
+        if (isset($data['description'])) {
+            $insertData['description'] = $data['description'];
+        }
+        if (isset($data['group_name'])) {
+            $insertData['group_name'] = $data['group_name'];
+        }
+        if (isset($data['sort_order'])) {
+            $insertData['sort_order'] = $data['sort_order'];
+        }
+
+        $this->db->insert('settings', $insertData);
+        $id = (int)$this->db->lastInsertId();
+        
+        // Invalidate config cache after create
+        $this->invalidateConfigCache();
+        
+        return $id;
+    }
+
+    public function delete(int $id): bool
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb->delete('settings')
+           ->where('id = :id')
+           ->setParameter('id', $id);
+        
+        // For DELETE queries, use executeStatementBuilder (not executeQueryBuilder which is for SELECT)
+        $affectedRows = $this->db->executeStatementBuilder($qb);
+        
+        // Invalidate config cache after delete
+        $this->invalidateConfigCache();
+        
+        return $affectedRows > 0;
     }
     
     /**

@@ -201,7 +201,7 @@ final class Db
     /**
      * Heuristic type detection for ParameterType mapping.
      */
-    private function detectType($value): int
+    private function detectType($value): ParameterType
     {
         return TypeDetector::detectParameterType($value);
     }

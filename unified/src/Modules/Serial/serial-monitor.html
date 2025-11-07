@@ -1,0 +1,427 @@
+<!doctype html>
+<div id="serialMonitorContainer">
+  <style>
+    /* v2 CSS Standards - Unified page compatible */
+    .serial-monitor-wrapper {
+      padding: 20px;
+      background: #f5f5f5;
+      min-height: 100%;
+    }
+    .serial-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #ddd;
+    }
+    .serial-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+    .serial-time {
+      color: #007bff;
+      font-size: 16px;
+    }
+    .serial-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .serial-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .serial-btn:hover {
+      opacity: 0.8;
+    }
+    .serial-btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+    .serial-btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+    .serial-warnings {
+      margin-bottom: 20px;
+    }
+    .serial-warning {
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      animation: flash 0.3s linear infinite alternate;
+    }
+    .serial-warning.threshold {
+      background-color: #dc3545;
+      color: white;
+    }
+    .serial-warning.nodata {
+      background-color: #ffc107;
+      color: #212529;
+    }
+    @keyframes flash {
+      from { opacity: 1; }
+      to { opacity: 0.7; }
+    }
+    .serial-graph-section {
+      margin-bottom: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .serial-graph-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .serial-graph-container {
+      height: 275px;
+      width: 100%;
+    }
+    .serial-averages {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .serial-average-card {
+      border: 2px solid #333;
+      padding: 15px;
+      border-radius: 6px;
+      min-width: 150px;
+      text-align: center;
+      background: white;
+    }
+    .serial-average-label {
+      font-size: 120%;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .serial-average-value {
+      font-size: 18px;
+      color: #007bff;
+      font-weight: bold;
+    }
+    .serial-loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    .serial-refresh-indicator {
+      font-size: 12px;
+      color: #999;
+      margin-left: 10px;
+    }
+    .serial-data-warning {
+      color: #dc3545;
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      .serial-averages {
+        flex-direction: column;
+        align-items: center;
+      }
+      .serial-header {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+
+  <div class="serial-monitor-wrapper">
+    <div class="serial-header">
+      <div>
+        <div class="serial-title">Serial Traffic Monitor</div>
+        <div class="serial-time" id="currentTime"></div>
+      </div>
+      <div class="serial-controls">
+        <button class="serial-btn serial-btn-primary" onclick="getHome(); return false;" title="Return to home page">Home</button>
+        <button class="serial-btn serial-btn-secondary" id="refreshBtn" title="Refresh now">Refresh</button>
+        <span class="serial-refresh-indicator" id="refreshIndicator">Auto-refreshing...</span>
+      </div>
+    </div>
+
+    <div id="warningsContainer" class="serial-warnings"></div>
+
+    <div id="dataWarning" class="serial-data-warning" style="display:none;">
+      Please Wait While we collect data to create the Graph<br>
+      The System will Display the Graph Shortly
+    </div>
+
+    <div class="serial-graph-section">
+      <div class="serial-graph-title">Serial Traffic Total - Last <span id="graphTimeSpan">45</span> Minutes</div>
+      <div id="graph" class="serial-graph-container"></div>
+    </div>
+
+    <div class="serial-averages" id="averagesContainer">
+      <div class="serial-loading">Loading averages...</div>
+    </div>
+  </div>
+
+  <script>
+    // Morris.js should already be loaded from main page
+    // Use setTimeout to ensure DOM is ready
+    setTimeout(function() {
+      initSerialMonitor();
+    }, 100);
+    
+    function initSerialMonitor() {
+    /* ---------- Core API and helpers ---------- */
+    // Use var to allow redeclaration when page is reloaded via AJAX
+    var SERIAL_API = 'src/Modules/Serial/serial-monitor-ajax.php';
+    var serialGraph = null;
+    var refreshInterval = null;
+    var lastRefreshTime = null;
+
+    function esc(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[c]));
+    }
+
+    function updateCurrentTime() {
+      const now = new Date();
+      const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('currentTime').textContent = now.toLocaleString('en-US', options);
+    }
+
+    function updateRefreshIndicator() {
+      if (lastRefreshTime) {
+        const secondsAgo = Math.floor((Date.now() - lastRefreshTime) / 1000);
+        document.getElementById('refreshIndicator').textContent = `Last updated: ${secondsAgo}s ago`;
+      }
+    }
+
+    /* ---------- Load and render data ---------- */
+    async function loadSerialData() {
+      try {
+        const response = await fetch(SERIAL_API, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          cache: 'no-cache'
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        lastRefreshTime = Date.now();
+        updateRefreshIndicator();
+        
+        renderSerialData(data);
+      } catch (error) {
+        console.error('Error loading serial data:', error);
+        document.getElementById('averagesContainer').innerHTML = 
+          `<div style="padding:20px;color:#dc3545;">Error loading serial data: ${esc(error.message)}</div>`;
+      }
+    }
+
+    function renderSerialData(data) {
+      // Update graph time
+      document.getElementById('graphTimeSpan').textContent = data.graphTime || 45;
+      
+      // Handle warnings
+      const warningsContainer = document.getElementById('warningsContainer');
+      warningsContainer.innerHTML = '';
+      
+      if (data.warnings.belowThreshold) {
+        const warning = document.createElement('div');
+        warning.className = 'serial-warning threshold';
+        warning.textContent = 'WARNING! Serial Traffic Size Below Set Threshold';
+        warningsContainer.appendChild(warning);
+      }
+      
+      if (data.warnings.noData) {
+        const warning = document.createElement('div');
+        warning.className = 'serial-warning nodata';
+        warning.textContent = 'Please Wait For The System To Gather Data for Averages';
+        warningsContainer.appendChild(warning);
+        document.getElementById('dataWarning').style.display = 'block';
+      } else {
+        document.getElementById('dataWarning').style.display = 'none';
+      }
+      
+      // Render graph
+      if (data.graphData && data.rowCount > 0 && Array.isArray(data.graphData) && data.graphData.length > 0) {
+        try {
+          // Data is already a proper array from PHP
+          let graphData = data.graphData;
+          
+          // Validate graph data structure
+          if (!Array.isArray(graphData) || graphData.length === 0) {
+            throw new Error('Graph data is empty or invalid');
+          }
+          
+          // Validate each data point has required fields
+          for (let i = 0; i < graphData.length; i++) {
+            if (!graphData[i].hasOwnProperty('x') || !graphData[i].hasOwnProperty('y')) {
+              throw new Error('Invalid data point at index ' + i + ': missing x or y property');
+            }
+          }
+          
+          // Check if Morris.js is loaded (should be from main page)
+          if (typeof Morris === 'undefined') {
+            // Try loading it if not available
+            console.warn('Morris.js not found, attempting to load...');
+            var morrisScript = document.createElement('script');
+            morrisScript.src = 'src/Bones/js/morris.min.js';
+            morrisScript.onload = function() {
+              console.log('Morris.js loaded, retrying graph render');
+              loadSerialData(); // Retry after loading
+            };
+            morrisScript.onerror = function() {
+              throw new Error('Failed to load Morris.js library');
+            };
+            document.head.appendChild(morrisScript);
+            return; // Exit and wait for script to load
+          }
+          
+          // Destroy existing graph if it exists
+          if (serialGraph) {
+            try {
+              $('#graph').empty();
+            } catch (e) {
+              // Ignore cleanup errors
+            }
+            serialGraph = null;
+          }
+          
+          // Ensure the graph container is ready
+          const graphElement = document.getElementById('graph');
+          if (!graphElement) {
+            throw new Error('Graph container element not found');
+          }
+          
+          // Clear any existing content
+          graphElement.innerHTML = '';
+          
+          // Create new graph
+          serialGraph = Morris.Area({
+            element: 'graph',
+            data: graphData,
+            lineColors: ['green'],
+            xkey: 'x',
+            ykeys: ['y'],
+            labels: ['Input'],
+            postUnits: [' KB'],
+            fillOpacity: 0.7
+          });
+          
+          console.log('Graph rendered successfully with', graphData.length, 'data points');
+        } catch (e) {
+          console.error('Error rendering graph:', e);
+          console.error('Error details:', {
+            message: e.message,
+            stack: e.stack,
+            graphData: data.graphData ? data.graphData.substring(0, 200) : 'null',
+            rowCount: data.rowCount
+          });
+          const graphElement = document.getElementById('graph');
+          if (graphElement) {
+            graphElement.innerHTML = '<div style="padding:20px;color:#dc3545;">Error rendering graph data: ' + esc(e.message) + '</div>';
+          }
+        }
+      } else {
+        document.getElementById('graph').innerHTML = '<div class="serial-loading">Waiting for graph data...</div>';
+      }
+      
+      // Render averages
+      const averagesContainer = document.getElementById('averagesContainer');
+      averagesContainer.innerHTML = '';
+      
+      // 1 Hour Average
+      const avg1Hour = document.createElement('div');
+      avg1Hour.className = 'serial-average-card';
+      avg1Hour.innerHTML = `
+        <div class="serial-average-label">1 Hour Average</div>
+        <div class="serial-average-value">${data.averages.oneHour.toFixed(2)} KB</div>
+      `;
+      averagesContainer.appendChild(avg1Hour);
+      
+      // 2 Hours Average
+      if (!data.averages.twoHoursHidden) {
+        const avg2Hours = document.createElement('div');
+        avg2Hours.className = 'serial-average-card';
+        avg2Hours.innerHTML = `
+          <div class="serial-average-label">2 Hours Average</div>
+          <div class="serial-average-value">${data.averages.twoHours.toFixed(2)} KB</div>
+        `;
+        averagesContainer.appendChild(avg2Hours);
+      }
+      
+      // 3 Hours Average
+      if (!data.averages.threeHoursHidden) {
+        const avg3Hours = document.createElement('div');
+        avg3Hours.className = 'serial-average-card';
+        avg3Hours.innerHTML = `
+          <div class="serial-average-label">3 Hours Average</div>
+          <div class="serial-average-value">${data.averages.threeHours.toFixed(2)} KB</div>
+        `;
+        averagesContainer.appendChild(avg3Hours);
+      }
+    }
+
+    /* ---------- Auto-refresh setup ---------- */
+    function setupAutoRefresh() {
+      // Clear existing interval
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+      
+      // Refresh every 60 seconds (matching v1 behavior)
+      refreshInterval = setInterval(function() {
+        loadSerialData();
+      }, 60000);
+      
+      // Update time every second
+      setInterval(function() {
+        updateCurrentTime();
+      }, 1000);
+      
+      // Update refresh indicator every second
+      setInterval(function() {
+        updateRefreshIndicator();
+      }, 1000);
+    }
+
+    /* ---------- Event listeners ---------- */
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function() {
+        loadSerialData();
+      });
+    }
+
+      /* ---------- Initialize ---------- */
+      // Update time immediately
+      updateCurrentTime();
+      
+      // Load immediately
+      loadSerialData();
+      
+      // Setup auto-refresh
+      setupAutoRefresh();
+    }
+  </script>
+</div>
+

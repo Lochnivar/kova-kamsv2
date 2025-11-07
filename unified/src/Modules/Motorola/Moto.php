@@ -28,17 +28,18 @@ class Moto
 
 
         $cargo = <<<EOL
-<table class = 'table'><tbody align='center'><tr>
-        <td>Active Channels</td>
-            <td id = "motoActive"></td>
+<table class = 'moto-summary-table'><tbody>
+        <tr>
+            <td>Active Channels</td>
+            <td id = "motoActive">0</td>
         </tr>
         <tr>
             <td>Channel Warnings</td>
-            <td id = "motoWarnings"></td>
+            <td id = "motoWarnings">0</td>
         </tr>
         <tr>
             <td>Not Monitored</td>
-            <td id = "motoNM"></td>
+            <td id = "motoNM">0</td>
         </tr></tbody></table>
 EOL;
 

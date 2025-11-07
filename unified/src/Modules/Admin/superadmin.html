@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Settings Admin</title>
+  <title>Superadmin Settings</title>
   <style>
     :root{--bg:#0f1724;--muted:#b8c5d6;--accent:#6ee7b7;--accent-2:#60a5fa;--text:#e6eef6;--text-bright:#ffffff}
     *{box-sizing:border-box}
@@ -99,8 +99,8 @@
   <div class="container">
     <div class="header">
       <div>
-        <div class="h-title">Settings Admin</div>
-        <div class="small">Grouped settings view; servers are stored as value-only JSON array of names</div>
+        <div class="h-title">Superadmin Settings</div>
+        <div class="small">Full CRUD access - all fields editable including type, group, and order</div>
       </div>
       <div class="toolbar">
         <button class="btn" onclick="getHome(); return false;" title="Return to home page">Home</button>
@@ -110,6 +110,7 @@
           <option value="card">Card Layout</option>
           <option value="compact">Compact Layout</option>
         </select>
+        <button id="createBtn" class="btn">Create New</button>
         <button id="reloadBtn" class="btn ghost">Reload</button>
         <button id="exportBtn" class="btn">Export JSON</button>
         <button id="cronServicesBtn" class="btn ghost">Cron Services</button>
@@ -121,12 +122,11 @@
     <div id="mainCard" class="card layout-grid" style="display:none">
       <div id="groupsContainer"></div>
       <div id="empty" class="small" style="display:none;padding:16px;text-align:center;color:var(--text)">No settings found</div>
-      <div class="small" style="margin-top:12px;color:var(--text)">Editing only values is allowed. Group and order are not editable here.</div>
     </div>
 
     <div id="loginModal" class="modal">
       <div class="modal-box">
-        <div style="margin-bottom:10px;font-weight:700;color:var(--text-bright)">Admin Login</div>
+        <div style="margin-bottom:10px;font-weight:700;color:var(--text-bright)">Superadmin Login</div>
         <div class="small" style="margin-bottom:6px;color:var(--text)">Password</div>
         <input id="pw" class="input" type="password" placeholder="Enter password" />
         <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
@@ -160,7 +160,7 @@
   <script>
     /* ---------- Core API and helpers ---------- */
     // Use var to allow redeclaration when page is reloaded via AJAX
-    var API = 'src/Modules/Admin/api.php';
+    var API = 'src/Modules/Admin/superadmin_api.php';
     // Use var to allow redeclaration when page is reloaded via AJAX
     var groupsContainer = document.getElementById('groupsContainer');
     var mainCard = document.getElementById('mainCard');
@@ -273,7 +273,7 @@
               const input = rowElement.querySelector('input[data-type]');
               if (input) type = input.getAttribute('data-type') || 'string';
             }
-            try { saveSettingInline(id, name, type); } catch (err) { console.error('Save callback missing', err); }
+            try { saveSettingInline(id); } catch (err) { console.error('Save callback missing', err); }
           }
         }
       });
@@ -354,7 +354,7 @@
     }
 
     /* ---------- Render setting for different layouts ---------- */
-    function renderSetting(id, name, rawValue, type, desc, layout) {
+    function renderSetting(id, name, rawValue, type, desc, layout, groupName = 'default', sortOrder = 100) {
       // Create value input/control
       const valueContainer = document.createElement('div');
       valueContainer.className = 'setting-value-container';
@@ -391,24 +391,117 @@
       saveBtn.className = 'btn';
       saveBtn.type = 'button';
       saveBtn.innerText = 'Save';
-      saveBtn.onclick = () => saveSettingInline(id, name, type);
+      saveBtn.onclick = () => saveSettingInline(id);
       controls.appendChild(saveBtn);
       
-      // Create label group (name + description)
+      // Add delete button for superadmin
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'btn ghost';
+      deleteBtn.style.color = '#fca5a5';
+      deleteBtn.type = 'button';
+      deleteBtn.innerText = 'Delete';
+      deleteBtn.onclick = () => deleteSetting(id);
+      controls.appendChild(deleteBtn);
+      
+      // Create label group (name + description) - name is editable for superadmin
       const labelGroup = document.createElement('div');
       labelGroup.className = 'setting-label-group';
       
-      const label = document.createElement('div');
-      label.className = 'setting-label';
-      label.textContent = name;
-      labelGroup.appendChild(label);
+      const nameInput = document.createElement('input');
+      nameInput.className = 'input';
+      nameInput.value = name;
+      nameInput.id = 'n_' + id;
+      nameInput.placeholder = 'Setting name';
+      nameInput.addEventListener('input', () => markModified(id));
+      labelGroup.appendChild(nameInput);
       
-      if (desc) {
-        const description = document.createElement('div');
-        description.className = 'setting-description';
-        description.textContent = desc;
-        labelGroup.appendChild(description);
-      }
+      // Add editable description field
+      const descLabel = document.createElement('label');
+      descLabel.className = 'small';
+      descLabel.style.marginTop = '8px';
+      descLabel.style.display = 'block';
+      descLabel.textContent = 'Description/Hint:';
+      descLabel.style.color = 'var(--muted)';
+      
+      const descInput = document.createElement('input');
+      descInput.className = 'input';
+      descInput.type = 'text';
+      descInput.style.fontSize = '12px';
+      descInput.style.fontStyle = 'italic';
+      descInput.style.marginTop = '4px';
+      descInput.id = 'd_' + id;
+      descInput.value = desc || '';
+      descInput.placeholder = 'Enter description or hint text (shown as helper text)';
+      descInput.addEventListener('input', () => markModified(id));
+      
+      labelGroup.appendChild(descLabel);
+      labelGroup.appendChild(descInput);
+      
+      // Add type, group, order fields for superadmin
+      const metaContainer = document.createElement('div');
+      metaContainer.style.display = 'flex';
+      metaContainer.style.gap = '8px';
+      metaContainer.style.marginTop = '8px';
+      metaContainer.style.alignItems = 'center';
+      
+      // Type dropdown
+      const typeLabel = document.createElement('label');
+      typeLabel.className = 'small';
+      typeLabel.style.marginRight = '4px';
+      typeLabel.textContent = 'Type:';
+      const typeSelect = document.createElement('select');
+      typeSelect.className = 'input';
+      typeSelect.style.width = 'auto';
+      typeSelect.style.padding = '4px 8px';
+      typeSelect.id = 't_' + id;
+      ['string', 'int', 'float', 'bool', 'json', 'list', 'object'].forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        if (t === type) opt.selected = true;
+        typeSelect.appendChild(opt);
+      });
+      typeSelect.addEventListener('change', () => markModified(id));
+      
+      // Group input
+      const groupLabel = document.createElement('label');
+      groupLabel.className = 'small';
+      groupLabel.style.marginLeft = '8px';
+      groupLabel.style.marginRight = '4px';
+      groupLabel.textContent = 'Group:';
+      const groupInput = document.createElement('input');
+      groupInput.className = 'input';
+      groupInput.style.width = '120px';
+      groupInput.style.padding = '4px 8px';
+      groupInput.id = 'g_' + id;
+      groupInput.value = groupName || 'default';
+      groupInput.placeholder = 'Group name';
+      groupInput.addEventListener('input', () => markModified(id));
+      
+      // Sort order input
+      const orderLabel = document.createElement('label');
+      orderLabel.className = 'small';
+      orderLabel.style.marginLeft = '8px';
+      orderLabel.style.marginRight = '4px';
+      orderLabel.textContent = 'Order:';
+      const orderInput = document.createElement('input');
+      orderInput.className = 'input';
+      orderInput.type = 'number';
+      orderInput.style.width = '80px';
+      orderInput.style.padding = '4px 8px';
+      orderInput.id = 'o_' + id;
+      orderInput.value = sortOrder || 100;
+      orderInput.placeholder = 'Order';
+      orderInput.addEventListener('input', () => markModified(id));
+      
+      metaContainer.appendChild(typeLabel);
+      metaContainer.appendChild(typeSelect);
+      metaContainer.appendChild(groupLabel);
+      metaContainer.appendChild(groupInput);
+      metaContainer.appendChild(orderLabel);
+      metaContainer.appendChild(orderInput);
+      
+      labelGroup.appendChild(metaContainer);
       
       // Create status indicator
       const status = document.createElement('div');
@@ -461,14 +554,85 @@
         element.className = 'row';
         element.setAttribute('data-id', id);
         
-        const compactLabel = document.createElement('div');
-        compactLabel.className = 'setting-label';
-        compactLabel.textContent = name;
-        if (desc) {
-          compactLabel.title = desc; // Tooltip for description
-        }
+        // For compact, create a wrapper for name and description
+        const nameDescWrapper = document.createElement('div');
+        nameDescWrapper.style.display = 'flex';
+        nameDescWrapper.style.flexDirection = 'column';
+        nameDescWrapper.style.gap = '4px';
         
-        element.appendChild(compactLabel);
+        const compactNameInput = document.createElement('input');
+        compactNameInput.className = 'input';
+        compactNameInput.style.fontSize = '15px';
+        compactNameInput.style.fontWeight = '600';
+        compactNameInput.value = name;
+        compactNameInput.id = 'n_' + id;
+        compactNameInput.placeholder = 'Setting name';
+        compactNameInput.addEventListener('input', () => markModified(id));
+        
+        const compactDescInput = document.createElement('input');
+        compactDescInput.className = 'input';
+        compactDescInput.type = 'text';
+        compactDescInput.style.fontSize = '11px';
+        compactDescInput.style.fontStyle = 'italic';
+        compactDescInput.style.opacity = '0.8';
+        compactDescInput.id = 'd_' + id;
+        compactDescInput.value = desc || '';
+        compactDescInput.placeholder = 'Description/hint';
+        compactDescInput.addEventListener('input', () => markModified(id));
+        
+        nameDescWrapper.appendChild(compactNameInput);
+        nameDescWrapper.appendChild(compactDescInput);
+        
+        // Add meta fields for compact layout
+        const compactMetaWrapper = document.createElement('div');
+        compactMetaWrapper.style.display = 'flex';
+        compactMetaWrapper.style.gap = '6px';
+        compactMetaWrapper.style.marginTop = '4px';
+        compactMetaWrapper.style.flexWrap = 'wrap';
+        
+        const compactTypeSelect = document.createElement('select');
+        compactTypeSelect.className = 'input';
+        compactTypeSelect.style.width = 'auto';
+        compactTypeSelect.style.padding = '2px 6px';
+        compactTypeSelect.style.fontSize = '11px';
+        compactTypeSelect.id = 't_' + id;
+        ['string', 'int', 'float', 'bool', 'json', 'list', 'object'].forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t;
+          opt.textContent = t;
+          if (t === type) opt.selected = true;
+          compactTypeSelect.appendChild(opt);
+        });
+        compactTypeSelect.addEventListener('change', () => markModified(id));
+        
+        const compactGroupInput = document.createElement('input');
+        compactGroupInput.className = 'input';
+        compactGroupInput.style.width = '100px';
+        compactGroupInput.style.padding = '2px 6px';
+        compactGroupInput.style.fontSize = '11px';
+        compactGroupInput.id = 'g_' + id;
+        compactGroupInput.value = groupName || 'default';
+        compactGroupInput.placeholder = 'Group';
+        compactGroupInput.addEventListener('input', () => markModified(id));
+        
+        const compactOrderInput = document.createElement('input');
+        compactOrderInput.className = 'input';
+        compactOrderInput.type = 'number';
+        compactOrderInput.style.width = '60px';
+        compactOrderInput.style.padding = '2px 6px';
+        compactOrderInput.style.fontSize = '11px';
+        compactOrderInput.id = 'o_' + id;
+        compactOrderInput.value = sortOrder || 100;
+        compactOrderInput.placeholder = 'Order';
+        compactOrderInput.addEventListener('input', () => markModified(id));
+        
+        compactMetaWrapper.appendChild(compactTypeSelect);
+        compactMetaWrapper.appendChild(compactGroupInput);
+        compactMetaWrapper.appendChild(compactOrderInput);
+        
+        nameDescWrapper.appendChild(compactMetaWrapper);
+        
+        element.appendChild(nameDescWrapper);
         element.appendChild(valueContainer);
         element.appendChild(controls);
         
@@ -507,7 +671,15 @@
           const curValEl = valueContainer.querySelector('#v_' + id);
           const curVal = curValEl ? curValEl.value : String(rawValue || '');
           attachTimeZoneInputToRow(element, id, name, curVal, (sid, sname, svalue) => {
-            api('PUT', '?id=' + sid, { name: sname, value: svalue, type: 'string' })
+            const typeEl = document.getElementById('t_' + sid);
+            const groupEl = document.getElementById('g_' + sid);
+            const orderEl = document.getElementById('o_' + sid);
+            const descEl = document.getElementById('d_' + sid);
+            const type = typeEl ? typeEl.value : 'string';
+            const group_name = groupEl ? groupEl.value.trim() : 'default';
+            const sort_order = orderEl ? parseInt(orderEl.value, 10) || 100 : 100;
+            const description = descEl ? descEl.value.trim() : '';
+            api('PUT', '?id=' + sid, { name: sname, value: svalue, type, description, group_name, sort_order })
               .then(()=> load())
               .catch(err => { alert('Save failed: ' + (err.message || err)); });
           });
@@ -567,8 +739,10 @@
             const type = item.type || 'string';
             const desc = item.description || '';
             const id = item.id || item.setting_id || 0;
+            const groupName = item.group_name || item.group || 'default';
+            const sortOrder = item.sort_order !== undefined && item.sort_order !== null ? Number(item.sort_order) : 100;
 
-            const settingElement = renderSetting(id, name, rawValue, type, desc, currentLayout);
+            const settingElement = renderSetting(id, name, rawValue, type, desc, currentLayout, groupName, sortOrder);
             section.appendChild(settingElement);
           }
 
@@ -590,16 +764,72 @@
       return el ? el.value : '';
     }
 
-    async function saveSettingInline(id, name, originalType) {
-      const value = readValueFromRow(id, originalType);
-      // Description is no longer editable in main view
+    async function saveSettingInline(id) {
+      const nameEl = document.getElementById('n_' + id);
+      const typeEl = document.getElementById('t_' + id);
+      const groupEl = document.getElementById('g_' + id);
+      const orderEl = document.getElementById('o_' + id);
+      const descEl = document.getElementById('d_' + id);
+      
+      const name = nameEl ? nameEl.value.trim() : '';
+      const type = typeEl ? typeEl.value : 'string';
+      const group_name = groupEl ? groupEl.value.trim() : 'default';
+      const sort_order = orderEl ? parseInt(orderEl.value, 10) || 100 : 100;
+      const description = descEl ? descEl.value.trim() : '';
+      
+      if (!name) {
+        alert('Setting name is required');
+        return;
+      }
+      
+      const value = readValueFromRow(id, type);
+      
       try {
-        await api('PUT', '?id=' + id, { name, value, type: originalType });
-        // Show saved indicator
+        await api('PUT', '?id=' + id, { name, value, type, description, group_name, sort_order });
         markSaved(id);
-        // Optionally reload to refresh from server
-        // await load();
+        await load(); // Reload to refresh groups and order
       } catch (e) { alert('Save failed: ' + e.message); }
+    }
+    
+    async function deleteSetting(id) {
+      if (!confirm('Are you sure you want to delete this setting? This cannot be undone.')) {
+        return;
+      }
+      
+      try {
+        await api('DELETE', '?id=' + id);
+        await load();
+      } catch (e) {
+        alert('Delete failed: ' + e.message);
+      }
+    }
+    
+    async function createNewSetting() {
+      const name = prompt('Enter setting name:');
+      if (!name || !name.trim()) return;
+      
+      const type = prompt('Enter type (string, int, float, bool, json, list, object):', 'string');
+      if (!type) return;
+      
+      const description = prompt('Enter description/hint (optional):', '');
+      const groupName = prompt('Enter group name:', 'default');
+      const sortOrder = parseInt(prompt('Enter sort order:', '100'), 10) || 100;
+      
+      const value = prompt('Enter initial value (leave empty for default):', '');
+      
+      try {
+        await api('POST', '', {
+          name: name.trim(),
+          type: type.trim(),
+          description: description || null,
+          group_name: groupName || 'default',
+          sort_order: sortOrder,
+          value: value || null
+        });
+        await load();
+      } catch (e) {
+        alert('Create failed: ' + e.message);
+      }
     }
 
     /* ---------- JSON editor and helpers ---------- */
@@ -998,6 +1228,9 @@
     }
 
     document.getElementById('closeJsonBtn').addEventListener('click', ()=>{ jsonModal.style.display='none'; });
+    
+    // Create new setting button
+    document.getElementById('createBtn').addEventListener('click', createNewSetting);
 
     /* ---------- login/logout and basic wiring ---------- */
     window.doLogin = async function(){
@@ -1012,22 +1245,21 @@
         console.log('Login response JSON:', json);
         if (r.ok && json.success) { 
           document.getElementById('pw').value=''; 
-          // Check user level and reload via Dispatcher to route to correct page
+          // Check user level - if admin, redirect to admin page; otherwise show superadmin
           const userLevel = json.level || 'admin';
-          if (userLevel === 'superadmin') {
-            // Reload via Dispatcher to get superadmin page
+          if (userLevel === 'admin') {
+            // Admin user logged in - redirect to admin page
             if (typeof getAdmin === 'function') {
               getAdmin();
             } else {
-              // Fallback: reload current page
               window.location.reload();
             }
           } else {
-            // Regular admin - show current page
-            loginModal.style.display='none'; 
-            mainCard.style.display='block'; 
-            logoutBtn.style.display='inline-block'; 
-            load();
+            // Superadmin - show current page
+          loginModal.style.display='none'; 
+          mainCard.style.display='block'; 
+          logoutBtn.style.display='inline-block'; 
+          load(); 
           } 
           return; 
         }
@@ -1060,6 +1292,7 @@
         });
       }
     });
+    
     document.getElementById('reloadBtn').addEventListener('click', load);
     document.getElementById('exportBtn').addEventListener('click', async ()=>{
       try {
@@ -1089,35 +1322,26 @@
         alert('Failed to load cron services page: ' + e.message);
       }
     });
-      document.getElementById('utilitiesBtn').addEventListener('click', async ()=>{
-        try {
-          const response = await fetch('src/Dispatcher.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: 'action=getUtilities'
-          });
-          const html = await response.text();
-          const mainDisplay = window.parent?.document.getElementById('mainDisplay') || document.getElementById('mainDisplay');
-          if (mainDisplay) {
-            mainDisplay.innerHTML = html;
-            // Extract and execute scripts manually since innerHTML doesn't execute scripts
-            var scripts = mainDisplay.getElementsByTagName('script');
-            for (var i = 0; i < scripts.length; i++) {
-              try {
-                eval(scripts[i].innerHTML);
-              } catch(e) {
-                console.error('Error executing script:', e);
-              }
-            }
-          } else {
-            // Fallback: try to load via Dispatcher URL
-            window.location.href = 'src/Dispatcher.php?action=getUtilities';
-          }
-        } catch(e){
-          console.error('Error loading utilities:', e);
-          alert('Failed to load utilities page: ' + e.message);
+    document.getElementById('utilitiesBtn').addEventListener('click', async ()=>{
+      try {
+        const response = await fetch('src/Dispatcher.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: 'action=getUtilities'
+        });
+        const html = await response.text();
+        const mainDisplay = window.parent?.document.getElementById('mainDisplay') || document.getElementById('mainDisplay');
+        if (mainDisplay) {
+          mainDisplay.innerHTML = html;
+        } else {
+          // Fallback: try to load via Dispatcher URL
+          window.location.href = 'src/Dispatcher.php?action=getUtilities';
         }
-      });
+      } catch(e){
+        console.error('Error loading utilities:', e);
+        alert('Failed to load utilities page: ' + e.message);
+      }
+    });
     document.getElementById('logoutBtn').addEventListener('click', async ()=>{
       try {
         await fetch(API + '?action=logout', { method:'POST', credentials:'same-origin' });

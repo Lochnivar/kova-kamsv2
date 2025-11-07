@@ -178,6 +178,13 @@ final class DBALConfigProvider
                 $type = null;
             }
             
+            // Debug: Log raw database values for interface settings
+            if (in_array($key, ['UDPInterfaceName', 'SerialInterfaceName', 'MotorolaInterfaceName'])) {
+                error_log("DBALConfigProvider::reload(): RAW DB value for '{$key}': type=" . gettype($value));
+                error_log("DBALConfigProvider::reload(): RAW DB value string: " . ($value ?? 'NULL'));
+                error_log("DBALConfigProvider::reload(): DB type column: " . ($type ?? 'NULL'));
+            }
+            
             // Store type info for normalization
             if ($type) {
                 $types[$key] = $type;
@@ -185,7 +192,17 @@ final class DBALConfigProvider
 
             // Normalize value based on type if available
             if ($type) {
-                $data[$key] = SettingsValueNormalizer::normalizeForUse($value, $type);
+                $normalized = SettingsValueNormalizer::normalizeForUse($value, $type);
+                // Debug: Log normalized value for interface settings
+                if (in_array($key, ['UDPInterfaceName', 'SerialInterfaceName', 'MotorolaInterfaceName'])) {
+                    error_log("DBALConfigProvider::reload(): NORMALIZED value for '{$key}': type=" . gettype($normalized));
+                    if (is_array($normalized)) {
+                        error_log("DBALConfigProvider::reload(): NORMALIZED array: " . json_encode($normalized));
+                    } elseif (is_string($normalized)) {
+                        error_log("DBALConfigProvider::reload(): NORMALIZED string: " . substr($normalized, 0, 500));
+                    }
+                }
+                $data[$key] = $normalized;
             } else {
                 $data[$key] = $this->normalizeValue($value);
             }

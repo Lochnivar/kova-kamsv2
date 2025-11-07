@@ -49,6 +49,8 @@ class SettingsHandler
             $value = $input['value'] ?? null;
             $type = $input['type'] ?? null;
             $description = $input['description'] ?? null;
+            
+            error_log("SettingsHandler::handlePut - Raw input: ID={$id}, Name={$name}, Value type=" . gettype($value) . ", Value=" . substr(json_encode($value), 0, 300) . ", Type={$type}");
 
             // Get setting from database if name not provided
             if (!$name) {
@@ -99,8 +101,15 @@ class SettingsHandler
 
             // Validate value type
             if ($value !== null && $value !== '') {
+                // For object types with array validation, accept arrays as well
+                $effectiveType = $type;
+                if ($type === 'object' && $schema && isset($schema['validation']['array']) && $schema['validation']['array'] === true) {
+                    // This is an object type that accepts arrays - validate as list instead
+                    $effectiveType = 'list';
+                }
+                
                 // Basic type validation
-                if (!$this->validator->validate($value, $type)) {
+                if (!$this->validator->validate($value, $effectiveType)) {
                     return [
                         'success' => false,
                         'error' => 'Value does not match expected type: ' . $type
@@ -120,12 +129,23 @@ class SettingsHandler
             }
 
             // Update the setting (normalization happens in SettingsService::update())
+            error_log("SettingsHandler::handlePut - About to call update, ID: {$id}, Name: {$name}, Value: " . substr(json_encode($value), 0, 200) . ", Type: {$type}");
+            
             $result = $this->settingsService->update($id, [
                 'name' => $name,
                 'value' => $value,
                 'type' => $type,
                 'description' => $description ?? $schema['description'] ?? null
             ]);
+
+            error_log("SettingsHandler::handlePut - Update result: " . ($result ? 'true' : 'false'));
+
+            if (!$result) {
+                return [
+                    'success' => false,
+                    'error' => 'Update failed - no rows affected'
+                ];
+            }
 
             return ['success' => true];
         } catch (\Exception $e) {
@@ -170,16 +190,39 @@ class SettingsHandler
         
         // Handle object/list schema validation
         if (isset($validation['schema']) && in_array($schema['type'] ?? '', ['object', 'list'])) {
-            // For objects, validate structure
-            if ($schema['type'] === 'object') {
-                $decoded = is_string($value) ? json_decode($value, true) : $value;
-                if (!is_array($decoded)) {
-                    return [
-                        'valid' => false,
-                        'error' => 'Invalid object format'
-                    ];
+            $decoded = is_string($value) ? json_decode($value, true) : $value;
+            if (!is_array($decoded)) {
+                return [
+                    'valid' => false,
+                    'error' => 'Invalid format - expected array'
+                ];
+            }
+            
+            // Check if this is an object type that accepts arrays
+            $isArrayOfObjects = ($schema['type'] === 'object' && isset($validation['array']) && $validation['array'] === true);
+            
+            if ($isArrayOfObjects || $schema['type'] === 'list') {
+                // Validate each item in the array against the schema
+                foreach ($decoded as $item) {
+                    if (!is_array($item)) {
+                        return [
+                            'valid' => false,
+                            'error' => 'Array items must be objects'
+                        ];
+                    }
+                    
+                    // Validate object properties against schema
+                    foreach ($validation['schema'] as $prop => $rules) {
+                        if (strpos($rules, 'required') !== false && !isset($item[$prop])) {
+                            return [
+                                'valid' => false,
+                                'error' => "Required property '{$prop}' is missing in array item"
+                            ];
+                        }
+                    }
                 }
-                
+            } else {
+                // For single object validation
                 // Validate object properties
                 foreach ($validation['schema'] as $prop => $rules) {
                     // Simple validation - can be enhanced
@@ -189,17 +232,6 @@ class SettingsHandler
                             'error' => "Required property '{$prop}' is missing"
                         ];
                     }
-                }
-            }
-            
-            // For lists, validate array structure
-            if ($schema['type'] === 'list' && isset($validation['array'])) {
-                $decoded = is_string($value) ? json_decode($value, true) : $value;
-                if (!is_array($decoded)) {
-                    return [
-                        'valid' => false,
-                        'error' => 'Invalid list format'
-                    ];
                 }
             }
         }

@@ -35,7 +35,11 @@ class AuthHandler
                 $result = $this->authenticator->login($password);
                 
                 if ($result['success']) {
-                    echo json_encode(['success' => true]);
+                    $response = ['success' => true];
+                    if (isset($result['level'])) {
+                        $response['level'] = $result['level'];
+                    }
+                    echo json_encode($response);
                 } else {
                     http_response_code(401);
                     // Include debug info in development

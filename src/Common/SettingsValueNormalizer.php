@@ -34,14 +34,33 @@ class SettingsValueNormalizer
             case 'list':
                 // Ensure valid JSON encoding
                 if (is_string($value)) {
-                    // If already a JSON string, validate it
+                    // If already a JSON string, validate and return it (don't double-encode)
                     $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) {
-                        return json_encode($decoded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                        // Valid JSON array/object - re-encode to ensure proper formatting
+                        $normalized = json_encode($decoded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                        error_log("SettingsValueNormalizer::normalizeForStorage - String input decoded and re-encoded: " . substr($value, 0, 100) . " -> " . substr($normalized, 0, 100));
+                        return $normalized;
                     }
+                    // If JSON decode failed but it looks like JSON, return as-is
+                    if (trim($value) !== '' && ($value[0] === '[' || $value[0] === '{')) {
+                        error_log("SettingsValueNormalizer::normalizeForStorage - String input looks like JSON but decode failed, returning as-is: " . substr($value, 0, 100));
+                        return $value;
+                    }
+                    // Empty string or invalid JSON - encode as empty array
+                    error_log("SettingsValueNormalizer::normalizeForStorage - String input invalid, encoding as empty array");
+                    return $type === 'list' ? '[]' : '{}';
+                }
+                // If it's already an array/object, encode it
+                if (is_array($value) || is_object($value)) {
+                    $normalized = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    error_log("SettingsValueNormalizer::normalizeForStorage - Array/object input encoded: " . substr($normalized, 0, 100));
+                    return $normalized;
                 }
                 // Otherwise encode the value
-                return json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $normalized = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                error_log("SettingsValueNormalizer::normalizeForStorage - Other type encoded: " . substr($normalized, 0, 100));
+                return $normalized;
             
             case 'string':
             default:

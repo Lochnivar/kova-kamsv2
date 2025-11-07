@@ -12,7 +12,7 @@ final class TypeDetector
     /**
      * Detect the appropriate ParameterType for a given value.
      */
-    public static function detectParameterType($value): int
+    public static function detectParameterType($value): ParameterType
     {
         if (is_int($value)) {
             return ParameterType::INTEGER;

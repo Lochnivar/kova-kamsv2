@@ -30,25 +30,38 @@ class Dataworker
         
         $common = new Common($this->configs);
 
-
         $ifacesRaw = $common->getIfaces($this->mod);
 
-
-        if (is_array($ifacesRaw)) {
-            $ifaces = $ifacesRaw;
-        } else {
-            $ifaces = explode("~", $ifacesRaw);
+        if (empty($ifacesRaw) || !is_array($ifacesRaw)) {
+            return [];
         }
 
         $serialArray = [];
 
-        foreach ($ifaces as $k => $v) {
-            $serialArray[$k]['hour'] = $this->getUDPData($k, "-1 hour");
-            $serialArray[$k]['thirty'] = $this->getUDPData($k, "-30 minutes");
-            $serialArray[$k]['ten'] = $this->getUDPData($k, "-10 minutes");
-            $serialArray[$k]['lastTime'] = $this->getLastPacketStamp($k);
+        // getIfaces returns an associative array keyed by interface name
+        // Each value is an object with interface, label, threshold
+        foreach ($ifacesRaw as $iface) {
+            // Skip if not an array
+            if (!is_array($iface)) {
+                continue;
             }
-
+            
+            // Extract interface name - use 'interface' field (new format) or 'name' field (old format)
+            $ifaceName = $iface['interface'] ?? $iface['name'] ?? null;
+            
+            if (empty($ifaceName)) {
+                continue;
+            }
+            
+            // Use interface name as the ID for database queries
+            $ifaceId = $ifaceName;
+            
+            // Only query data for this specific configured interface
+            $serialArray[$ifaceName]['hour'] = $this->getUDPData($ifaceId, "-1 hour");
+            $serialArray[$ifaceName]['thirty'] = $this->getUDPData($ifaceId, "-30 minutes");
+            $serialArray[$ifaceName]['ten'] = $this->getUDPData($ifaceId, "-10 minutes");
+            $serialArray[$ifaceName]['lastTime'] = $this->getLastPacketStamp($ifaceId);
+        }
 
         return $serialArray;
     }
@@ -59,7 +72,13 @@ class Dataworker
 
         $results = $this->dbConn->dbQuery($sql, $iface);
 
-        $alarmID = $results[0]['alarmID'];
+        // Check if results exist before accessing
+        if (empty($results) || !isset($results[0])) {
+            // Return 0 if no UDP settings found for this interface
+            return 0;
+        }
+
+        $alarmID = $results[0]['alarmID'] ?? null;
 
         $oneHourAgo = strtotime($timeVal);
 
@@ -67,26 +86,39 @@ class Dataworker
 
         $results = $this->dbConn->dbQuery($sql, $iface, $oneHourAgo);
 
-        $avg = $results[0]['avgPackets'];
-        $count = $results[0]['num'];
+        // Check if results exist before accessing
+        if (empty($results) || !isset($results[0])) {
+            // Return 0 if no data found
+            return 0;
+        }
 
-        return $avg;
+        $avg = $results[0]['avgPackets'] ?? 0;
+        $count = $results[0]['num'] ?? 0;
+
+        return $avg ?: 0;
 
     }
 
     
     public function getLastPacketStamp($iface)
     {
-        $sql = "select MAX(epoch) from udp_data WHERE iface = '" . $iface . "' AND udp_packets > 0";
-        $result = $this->dbConn->dbQuery($sql);
+        $sql = "select MAX(epoch) as max_epoch from udp_data WHERE iface = ? AND udp_packets > 0";
+        $result = $this->dbConn->dbQuery($sql, $iface);
 
-        $lasttime = $result[0];
+        // Check if results exist before accessing
+        if (empty($result) || !isset($result[0])) {
+            // Return current timestamp if no data found
+            return date("Y-m-d H:i:s");
+        }
 
-        unset($dbConn);
+        $lasttime = $result[0]['max_epoch'] ?? $result[0][0] ?? null;
+
+        if ($lasttime === null) {
+            return date("Y-m-d H:i:s");
+        }
 
         $dt = new \DateTime();
-        $dt->setTimeStamp($lasttime[0]);
-
+        $dt->setTimeStamp((int)$lasttime);
 
         return $dt->format("Y-m-d H:i:s");
     }

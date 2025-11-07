@@ -15,6 +15,10 @@ use Kova\Kams\Unified\Modules\Serial\Workers\Dataworker as serialDataworker;
 use Kova\Kams\Unified\Modules\Motorola\Workers\Dataworker as motoDataworker;
 use Kova\Kams\Unified\Modules\SysHealth\SysHealth;
 use Kova\Kams\Unified\Modules\Admin\AdminController;
+use Kova\Kams\Unified\Modules\Motorola\MotorolaController;
+use Kova\Kams\Unified\Modules\Serial\SerialController;
+use Kova\Kams\Unified\Modules\UDP\UdpController;
+use Kova\Kams\Unified\Modules\SysHealth\SystemMonitorController;
 
 // Set up error handling
 register_shutdown_function(function() {
@@ -105,14 +109,66 @@ try {
             echo json_encode($cargo->getIfaces($mod));
             break;
 
+        case "getTtyDevices":
+            header('Content-Type: application/json');
+            try {
+                $detector = new \Kova\Kams\Unified\Modules\Admin\Utilities\TtyDetector();
+                $devices = $detector->detectTtyDevices();
+                echo json_encode($devices);
+            } catch (\Throwable $e) {
+                http_response_code(500);
+                echo json_encode([
+                    'error' => 'Error detecting TTY devices',
+                    'message' => $e->getMessage()
+                ]);
+            }
+            break;
+
+        case "getNetworkInterfaces":
+            header('Content-Type: application/json');
+            try {
+                $detector = new \Kova\Kams\Unified\Modules\Admin\Utilities\NetworkDetector();
+                $interfaces = $detector->detectNetworkInterfaces();
+                echo json_encode($interfaces);
+            } catch (\Throwable $e) {
+                http_response_code(500);
+                echo json_encode([
+                    'error' => 'Error detecting network interfaces',
+                    'message' => $e->getMessage()
+                ]);
+            }
+            break;
+
         case "getAdmin":
+            // Check user level from session to determine which page to show
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            
+            $userLevel = $_SESSION['admin_level'] ?? null;
             $adminController = new AdminController();
-            echo $adminController->renderAdminPage();
+            
+            // If user is superadmin, show superadmin page; otherwise show regular admin page
+            if ($userLevel === 'superadmin') {
+                echo $adminController->renderSuperadminPage();
+            } else {
+                echo $adminController->renderAdminPage();
+            }
+            break;
+            
+        case "getSuperadmin":
+            $adminController = new AdminController();
+            echo $adminController->renderSuperadminPage();
             break;
 
         case "getCronServices":
             $adminController = new AdminController();
             echo $adminController->renderCronServicesPage();
+            break;
+
+        case "getUtilities":
+            $adminController = new AdminController();
+            echo $adminController->renderUtilitiesPage();
             break;
 
         case "getUDPAvgs":
@@ -136,6 +192,26 @@ try {
             $cargo = new motoDataworker($configs);
             header('Content-Type: application/json');
             echo json_encode($cargo->getMotoData());
+            break;
+
+        case "getMotorolaChannels":
+            $motorolaController = new MotorolaController();
+            echo $motorolaController->renderChannelsPage();
+            break;
+
+        case "getSerialMonitor":
+            $serialController = new SerialController();
+            echo $serialController->renderMonitorPage();
+            break;
+
+        case "getUdpMonitor":
+            $udpController = new UdpController();
+            echo $udpController->renderMonitorPage();
+            break;
+
+        case "getSystemMonitor":
+            $systemMonitorController = new SystemMonitorController();
+            echo $systemMonitorController->renderMonitorPage();
             break;
 
         default:

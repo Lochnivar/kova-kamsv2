@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>System Utilities</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --muted:#9aa4b2;
+      --accent:#6ee7b7;
+      --accent-2:#60a5fa;
+      --success:#10b981;
+      --error:#ef4444;
+      --warning:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#071023,#071827);
+      color:#e6eef6;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      min-height:100vh;
+      padding:20px;
+    }
+    .container{max-width:1200px;margin:0 auto}
+    .header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:24px;
+    }
+    .h-title{font-size:24px;font-weight:700;margin-bottom:8px}
+    .subtitle{color:var(--muted);font-size:14px;max-width:600px}
+    .toolbar{display:flex;gap:8px}
+    .btn{
+      background:var(--accent-2);
+      color:#04203a;
+      border:none;
+      padding:10px 16px;
+      border-radius:8px;
+      font-weight:600;
+      cursor:pointer;
+      transition:opacity 0.2s;
+    }
+    .btn:hover{opacity:0.9}
+    .btn:disabled{opacity:0.5;cursor:not-allowed}
+    .btn.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);
+    }
+    .btn.danger{background:var(--error)}
+    .btn.warning{background:var(--warning)}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:20px;
+      box-shadow:0 6px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+      margin-bottom:20px;
+    }
+    .test-section{
+      margin-bottom:30px;
+    }
+    .test-section h2{
+      margin-top:0;
+      margin-bottom:15px;
+      border-bottom:2px solid var(--accent-2);
+      padding-bottom:10px;
+      font-size:18px;
+    }
+    .test-controls{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:15px;
+    }
+    .test-controls select,
+    .test-controls input[type="text"],
+    .test-controls input[type="number"]{
+      padding:8px 12px;
+      border-radius:6px;
+      border:1px solid rgba(255,255,255,0.15);
+      background:rgba(255,255,255,0.05);
+      color:#e6eef6;
+      font-size:14px;
+    }
+    .test-controls select{
+      min-width:200px;
+    }
+    .test-controls input[type="number"]{
+      width:100px;
+    }
+    .test-controls input[type="text"]{
+      flex:1;
+      min-width:200px;
+    }
+    .result-log{
+      background:rgba(0,0,0,0.3);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:8px;
+      padding:15px;
+      max-height:300px;
+      overflow-y:auto;
+      font-family:monospace;
+      font-size:12px;
+      line-height:1.6;
+    }
+    .log-entry{
+      margin-bottom:8px;
+      padding:6px;
+      border-radius:4px;
+    }
+    .log-success{
+      color:var(--success);
+      background:rgba(16,185,129,0.1);
+    }
+    .log-error{
+      color:var(--error);
+      background:rgba(239,68,68,0.1);
+    }
+    .log-info{
+      color:var(--accent-2);
+      background:rgba(96,165,250,0.1);
+    }
+    .fire-drill-section{
+      border:2px solid var(--warning);
+      background:rgba(245,158,11,0.05);
+    }
+    .warning-box{
+      background:rgba(245,158,11,0.1);
+      border:1px solid var(--warning);
+      border-radius:8px;
+      padding:15px;
+      margin-bottom:20px;
+      color:var(--warning);
+      font-size:14px;
+    }
+    .warning-box strong{
+      color:var(--warning);
+      font-weight:600;
+    }
+    .label{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="h-title">System Utilities</div>
+        <div class="subtitle">Test UDP packets, Serial data, and alarm functions</div>
+      </div>
+      <div class="toolbar">
+        <button class="btn" onclick="getAdmin(); return false;" title="Return to admin page">Back to Admin</button>
+      </div>
+    </div>
+
+    <!-- UDP Testing Section -->
+    <div class="card test-section">
+      <h2>UDP Packet Testing</h2>
+      <div class="test-controls">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label class="label">Interface</label>
+          <select id="udpInterface">
+            <option value="">Loading interfaces...</option>
+          </select>
+          <div id="udpDebug" style="font-size:10px;color:#888;margin-top:2px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label class="label">Packet Count</label>
+          <input type="number" id="udpPacketCount" value="10" min="1" max="1000" placeholder="Count">
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button class="btn" onclick="sendUdpTest()">Send Test Packets</button>
+        </div>
+      </div>
+      <div id="udpResult" class="result-log"></div>
+    </div>
+
+    <!-- Serial Testing Section -->
+    <div class="card test-section">
+      <h2>Serial Data Testing</h2>
+      <div class="test-controls">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label class="label">Device</label>
+          <select id="serialDevice">
+            <option value="">Loading devices...</option>
+          </select>
+          <div id="serialDebug" style="font-size:10px;color:#888;margin-top:2px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label class="label">Line Count</label>
+          <input type="number" id="serialLineCount" value="10" min="1" max="100" placeholder="Lines">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+          <label class="label">Test Data (optional)</label>
+          <input type="text" id="serialData" placeholder="Custom test data prefix">
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button class="btn" id="sendSerialBtn">Send Test Data</button>
+        </div>
+      </div>
+      <div id="serialResult" class="result-log"></div>
+    </div>
+
+    <!-- Alarm Testing Section -->
+    <div class="card test-section">
+      <h2>Alarm Testing</h2>
+      <div class="test-controls">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label class="label">Module</label>
+          <select id="alarmModule">
+            <option value="udp">UDP</option>
+            <option value="serial">Serial</option>
+            <option value="moto">Motorola</option>
+            <option value="zabbix">Zabbix</option>
+          </select>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+          <label class="label">Interface/Channel</label>
+          <select id="alarmInterface">
+            <option value="">Select interface...</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:8px;">
+          <button class="btn" onclick="testAlarm()">Raise Test Alarm</button>
+          <button class="btn danger" onclick="clearAlarm()">Clear Alarm</button>
+        </div>
+      </div>
+      <div id="alarmResult" class="result-log"></div>
+    </div>
+
+    <!-- Fire Drill Section -->
+    <div class="card test-section fire-drill-section">
+      <h2>🔥 Fire Drill - Test All Alarms</h2>
+      <div class="warning-box">
+        <strong>Warning:</strong> This will raise test alarms for all configured modules and interfaces. 
+        All alarms will be automatically cleared after the test if auto-clear is enabled.
+      </div>
+      <div class="test-controls">
+        <label style="color:var(--muted);display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="autoClearAlarms" checked style="width:auto;cursor:pointer">
+          Auto-clear alarms after test
+        </label>
+        <button class="btn warning" onclick="executeFireDrill()">Execute Fire Drill</button>
+      </div>
+      <div id="fireDrillResult" class="result-log"></div>
+    </div>
+  </div>
+
+  <script>
+    var API = 'src/Modules/Admin/api.php';
+    
+    console.log('admin-utilities.html script loaded');
+
+    // Load interfaces on page load
+    // Handle both direct page load and AJAX iframe load
+    function initPage() {
+      console.log('initPage() called, readyState:', document.readyState);
+      
+      // Verify elements exist
+      var udpSelect = document.getElementById('udpInterface');
+      var serialSelect = document.getElementById('serialDevice');
+      console.log('Element check:', {udpSelect: !!udpSelect, serialSelect: !!serialSelect});
+      
+      if (!udpSelect || !serialSelect) {
+        console.error('Select elements not found! Retrying...', {udpSelect: !!udpSelect, serialSelect: !!serialSelect});
+        // Try again after a short delay
+        setTimeout(initPage, 200);
+        return;
+      }
+      
+      console.log('Elements found, calling loadInterfaces()');
+      loadInterfaces();
+      
+      // Update alarm interface when module changes
+      var alarmModuleSelect = document.getElementById('alarmModule');
+      if (alarmModuleSelect) {
+        alarmModuleSelect.addEventListener('change', function() {
+          loadAlarmInterfaces(this.value);
+        });
+      }
+      
+      // Load initial alarm interfaces
+      loadAlarmInterfaces('udp');
+      
+      // Attach event listeners to buttons
+      var sendSerialBtn = document.getElementById('sendSerialBtn');
+      if (sendSerialBtn) {
+        sendSerialBtn.addEventListener('click', sendSerialTest);
+      }
+    }
+    
+    // Update debug indicators
+    function updateDebug(msg, type) {
+      var debugEl = document.getElementById(type + 'Debug');
+      if (debugEl) {
+        debugEl.textContent = new Date().toLocaleTimeString() + ': ' + msg;
+      }
+      console.log('[DEBUG ' + type.toUpperCase() + ']', msg);
+    }
+    
+    // Multiple initialization strategies for AJAX-loaded content
+    updateDebug('Script loaded', 'udp');
+    
+    // Strategy 1: Immediate execution after a delay
+    setTimeout(function() {
+      updateDebug('Timeout 100ms - checking DOM', 'udp');
+      initPage();
+    }, 100);
+    
+    // Strategy 2: Wait for DOMContentLoaded if still loading
+    if (document.readyState === 'loading') {
+      updateDebug('DOM still loading, waiting for DOMContentLoaded', 'udp');
+      document.addEventListener('DOMContentLoaded', function() {
+        updateDebug('DOMContentLoaded fired', 'udp');
+        initPage();
+      });
+    } else {
+      updateDebug('DOM already complete, trying immediate init', 'udp');
+      // Try immediate execution
+      setTimeout(initPage, 50);
+    }
+    
+    // Strategy 3: Also try after a longer delay as fallback
+    setTimeout(function() {
+      updateDebug('Fallback timeout 500ms', 'udp');
+      var udpSelect = document.getElementById('udpInterface');
+      if (udpSelect && udpSelect.innerHTML.indexOf('Loading interfaces') !== -1) {
+        updateDebug('Still loading, retrying init', 'udp');
+        initPage();
+      }
+    }, 500);
+
+    async function loadInterfaces() {
+      console.log('[UTILITIES] loadInterfaces() called');
+      updateDebug('loadInterfaces() called', 'udp');
+      try {
+        // Load UDP interfaces
+        console.log('Fetching UDP interfaces...');
+        updateDebug('Fetching UDP interfaces...', 'udp');
+        var udpResponse;
+        try {
+          udpResponse = await fetch('src/Dispatcher.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=getIfaces&mod=udp'
+          });
+          updateDebug('UDP fetch complete: ' + udpResponse.status, 'udp');
+        } catch(fetchError) {
+          console.error('Fetch error:', fetchError);
+          updateDebug('Fetch error: ' + fetchError.message, 'udp');
+          var udpSelect = document.getElementById('udpInterface');
+          if (udpSelect) {
+            udpSelect.innerHTML = '<option value="">Network error: ' + fetchError.message + '</option>';
+          }
+          throw fetchError;
+        }
+        
+        var udpSelect = document.getElementById('udpInterface');
+        if (!udpSelect) {
+          console.error('UDP select element not found');
+          return;
+        }
+        
+        console.log('UDP response status:', udpResponse.status, udpResponse.ok);
+        
+        if (!udpResponse.ok) {
+          udpSelect.innerHTML = '<option value="">Error: ' + udpResponse.status + '</option>';
+          throw new Error('UDP interfaces request failed: ' + udpResponse.status);
+        }
+        
+        var udpText = await udpResponse.text();
+        console.log('UDP response text:', udpText);
+        
+        var udpData;
+        try {
+          udpData = JSON.parse(udpText);
+          console.log('UDP parsed data:', udpData);
+        } catch(e) {
+          console.error('Failed to parse UDP response:', udpText, e);
+          udpSelect.innerHTML = '<option value="">Error parsing response</option>';
+          throw new Error('Invalid JSON response: ' + e.message);
+        }
+        
+        udpSelect.innerHTML = '<option value="">Select UDP interface...</option>';
+        
+        if (udpData && !udpData.error) {
+          // Handle both array and object formats
+          var udpArray = [];
+          if (Array.isArray(udpData)) {
+            udpArray = udpData;
+          } else if (typeof udpData === 'object' && udpData !== null) {
+            udpArray = Object.values(udpData);
+          }
+          
+          console.log('UDP array to process:', udpArray);
+          
+          if (udpArray.length > 0) {
+            updateDebug('Found ' + udpArray.length + ' interfaces', 'udp');
+            udpArray.forEach(function(iface) {
+              if (iface && typeof iface === 'object') {
+                var name = iface.interface || iface.name || '';
+                var label = iface.label || iface.alias || name;
+                if (name) {
+                  console.log('Adding UDP interface:', name, label);
+                  updateDebug('Adding: ' + label, 'udp');
+                  udpSelect.innerHTML += '<option value="' + name + '">' + label + ' (' + name + ')</option>';
+                }
+              }
+            });
+            updateDebug('UDP interfaces loaded successfully', 'udp');
+          } else {
+            updateDebug('No UDP interfaces found', 'udp');
+            udpSelect.innerHTML = '<option value="">No UDP interfaces configured</option>';
+          }
+        } else if (udpData && udpData.error) {
+          udpSelect.innerHTML = '<option value="">Error: ' + (udpData.error || 'Unknown error') + '</option>';
+        }
+
+        // Load Serial interfaces
+        console.log('Fetching Serial interfaces...');
+        updateDebug('Fetching Serial interfaces...', 'serial');
+        var serialResponse;
+        try {
+          serialResponse = await fetch('src/Dispatcher.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=getIfaces&mod=serial'
+          });
+          updateDebug('Serial fetch complete: ' + serialResponse.status, 'serial');
+        } catch(fetchError) {
+          console.error('Serial fetch error:', fetchError);
+          updateDebug('Fetch error: ' + fetchError.message, 'serial');
+          var serialSelect = document.getElementById('serialDevice');
+          if (serialSelect) {
+            serialSelect.innerHTML = '<option value="">Network error: ' + fetchError.message + '</option>';
+          }
+          throw fetchError;
+        }
+        
+        var serialSelect = document.getElementById('serialDevice');
+        if (!serialSelect) {
+          console.error('Serial select element not found');
+          return;
+        }
+        
+        console.log('Serial response status:', serialResponse.status, serialResponse.ok);
+        
+        if (!serialResponse.ok) {
+          serialSelect.innerHTML = '<option value="">Error: ' + serialResponse.status + '</option>';
+          throw new Error('Serial interfaces request failed: ' + serialResponse.status);
+        }
+        
+        var serialText = await serialResponse.text();
+        console.log('Serial response text:', serialText);
+        
+        var serialData;
+        try {
+          serialData = JSON.parse(serialText);
+          console.log('Serial parsed data:', serialData);
+        } catch(e) {
+          console.error('Failed to parse Serial response:', serialText, e);
+          serialSelect.innerHTML = '<option value="">Error parsing response</option>';
+          throw new Error('Invalid JSON response: ' + e.message);
+        }
+        
+        serialSelect.innerHTML = '<option value="">Select Serial device...</option>';
+        
+        if (serialData && !serialData.error) {
+          // Handle both array and object formats
+          var serialArray = [];
+          if (Array.isArray(serialData)) {
+            serialArray = serialData;
+          } else if (typeof serialData === 'object' && serialData !== null) {
+            serialArray = Object.values(serialData);
+          }
+          
+          console.log('Serial array to process:', serialArray);
+          
+          if (serialArray.length > 0) {
+            updateDebug('Found ' + serialArray.length + ' devices', 'serial');
+            serialArray.forEach(function(iface) {
+              if (iface && typeof iface === 'object') {
+                var name = iface.interface || iface.name || '';
+                var label = iface.label || iface.alias || name;
+                if (name) {
+                  console.log('Adding Serial interface:', name, label);
+                  updateDebug('Adding: ' + label, 'serial');
+                  // Serial devices might need /dev/ prefix
+                  var deviceName = name.startsWith('tty') ? name : name;
+                  serialSelect.innerHTML += '<option value="' + deviceName + '">' + label + ' (' + deviceName + ')</option>';
+                }
+              }
+            });
+            updateDebug('Serial devices loaded successfully', 'serial');
+          } else {
+            updateDebug('No Serial devices found', 'serial');
+            serialSelect.innerHTML = '<option value="">No Serial devices configured</option>';
+          }
+        } else if (serialData && serialData.error) {
+          serialSelect.innerHTML = '<option value="">Error: ' + (serialData.error || 'Unknown error') + '</option>';
+        }
+        
+        console.log('loadInterfaces() completed successfully');
+      } catch(e) {
+        console.error('Error loading interfaces:', e);
+        var udpSelect = document.getElementById('udpInterface');
+        var serialSelect = document.getElementById('serialDevice');
+        if (udpSelect) udpSelect.innerHTML = '<option value="">Error: ' + (e.message || 'Unknown error') + '</option>';
+        if (serialSelect) serialSelect.innerHTML = '<option value="">Error: ' + (e.message || 'Unknown error') + '</option>';
+        if (typeof logResult === 'function') {
+          logResult('udpResult', {success: false, message: 'Error loading interfaces: ' + e.message}, 'error');
+        }
+      }
+    }
+
+    async function loadAlarmInterfaces(module) {
+      try {
+        var response = await fetch('src/Dispatcher.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: 'action=getIfaces&mod=' + encodeURIComponent(module)
+        });
+        
+        var select = document.getElementById('alarmInterface');
+        if (!select) {
+          console.error('Alarm interface select element not found');
+          return;
+        }
+        
+        if (!response.ok) {
+          select.innerHTML = '<option value="">Error: ' + response.status + '</option>';
+          return;
+        }
+        
+        var text = await response.text();
+        var data;
+        try {
+          data = JSON.parse(text);
+        } catch(e) {
+          console.error('Failed to parse alarm interfaces response:', text);
+          select.innerHTML = '<option value="">Error parsing response</option>';
+          return;
+        }
+        
+        select.innerHTML = '<option value="">Select interface...</option>';
+        
+        if (data && !data.error) {
+          // Handle both array and object formats
+          var ifaceArray = [];
+          if (Array.isArray(data)) {
+            ifaceArray = data;
+          } else if (typeof data === 'object' && data !== null) {
+            ifaceArray = Object.values(data);
+          }
+          
+          if (ifaceArray.length > 0) {
+            ifaceArray.forEach(function(iface) {
+              if (iface && typeof iface === 'object') {
+                var name = iface.interface || iface.name || '';
+                var label = iface.label || iface.alias || name;
+                if (name) {
+                  select.innerHTML += '<option value="' + name + '">' + label + ' (' + name + ')</option>';
+                }
+              }
+            });
+          } else {
+            select.innerHTML = '<option value="">No interfaces configured</option>';
+          }
+        } else if (data && data.error) {
+          select.innerHTML = '<option value="">Error: ' + (data.error || 'Unknown error') + '</option>';
+        }
+        
+        // For Motorola, also load channels from database
+        if (module === 'moto') {
+          // Could add AJAX call to get Motorola channels here
+        }
+      } catch(e) {
+        console.error('Error loading alarm interfaces:', e);
+        var select = document.getElementById('alarmInterface');
+        if (select) {
+          select.innerHTML = '<option value="">Error loading interfaces</option>';
+        }
+      }
+    }
+
+    async function sendUdpTest() {
+      const iface = document.getElementById('udpInterface').value;
+      const count = parseInt(document.getElementById('udpPacketCount').value);
+      
+      if (!iface) {
+        logResult('udpResult', {success: false, message: 'Please select an interface'}, 'error');
+        return;
+      }
+
+      logResult('udpResult', {message: `Sending ${count} UDP packets to ${iface}...`}, 'info');
+      
+      try {
+        const response = await fetch(API, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: `action=sendUdpTest&iface=${encodeURIComponent(iface)}&count=${count}`
+        });
+        const data = await response.json();
+        logResult('udpResult', data, data.success ? 'success' : 'error');
+      } catch(e) {
+        logResult('udpResult', {success: false, message: 'Error: ' + e.message}, 'error');
+      }
+    }
+
+    // Make function globally accessible
+    window.sendSerialTest = async function sendSerialTest() {
+      var device = document.getElementById('serialDevice').value;
+      var lines = parseInt(document.getElementById('serialLineCount').value);
+      var data = document.getElementById('serialData').value;
+      
+      if (!device) {
+        logResult('serialResult', {success: false, message: 'Please select a device'}, 'error');
+        return;
+      }
+
+      logResult('serialResult', {message: 'Sending ' + lines + ' lines to ' + device + '...'}, 'info');
+      
+      try {
+        var response = await fetch(API, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: 'action=sendSerialTest&device=' + encodeURIComponent(device) + '&lines=' + lines + '&data=' + encodeURIComponent(data || '')
+        });
+        var result = await response.json();
+        logResult('serialResult', result, result.success ? 'success' : 'error');
+      } catch(e) {
+        logResult('serialResult', {success: false, message: 'Error: ' + e.message}, 'error');
+      }
+    }
+
+    async function testAlarm() {
+      const module = document.getElementById('alarmModule').value;
+      const iface = document.getElementById('alarmInterface').value;
+      
+      if (!iface) {
+        logResult('alarmResult', {success: false, message: 'Please select an interface'}, 'error');
+        return;
+      }
+
+      logResult('alarmResult', {message: `Raising test alarm for ${module}/${iface}...`}, 'info');
+      
+      try {
+        const response = await fetch(API, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: `action=testAlarm&module=${encodeURIComponent(module)}&iface=${encodeURIComponent(iface)}`
+        });
+        const result = await response.json();
+        logResult('alarmResult', result, result.success ? 'success' : 'error');
+      } catch(e) {
+        logResult('alarmResult', {success: false, message: 'Error: ' + e.message}, 'error');
+      }
+    }
+
+    async function clearAlarm() {
+      const alarmId = prompt('Enter Alarm ID to clear:');
+      if (!alarmId || isNaN(alarmId)) {
+        logResult('alarmResult', {success: false, message: 'Invalid alarm ID'}, 'error');
+        return;
+      }
+
+      logResult('alarmResult', {message: `Clearing alarm ${alarmId}...`}, 'info');
+      
+      try {
+        const response = await fetch(API, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: `action=clearAlarm&alarmId=${parseInt(alarmId)}`
+        });
+        const result = await response.json();
+        logResult('alarmResult', result, result.success ? 'success' : 'error');
+      } catch(e) {
+        logResult('alarmResult', {success: false, message: 'Error: ' + e.message}, 'error');
+      }
+    }
+
+    async function executeFireDrill() {
+      if (!confirm('Execute Fire Drill? This will raise test alarms for all configured modules.')) {
+        return;
+      }
+
+      const autoClear = document.getElementById('autoClearAlarms').checked;
+      logResult('fireDrillResult', {message: 'Starting Fire Drill...'}, 'info');
+      
+      try {
+        const response = await fetch(API, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: `action=fireDrill&autoClear=${autoClear ? '1' : '0'}`
+        });
+        const result = await response.json();
+        
+        // Log detailed results
+        if (result.success && result.results) {
+          logResult('fireDrillResult', {message: result.message}, 'success');
+          Object.keys(result.results).forEach(module => {
+            result.results[module].forEach(r => {
+              logResult('fireDrillResult', r, r.success ? 'success' : 'error');
+            });
+          });
+          if (result.autoCleared) {
+            logResult('fireDrillResult', {message: 'All alarms automatically cleared'}, 'info');
+          }
+        } else {
+          logResult('fireDrillResult', result, 'error');
+        }
+      } catch(e) {
+        logResult('fireDrillResult', {success: false, message: 'Error: ' + e.message}, 'error');
+      }
+    }
+
+    function logResult(elementId, data, type = 'info') {
+      const el = document.getElementById(elementId);
+      const entry = document.createElement('div');
+      entry.className = 'log-entry log-' + type;
+      const timestamp = new Date().toLocaleTimeString();
+      const message = data.message || data.error || JSON.stringify(data);
+      entry.textContent = `[${timestamp}] ${message}`;
+      el.appendChild(entry);
+      el.scrollTop = el.scrollHeight;
+    }
+  </script>
+</body>
+</html>
+

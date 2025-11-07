@@ -221,7 +221,7 @@ date_default_timezone_set($TimeZone);
  <!-- TOP NAV BAR FOR PAGE NAVIGATION --!>
         <div class="topnav">
         <?php if($MotorolaPage == "yes" && ($UDPMonitorPage == "yes" || $SerialMonitorPage == "yes" || $ZabbixPage == "yes")){ ?>
-          <button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" class="active" href="../channels/index.php">Motorola-Channels</a></button>
+          <button style="background-color:gray;border-radius: 6px;color:black"><a style="color:black;" class="active" href="../../Motorola/index.php">Motorola-Channels</a></button>
         <?php } ?>
         <?php if($UDPMonitorPage == "yes"){ ?>
           <button style="background-color:yellow;border-radius: 6px;color:black"><a style="color:black;" href="../netmon/index.php">UDP-Monitor</a></button>
